@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<dwsync>
+<file name="auth_functions.php" server="155.76.75.246//wm/mvs/wm_web/var/apache2/2.4/htdocs/" local="132870876501930726" remote="132870840590000000" Dst="2" />
+<file name="database.php" server="155.76.75.246//wm/mvs/wm_web/var/apache2/2.4/htdocs/" local="133131117559086140" remote="133131117590000000" Dst="1" />
+<file name="data_result.php" server="155.76.75.246//wm/mvs/wm_web/var/apache2/2.4/htdocs/" local="132870876506079463" remote="132870840640000000" Dst="2" />
+<file name="functions.php" server="155.76.75.246//wm/mvs/wm_web/var/apache2/2.4/htdocs/" local="132870876506379663" remote="132870840650000000" Dst="2" />
+<file name="initialize.php" server="155.76.75.246//wm/mvs/wm_web/var/apache2/2.4/htdocs/" local="133258115253916055" remote="133258115350000000" Dst="2" />
+<file name="validation_functions.php" server="155.76.75.246//wm/mvs/wm_web/var/apache2/2.4/htdocs/" local="132870876508909622" remote="132870840740000000" Dst="2" />
+<file name="query_functions.php" server="155.76.75.246//wm/mvs/wm_web/var/apache2/2.4/htdocs/" local="133244443337907466" remote="133244443370000000" Dst="2" />
+<file name="query_functions_morning_report.php" server="155.76.75.246//wm/mvs/wm_web/var/apache2/2.4/htdocs/" local="133069604076259012" remote="133069604100000000" Dst="2" />
+<file name="query_functions_location_id.php" server="155.76.75.246//wm/mvs/wm_web/var/apache2/2.4/htdocs/" local="133396266023418620" remote="133396266070000000" Dst="2" />
+<file name="query_functions_ccp.php" server="155.76.75.246//wm/mvs/wm_web/var/apache2/2.4/htdocs/" local="132900248547658845" remote="132900212560000000" Dst="2" />
+<file name="query_functions_gage_data.php" server="155.76.75.246//wm/mvs/wm_web/var/apache2/2.4/htdocs/" local="133264880418259632" remote="133264880420000000" Dst="2" />
+<file name="query_functions_alarm.php" server="155.76.75.246//wm/mvs/wm_web/var/apache2/2.4/htdocs/" local="133289888538254436" remote="133289888570000000" Dst="2" />
+<file name="get_json_data.php" server="155.76.75.246//wm/mvs/wm_web/var/apache2/2.4/htdocs/" local="133131107686257482" remote="133131107690000000" Dst="1" />
+<file name="initialize_js.php" server="155.76.75.246//wm/mvs/wm_web/var/apache2/2.4/htdocs/" local="133129263295187531" remote="133129263920000000" Dst="1" />
+<file name="initialize2.php" server="155.76.75.246//wm/mvs/wm_web/var/apache2/2.4/htdocs/" local="133263953295518750" remote="133263953320000000" Dst="2" />
+<file name="query_functions_forecast.php" server="155.76.75.246//wm/mvs/wm_web/var/apache2/2.4/htdocs/" local="133264882519589659" remote="133264882540000000" Dst="2" />
+</dwsync>
