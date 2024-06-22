@@ -456,7 +456,6 @@ function createGageDataTable(allData) {
     console.log('currentDateTimePlus4Days :', currentDateTimePlus4Days);
 
 
-
     // Iterate through the mergedData to populate the table
     for (const locData of allData[0].gages) {
         // HIDE LOCATION BASED ON VISIBLE
