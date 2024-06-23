@@ -593,7 +593,7 @@ function fetchAndUpdateStage(tsid_stage_rev, tsid_stage_29, display_stage_29, ts
                 console.log("dateTimeClass:", dateTimeClass);
 
                 stageCellInnerHTML  = "<span class='" + floodClass + "' title='" + stage.cwms_ts_id + "'>"
-                                    + "<a href='https://wm.mvs.ds.usace.army.mil/District-Templates/chart/public/chart.html?cwms_ts_id=" + stage.cwms_ts_id + "&lookback=96' target='_blank'>"
+                                    + "<a href='https://wm.mvs.ds.usace.army.mil/district_templates/chart/public/chart.html?cwms_ts_id=" + stage.cwms_ts_id + "&lookback=96' target='_blank'>"
                                     + stage_value 
                                     + "</a>"
                                     +"</span>" 

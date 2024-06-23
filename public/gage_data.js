@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const basin = item.basin;
 
                 const metadataFetchUrl = `get_gage_control.php?basin=${basin}`;
-                console.log('metadataFetchUrl:' + "https://wm.mvs.ds.usace.army.mil/District-Templates/gage_data/public/" + metadataFetchUrl);
+                console.log('metadataFetchUrl:' + "https://wm.mvs.ds.usace.army.mil/district_templates/gage_data/public/" + metadataFetchUrl);
 
                 // Return the fetch promise
                 return fetch(metadataFetchUrl)
@@ -582,7 +582,7 @@ function fetchAndUpdateStage(tsid_stage_rev, tsid_stage_29, display_stage_29, ts
 
                 // Make an AJAX request to the PHP script, passing all the variables
                 const urlStage29 = `get_stage29.php?${stage29QueryString}`;
-                console.log("urlStage29: " + "https://wm.mvs.ds.usace.army.mil/District-Templates/gage_data/public/" + urlStage29);
+                console.log("urlStage29: " + "https://wm.mvs.ds.usace.army.mil/district_templates/gage_data/public/" + urlStage29);
                 fetch(urlStage29)
                 .then(response => response.json())
                 .then(stage29 => {
@@ -647,7 +647,7 @@ function fetchAndUpdateStage(tsid_stage_rev, tsid_stage_29, display_stage_29, ts
             
                 // Make an AJAX request to the PHP script, passing all the variables
                 const urlStage = `get_stage.php?${stageQueryString}`;
-                console.log("urlStage: " + "https://wm.mvs.ds.usace.army.mil/District-Templates/gage_data/public/" + urlStage);
+                console.log("urlStage: " + "https://wm.mvs.ds.usace.army.mil/district_templates/gage_data/public/" + urlStage);
                 fetch(urlStage)
                 .then(response => response.json())
                 .then(stage => {
@@ -709,7 +709,7 @@ function fetchAndUpdateStage(tsid_stage_rev, tsid_stage_29, display_stage_29, ts
 
                     // Now, make another fetch to get additional data
                     const secondUrl = `get_nws_forecast.php?${queryStringNWS}`; // Replace with your actual URL
-                    console.log("secondUrl: " + "https://wm.mvs.ds.usace.army.mil/District-Templates/gage_data/public/" + secondUrl);
+                    console.log("secondUrl: " + "https://wm.mvs.ds.usace.army.mil/district_templates/gage_data/public/" + secondUrl);
                     return fetch(secondUrl);
                 })
 
@@ -805,7 +805,7 @@ function fetchAndUpdateStage(tsid_stage_rev, tsid_stage_29, display_stage_29, ts
 
                     // Make an AJAX request to the PHP script, passing all the variables
                     const urlStage = `get_stage.php?${stageQueryString}`;
-                    console.log("urlStage: " + "https://wm.mvs.ds.usace.army.mil/District-Templates/gage_data/public/" + urlStage);
+                    console.log("urlStage: " + "https://wm.mvs.ds.usace.army.mil/district_templates/gage_data/public/" + urlStage);
                     fetch(urlStage)
                     .then(response => response.json())
                     .then(stage => {
@@ -881,7 +881,7 @@ function fetchAndUpdatePrecip(tsid_precip_raw, currentDateTimeMinusTwoHours, pre
 
         // Make an AJAX request to the PHP script, passing all the variables
         const urlPrecip = `get_precip.php?${precipQueryString}`;
-        console.log("urlPrecip: " + "https://wm.mvs.ds.usace.army.mil/District-Templates/gage_data/public/" + urlPrecip);
+        console.log("urlPrecip: " + "https://wm.mvs.ds.usace.army.mil/district_templates/gage_data/public/" + urlPrecip);
         
         fetch(urlPrecip)
         .then(response => response.json())
