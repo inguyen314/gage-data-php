@@ -6,12 +6,12 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     // Gage control json file
     let jsonFileURL = null;
-        if (cda === "public") {
-            jsonFileURL = '../../../php_data_api/public/json/gage_control.json';
-        } else if (cda === "internal") {
-            jsonFileURL = '../../../php_data_api/public/json/gage_control.json';
-        }
-        console.log('jsonFileURL: ', jsonFileURL);
+    if (cda === "public") {
+        jsonFileURL = '../../../php_data_api/public/json/gage_control.json';
+    } else if (cda === "internal") {
+        jsonFileURL = '../../../php_data_api/public/json/gage_control.json';
+    }
+    console.log('jsonFileURL: ', jsonFileURL);
 
     const response = await fetch(jsonFileURL);
     console.log('response: ', response);
