@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Process each item and call the second fetch
                 const basin = item.basin;
 
-                const metadataFetchUrl = `https://wm.mvs.ds.usace.army.mil/php-data-api/public/get_gage_control_by_basin.php?basin=${basin}`;
+                const metadataFetchUrl = `https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_gage_control_by_basin.php?basin=${basin}`;
                 console.log('metadataFetchUrl:', metadataFetchUrl);
 
                 // Return the fetch promise
@@ -330,7 +330,7 @@ function fetchAndUpdateStage(tsid_stage_rev, tsid_stage_29, display_stage_29, ts
         console.log("stage29QueryString: " + stage29QueryString);
 
         // Make an AJAX request to the PHP script, passing all the variables
-        const urlStage29 = `https://wm.mvs.ds.usace.army.mil/php-data-api/public/get_level.php?${stage29QueryString}`;
+        const urlStage29 = `https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_level.php?${stage29QueryString}`;
         console.log("urlStage29: ", urlStage29);
         fetch(urlStage29)
         .then(response => response.json())
@@ -395,7 +395,7 @@ function fetchAndUpdateStage(tsid_stage_rev, tsid_stage_29, display_stage_29, ts
         console.log("stageQueryString: " + stageQueryString);
     
         // Make an AJAX request to the PHP script, passing all the variables
-        const urlStage = `https://wm.mvs.ds.usace.army.mil/php-data-api/public/get_level.php?${stageQueryString}`;
+        const urlStage = `https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_level.php?${stageQueryString}`;
         console.log("urlStage: ", urlStage);
         fetch(urlStage)
         .then(response => response.json())
@@ -457,7 +457,7 @@ function fetchAndUpdateStage(tsid_stage_rev, tsid_stage_29, display_stage_29, ts
             console.log("queryStringNWS: " + queryStringNWS);
 
             // Now, make another fetch to get additional data
-            const secondUrl = `https://wm.mvs.ds.usace.army.mil/php-data-api/public/get_nws_forecast.php?${queryStringNWS}`; // Replace with your actual URL
+            const secondUrl = `https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_nws_forecast.php?${queryStringNWS}`; // Replace with your actual URL
             console.log("secondUrl: ", secondUrl);
             return fetch(secondUrl);
         })
@@ -553,7 +553,7 @@ function fetchAndUpdateStage(tsid_stage_rev, tsid_stage_29, display_stage_29, ts
             console.log("stageQueryString: " + stageQueryString);
 
             // Make an AJAX request to the PHP script, passing all the variables
-            const urlStage = `https://wm.mvs.ds.usace.army.mil/php-data-api/public/get_level.php?${stageQueryString}`;
+            const urlStage = `https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_level.php?${stageQueryString}`;
             console.log("urlStage: ", urlStage);
             fetch(urlStage, {
                 method: 'GET',
@@ -633,7 +633,7 @@ function fetchAndUpdateFlow(tsid, label, currentDateTimeMinusTwoHours, flowCell)
             cwms_ts_id: encodeURIComponent(tsid),
         };
         const flowQueryString = Object.keys(flowDataToSend).map(key => key + '=' + flowDataToSend[key]).join('&');
-        const urlFlow = `https://wm.mvs.ds.usace.army.mil/php-data-api/public/get_level.php?${flowQueryString}`;
+        const urlFlow = `https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_level.php?${flowQueryString}`;
         console.log("urlFlow = ", urlFlow);
 
         // FLOW CLASS
@@ -766,7 +766,7 @@ function fetchAndUpdatePrecip(tsid_precip_raw, currentDateTimeMinusTwoHours, pre
         console.log("precipQueryString: ", precipQueryString);
 
         // Make an AJAX request to the PHP script, passing all the variables
-        const urlPrecip = `https://wm.mvs.ds.usace.army.mil/php-data-api/public/get_level.php?${precipQueryString}`;
+        const urlPrecip = `https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_level.php?${precipQueryString}`;
         console.log("urlPrecip: ", urlPrecip);
         
         fetch(urlPrecip)
@@ -940,7 +940,7 @@ function fetchAndUpdateWaterQuality(tsid, label, currentDateTimeMinusTwoHours, w
             cwms_ts_id: encodeURIComponent(tsid),
         };
         const waterQualityQueryString = Object.keys(waterQualityDataToSend).map(key => key + '=' + waterQualityDataToSend[key]).join('&');
-        const urlWaterQuality = `https://wm.mvs.ds.usace.army.mil/php-data-api/public/get_level.php?${waterQualityQueryString}`;
+        const urlWaterQuality = `https://wm.mvs.ds.usace.army.mil/php_data_api/public/get_level.php?${waterQualityQueryString}`;
         console.log("urlWaterQuality = ", urlWaterQuality);
 
         // WATER QUALITY CLASS
