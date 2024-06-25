@@ -7,9 +7,9 @@ document.addEventListener('DOMContentLoaded', async function () {
     // Gage control json file
     let jsonFileURL = null;
         if (cda === "public") {
-            jsonFileURL = 'https://www.mvs-wc.usace.army.mil/php_data_api/public/json/gage_control.json';
+            jsonFileURL = '../../../php_data_api/public/json/gage_control.json';
         } else if (cda === "internal") {
-            jsonFileURL = 'https://wm.mvs.ds.usace.army.mil/php_data_api/public/json/gage_control.json';
+            jsonFileURL = '../../../php_data_api/public/json/gage_control.json';
         }
         console.log('jsonFileURL: ', jsonFileURL);
 
@@ -769,7 +769,7 @@ function fetchAndUpdateStage(stageCell, tsidStage, flood_level, currentDateTimeM
             } else {
                 // innerHTMLStage = lastValue.toFixed(2)
                 innerHTMLStage = "<span class='" + floodClass + "' title='" + stage.name + ", Value = " + valueLast + ", Date Time = " + timestampLast + "'>"
-                                + "<a href='https://wm.mvs.ds.usace.army.mil/district_templates/chart/public/chart.html?cwms_ts_id=" + stage.name + "&lookback=96&cda=public' target='_blank'>"
+                                + "<a href='../../../district_templates/chart/public/chart.html?cwms_ts_id=" + stage.name + "&lookback=96&cda=public' target='_blank'>"
                                 + valueLast
                                 + "</a>"
                                 +"</span>" 
@@ -1078,7 +1078,7 @@ function fetchAndUpdateFlow(flowCell, tsidFlow, label, currentDateTimeMinus2Hour
                                     + "</span>";
                 } else {
                     innerHTMLFlow = "<span class='last_max_value' title='" + flow.name + ", Value = " + roundedValueFlowLast + ", Date Time = " + timestampFlowLast + "'>"
-                                    + "<a href='https://wm.mvs.ds.usace.army.mil/district_templates/chart/public/chart.html?cwms_ts_id=" + flow.name + "&lookback=96&cda=public' target='_blank'>"
+                                    + "<a href='../../../district_templates/chart/public/chart.html?cwms_ts_id=" + flow.name + "&lookback=96&cda=public' target='_blank'>"
                                     + roundedValueFlowLast
                                     + "</a>"
                                     +"</span>" 
@@ -1495,7 +1495,7 @@ function fetchAndUpdateWaterQuality(waterQualityCell, tsid, label, currentDateTi
                                     + "</span>";
                 } else {
                     innerHTMLWaterQuality = "<span class='last_max_value' title='" + waterQuality.name + ", Value = " + valueWaterQualityLast + ", Date Time = " + timestampWaterQualityLast + "'>"
-                                    + "<a href='https://wm.mvs.ds.usace.army.mil/district_templates/chart/public/chart.html?cwms_ts_id=" + waterQuality.name + "&lookback=96&cda=public' target='_blank'>"
+                                    + "<a href='../../../district_templates/chart/public/chart.html?cwms_ts_id=" + waterQuality.name + "&lookback=96&cda=public' target='_blank'>"
                                     + valueWaterQualityLast
                                     + "</a>"
                                     +"</span>" 
