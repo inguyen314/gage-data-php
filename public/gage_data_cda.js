@@ -31,9 +31,9 @@ document.addEventListener('DOMContentLoaded', async function () {
         return gageControlData.filter(entry => entry.basin === basin);
     }
 
+    // Setup if there is a gage is set in the url
     let basinData = null;
     let basinDataTemp = null;
-    // Setup if there is a gage is set in the url
     if (gage !== null) {
         console.log("gage: ", gage);
 
