@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', function () {
     loadingIndicatorGageData.style.display = 'block';
 
     // Gage control json file
-    const jsonFileURL = 'https://wm.mvs.ds.usace.army.mil/php-data-api/public/json/gage_control.json';
+    const jsonFileURL = 'https://wm.mvs.ds.usace.army.mil/php_data_api/public/json/gage_control.json';
     console.log('jsonFileURL: ', jsonFileURL);
     
     fetch(jsonFileURL)
