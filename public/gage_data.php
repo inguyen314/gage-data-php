@@ -16,13 +16,7 @@ if (ini_get('date.timezone')) {
     //echo 'date.timezone: ' . ini_get('date.timezone');
 }
 
-$basin = $_GET['basin'] ?? '1';
-
-$now =  date('Y-m-d H:i');
-$time   = strtotime($now);
-$current_date =  date('m-d-Y');
-$current_date_time_format =  date('m-d-Y H:i');
-$current_date_time   = date("Y-m-d H:i", $time);
+$basin = $_GET['basin'] ?? null;
 ?>
 
 <!DOCTYPE html>
@@ -62,13 +56,12 @@ $current_date_time   = date("Y-m-d H:i", $time);
 						<div id="topPane" class="col-md backend-cp-collapsible">
 							<div class="box-usace">
 								<h2 class="box-header-striped">
-									<span class="titleLabel title">Gage Data PHP V2.1</span>
+									<span class="titleLabel title">Gage Data PHP</span>
 									<span class="rss"></span>
 								</h2>
 								<div class="box-content" style="background-color:white;margin:auto">
 									<div class="content">
 										<!-- Box Content Here -->
-                                        <span>Last Modified:<?php echo " " . $current_date_time ?></span><br>
 										<span><h3><a href='gage_data.php?basin=Mississippi'>Switch to PHP</a></h3></span> 
                                         <span><h3><a href='gage_data.html?basin=Mississippi&cda=internal'>Switch to Cloud Internal</a></h3></span>
                                         <span><h3><a href='gage_data.html?basin=Mississippi&cda=public'>Switch to Cloud Public</a></h3></span>
@@ -80,7 +73,7 @@ $current_date_time   = date("Y-m-d H:i", $time);
 					</div>
 
                     <script>
-                        var basin = <?php echo json_encode($_GET['basin'] ?? '1'); ?>;
+                        var basin = <?php echo json_encode($_GET['basin'] ?? null); ?>;
                         console.log('basin: ', basin);
                         </script>
 
