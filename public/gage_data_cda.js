@@ -31,8 +31,32 @@ document.addEventListener('DOMContentLoaded', async function () {
         return gageControlData.filter(entry => entry.basin === basin);
     }
 
-    // Extracted gageControlData for the basin
-    const basinData = filterBasin(gageControlData);
+    let basinData = null;
+    let basinDataTemp = null;
+    // Setup if there is a gage is set in the url
+    if (gage !== null) {
+        console.log("gage: ", gage);
+
+        // Extracted gageControlData for the basin
+        basinDataTemp = filterBasin(gageControlData);
+        console.log('basinDataTemp: ', basinDataTemp);
+
+        // Function to filter gageControlData for the "Big Muddy" basin
+        function filterGage(basinDataTemp, gage) {
+            return basinDataTemp.map(basin => {
+                return {
+                    basin: basin.basin,
+                    gages: basin.gages.filter(entry => entry.location_id === gage)
+                };
+            }).filter(basin => basin.gages.length > 0);
+        }
+
+        basinData = filterGage(basinDataTemp, gage);
+        console.log("basinData: ", basinData);
+    } else {
+        // Extracted gageControlData for the basin
+        basinData = filterBasin(gageControlData);
+    }
 
     // Print the extracted data for basin
     console.log('basinData: ', basinData);

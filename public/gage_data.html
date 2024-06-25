@@ -65,6 +65,7 @@
                     // Get the value of a specific parameter
                     const param1Value = urlParams.get('basin'); // Output: "value1"
                     const param2Value = urlParams.get('cda'); // Output: "value2"
+                    const param3Value = urlParams.get('gage'); // Output: "value2"
 
                     urlParams.forEach(function(value, key) {
                     console.log(key, value);
@@ -72,10 +73,14 @@
                     </script>
 
                     <script>
-                    var basin = urlParams.get('basin');
-                    console.log('basin: ', basin);
-                    var cda = urlParams.get('cda');
-                    console.log('cda: ', cda);
+                        var basin = urlParams.get('basin');
+                        console.log('basin: ', basin);
+
+                        var cda = urlParams.get('cda');
+                        console.log('cda: ', cda);
+
+                        var gage = urlParams.get('gage');
+                        console.log('gage: ', gage);
                     </script>
 
                     <div id="container"></div>
