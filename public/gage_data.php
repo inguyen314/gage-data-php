@@ -124,7 +124,7 @@ $basin = $_GET['basin'] ?? null;
 
                     <div id="loading_gage_data" style="display: none;"><img src="../../images/loading4.gif" style='height: 50px; width: 50px;' alt="Loading..." /></div>
                     <div id="table_container_gage_data"></div>
-                    <script src="gage_data2.js"></script>
+                    <script src="gage_data.js"></script>
                     <!--////////////////////////////////////////////////////////////////////////////////////////////////////////////////////-->
                     <div class="page-content">
                         <sidebar id="sidebar">

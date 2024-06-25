@@ -4,10 +4,10 @@ document.addEventListener('DOMContentLoaded', function () {
     loadingIndicatorGageData.style.display = 'block';
 
     // Gage control json file
-    const jsonFile = 'gage_control3.json';
-    console.log('jsonFile: ', jsonFile);
+    const jsonFileURL = 'https://wm.mvs.ds.usace.army.mil/php-data-api/public/json/gage_control.json';
+    console.log('jsonFileURL: ', jsonFileURL);
     
-    fetch('json/' + jsonFile)
+    fetch(jsonFileURL)
         .then(response => {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
@@ -36,8 +36,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Process each item and call the second fetch
                 const basin = item.basin;
 
-                const metadataFetchUrl = `get_gage_control.php?basin=${basin}`;
-                console.log('metadataFetchUrl:' + "https://wm.mvs.ds.usace.army.mil/district_templates/gage_data/public/" + metadataFetchUrl);
+                const metadataFetchUrl = `https://wm.mvs.ds.usace.army.mil/php-data-api/public/get_gage_control_by_basin.php?basin=${basin}`;
+                console.log('metadataFetchUrl:', metadataFetchUrl);
 
                 // Return the fetch promise
                 return fetch(metadataFetchUrl)
@@ -170,18 +170,21 @@ function createTable(mergedData) {
 
             let locationKind = null;
 
-            if (locData.location_kind_id === "STREAM_LOCATION") {
-                locationKind = "<img src=images/Stream_Location_16.png title='" + locData.location_kind_id + "'>"
-            } else if (locData.location_kind_id === "PROJECT") {
-                locationKind = "<img src=images/Dam-16.png title='" + locData.location_kind_id + "'>"
+            if (locData.location_kind_id !== null && locData.location_kind_id === "STREAM_LOCATION") {
+                // locationKind = "<img src=images/Stream_Location_16.png>"
+                locationKind = "&bull;"
+            } else if (locData.location_kind_id !== null && locData.location_kind_id === "PROJECT") {
+                // locationKind = "<img src=images/Dam-16.png>"
+                locationKind = "&times;"
             } else {
+                locationKind = " "
             }
 
             if (locData.owner === "MVS") {
-                locationCell.innerHTML = "<div title='" + locData.location_kind_id + "' style='vertical-align: middle;'>" + locationKind + " " + locData.order + " " + locData.location_id + "</div>";
+                locationCell.innerHTML = "<div title='" + "locationkind: " + locData.location_kind_id + " owner: " + locData.owner + "' style='display: flex; vertical-align: middle;'>" + locationKind + " " + locData.order + " " + locData.location_id + "</div>";
                 locationCell.style.color = 'darkblue'; // Set text color to dark blue
             } else {
-                locationCell.innerHTML =  "<div title='" + locData.location_kind_id + "' style='vertical-align: middle;'>" + locationKind + " " + locData.order + " " + locData.location_id + "</div>";
+                locationCell.innerHTML =  "<div title='" + "locationkind: " + locData.location_kind_id + " owner: " + locData.owner + "' style='display: flex; vertical-align: middle;'>" + locationKind + " " + locData.order + " " + locData.location_id + "</div>";
                 // locationCell.innerHTML = locData.order + " " + locData.location_id;
             }
             
@@ -191,11 +194,13 @@ function createTable(mergedData) {
 
             // STAGE
             const stageCell = row.insertCell();
+            console.log("Calling fetchAndUpdateStage");
             fetchAndUpdateStage(locData.tsid_stage_rev, locData.tsid_stage_29, locData.display_stage_29, locData.tsid_stage_nws_3_day_forecast, flood_level, currentDateTimeMinusTwoHours, stageCell);
 
             
             // FLOW
             const flowCell = row.insertCell();
+            console.log("Calling fetchAndUpdateFlow");
             fetchAndUpdateFlow(locData.tsid_flow_coe, locData.tsid_flow_coe_label, currentDateTimeMinusTwoHours, flowCell);
             fetchAndUpdateFlow(locData.tsid_flow_usgs, locData.tsid_flow_usgs_label, currentDateTimeMinusTwoHours, flowCell);
             fetchAndUpdateFlow(locData.tsid_flow_nws, locData.tsid_flow_nws_label, currentDateTimeMinusTwoHours, flowCell);
@@ -298,7 +303,6 @@ function createTable(mergedData) {
             }
 
             floodCell.innerHTML = floodCellInnerHTML;
-
         } else {
 
         }  
@@ -311,131 +315,314 @@ function createTable(mergedData) {
     }
 }
 
-// Function to get water quality data
-function fetchAndUpdateWaterQuality(tsid, label, currentDateTimeMinusTwoHours, waterQualityCell) {
-    if (tsid !== null) {
-        const waterQualityDataToSend = {
-            cwms_ts_id: encodeURIComponent(tsid),
+// Function to get stage data
+function fetchAndUpdateStage(tsid_stage_rev, tsid_stage_29, display_stage_29, tsid_stage_nws_3_day_forecast, flood_level, currentDateTimeMinusTwoHours, stageCell) {
+    // PROJECT GAGE STAGES
+    if (display_stage_29 === true) {
+        // Create an object to hold all the properties you want to pass
+        const stage29ToSend = {
+            cwms_ts_id: encodeURIComponent(tsid_stage_29),
         };
-        const waterQualityQueryString = Object.keys(waterQualityDataToSend).map(key => key + '=' + waterQualityDataToSend[key]).join('&');
-        const urlWaterQuality = `get_temp_water.php?${waterQualityQueryString}`;
-        console.log("urlWaterQuality = ", urlWaterQuality);
+        console.log("stage29ToSend: " + stage29ToSend);
 
-        // WATER QUALITY CLASS
-        if (label.startsWith("TEMP AIR")) {
-            var myWaterQualityClass = "water_quality_temp_air";
-        } else if (label.startsWith("TEMP WATER")) {
-            var myWaterQualityClass = "water_quality_temp_water";
-        } else if (label.startsWith("DO")) {
-            var myWaterQualityClass = "water_quality_do";
-        } else if (label.startsWith("DEPTH")) {
-            var myWaterQualityClass = "water_quality_depth";
-        } else if (label.startsWith("COND")) {
-            var myWaterQualityClass = "water_quality_cond";
-        } else if (label.startsWith("PH")) {
-            var myWaterQualityClass = "water_quality_ph";
-        } else if (label.startsWith("TURB")) {
-            var myWaterQualityClass = "water_quality_turb";
-        } else if (label.startsWith("SPEED")) {
-            var myWaterQualityClass = "water_quality_speed_wind";
-        } else if (label.startsWith("PRESSURE")) {
-            var myWaterQualityClass = "water_quality_pressure";
-        } else if (label.startsWith("DIR")) {
-            var myWaterQualityClass = "water_quality_dir_wind";
-        } else {
-            var myWaterQualityClass = "flow";
-        }
-        console.log("myWaterQualityClass = ", myWaterQualityClass);
-        
-        fetch(urlWaterQuality)
+        // Convert the object into a query string
+        const stage29QueryString = Object.keys(stage29ToSend).map(key => key + '=' + stage29ToSend[key]).join('&');
+        console.log("stage29QueryString: " + stage29QueryString);
+
+        // Make an AJAX request to the PHP script, passing all the variables
+        const urlStage29 = `https://wm.mvs.ds.usace.army.mil/php-data-api/public/get_level.php?${stage29QueryString}`;
+        console.log("urlStage29: ", urlStage29);
+        fetch(urlStage29)
         .then(response => response.json())
-        .then(waterQuality => {
-            console.log("waterQuality = ", waterQuality)
+        .then(stage29 => {
+            // Log the stage to the console
+            console.log("stage29 = ", stage29);
+            // GET STAGE VALUE
+            const stage29_cwms_ts_id = stage29.cwms_ts_id;
+            console.log("stage29_cwms_ts_id = ", stage29_cwms_ts_id);
 
-            let waterQualityCellInnerHTML = ""; // Initialize variable
+            // Format returned data time string to date time object
+            var stage29_date_time_cst = stage29.date_time_cst;
+            var formattedDateTimeCST = formatStageDateTimeCST(stage29_date_time_cst);
 
-            if (waterQuality !== null) {
-                // Format returned data time string to date time object
-                var temp_water_date_time_cst = waterQuality.date_time_cst;
-                var formattedDateTimeCST = formatStageDateTimeCST(temp_water_date_time_cst);
+            const stage29_value = (parseFloat(stage29.value)).toFixed(2);
+            console.log("stage29_value = ", stage29_value);
 
-                // Format value
-                const water_quality_value = (parseFloat(waterQuality.value)).toFixed(2);
-                let formatted_water_quality_value;
+            const stage29_delta_24 = (parseFloat(stage29.delta_24)).toFixed(2);
+            console.log("stage29_delta_24 = ", stage29_delta_24);
 
-                if (water_quality_value > 900) {
-                    formatted_water_quality_value = "OL"; // Use "OL" if value is greater than 900
-                } else {
-                    formatted_water_quality_value = water_quality_value; // Convert to a fixed number of decimal places
-                }
+            // FLOOD CLASS
+            var floodClass = determineStageClass(stage29_value, flood_level);
+            console.log("floodClass:", floodClass);
 
-                console.log("water_quality_value = ", formatted_water_quality_value);
+            // DATATIME CLASS
+            var dateTimeClass = determineStageDateTimeClass(formattedDateTimeCST, currentDateTimeMinusTwoHours);
+            console.log("dateTimeClass:", dateTimeClass);
 
+            stage29CwmsIdCellInnerHTML  = "<span class='" + floodClass + "' title='" + stage29.cwms_ts_id + "'>"
+                                        + "<a href='../../chart/public/chart.html?cwms_ts_id=" + stage29_cwms_ts_id + "&lookback=96' target='_blank'>"
+                                        + stage29_value
+                                        + "</a>"
+                                        +"</span>" 
+                                        + " " 
+                                        + stage29.unit_id 
+                                        + " (" + stage29_delta_24 + ")"
+                                        + "<br>" 
+                                        + "<span class='" + dateTimeClass + "'>"
+                                        + stage29_date_time_cst
+                                        + "</span>";
+            
+            // Set the combined value to the cell, preserving HTML
+            console.log("stage29CwmsIdCellInnerHTML = ", stage29CwmsIdCellInnerHTML);
 
+            // Set the HTML inside the cell once the fetch is complete
+            stageCell.innerHTML = stage29CwmsIdCellInnerHTML;
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    
+    // NON-PROJECT GAGE STAGES WITH 3 DAYS NWS FORECAST
+    } else if (display_stage_29 === false && tsid_stage_nws_3_day_forecast !== null) {		
+        // Create an object to hold all the properties you want to pass
+        const stageToSend = {
+            cwms_ts_id: encodeURIComponent(tsid_stage_rev),
+        };
+        console.log("stageToSend: " + stageToSend);
 
-                // Format delta
-                let temp_water_delta_24;
+        // Convert the object into a query string
+        const stageQueryString = Object.keys(stageToSend).map(key => key + '=' + stageToSend[key]).join('&');
+        console.log("stageQueryString: " + stageQueryString);
+    
+        // Make an AJAX request to the PHP script, passing all the variables
+        const urlStage = `https://wm.mvs.ds.usace.army.mil/php-data-api/public/get_level.php?${stageQueryString}`;
+        console.log("urlStage: ", urlStage);
+        fetch(urlStage)
+        .then(response => response.json())
+        .then(stage => {
+            // Log the stage to the console
+            console.log(stage);
+        // GET STAGE VALUE
+            const stage_cwms_ts_id = stage.cwms_ts_id;
+            console.log("stage_cwms_ts_id = ", stage_cwms_ts_id);
 
-                if (waterQuality.delta_24 !== null) {
-                    // If delta_24 is not null, format it
-                    temp_water_delta_24 = (parseFloat(waterQuality.delta_24)).toFixed(0); // Convert delta_24 to a fixed number of decimal places
-                    console.log("temp_water_delta_24 = ", temp_water_delta_24); // Log the formatted delta_24 to the console
-                } else {
-                    // If delta_24 is null, set a placeholder value
-                    temp_water_delta_24 = "-M-"; // Placeholder value for null delta_24
-                }
+            // Format returned data time string to date time object
+            var stage_date_time_cst = stage.date_time_cst;
+            var formattedDateTimeCST = formatStageDateTimeCST(stage_date_time_cst);
 
+            const stage_value = (parseFloat(stage.value)).toFixed(2);
+            console.log("stage_value = ", stage_value);
+
+            const stage_delta_24 = (parseFloat(stage.delta_24)).toFixed(2);
+            console.log("stage_delta_24 = ", stage_delta_24);
+
+            // FLOOD CLASS
+            var floodClass = determineStageClass(stage_value, flood_level);
+            console.log("floodClass:", floodClass);
+
+            // DATATIME CLASS
+            var dateTimeClass = determineStageDateTimeClass(formattedDateTimeCST, currentDateTimeMinusTwoHours);
+            console.log("dateTimeClass:", dateTimeClass);
+
+            stageCellInnerHTML  = "<span class='" + floodClass + "' title='" + stage_cwms_ts_id + "   " + "Flood=" + flood_level + "'>"
+                                + "<a href='../../chart/public/chart.html?cwms_ts_id=" + stage_cwms_ts_id + "&lookback=96' target='_blank'>"
+                                + stage_value
+                                + "</a>"
+                                +"</span>" 
+                                + " " 
+                                + stage.unit_id
+                                + " (" + stage_delta_24 + ")"
+                                + "<br>" 
+                                + "<span class='" + dateTimeClass + "'>"
+                                + stage_date_time_cst
+                                + "</span>";
+            
+            // Set the combined value to the cell, preserving HTML
+            console.log("stageCellInnerHTML = ", stageCellInnerHTML);
+
+            // Set the HTML inside the cell once the fetch is complete
+            stageCell.innerHTML = stageCellInnerHTML;
+
+            // Create an object to hold all the properties you want to pass
+            const dataToSendNWSDay1 = {
+                cwms_ts_id: encodeURIComponent(tsid_stage_nws_3_day_forecast),
+                nws_day1_date: encodeURIComponent(nws_day1_date),
+                nws_day2_date: encodeURIComponent(nws_day2_date),
+                nws_day3_date: encodeURIComponent(nws_day3_date),
+            };
+            console.log("dataToSendNWSDay1: " + dataToSendNWSDay1);
+
+            // Convert the object into a query string
+            const queryStringNWS = Object.keys(dataToSendNWSDay1).map(key => key + '=' + dataToSendNWSDay1[key]).join('&');
+            console.log("queryStringNWS: " + queryStringNWS);
+
+            // Now, make another fetch to get additional data
+            const secondUrl = `https://wm.mvs.ds.usace.army.mil/php-data-api/public/get_nws_forecast.php?${queryStringNWS}`; // Replace with your actual URL
+            console.log("secondUrl: ", secondUrl);
+            return fetch(secondUrl);
+        })
+
+        .then(response => response.json())
+        .then(nwsData => {
+            // Process the data from the second fetch
+            console.log('nwsData:', nwsData);
+
+            let stageCellInnerHTML = "";
+
+            if (nwsData !== null) {
+                // Get nws values from nwsData
+                const nws1_value = (parseFloat(nwsData.value_day1)).toFixed(2);
+                console.log("nws1_value = " , nws1_value);
+                const nws2_value = (parseFloat(nwsData.value_day2)).toFixed(2);
+                console.log("nws2_value = " , nws2_value);
+                const nws3_value = (parseFloat(nwsData.value_day3)).toFixed(2);
+                console.log("nws3_value = " , nws3_value);
+
+                // FLOOD CLASS
+                var floodClassNWSDay1 = determineStageClass(nws1_value, flood_level);
+                console.log("floodClassNWSDay1:", floodClassNWSDay1);
+
+                var floodClassNWSDay2 = determineStageClass(nws2_value, flood_level);
+                console.log("floodClassNWSDay2:", floodClassNWSDay2);
+
+                var floodClassNWSDay3 = determineStageClass(nws3_value, flood_level);
+                console.log("floodClassNWSDay3:", floodClassNWSDay3);
+
+                stageCellInnerHTML  = "<table id='nws'>"
+                                    + "<tr>"
+                                    + "<td colspan='3' class='day_nws_forecast'>"
+                                    + "3 Day NWS Forecast"
+                                    + "</td>"
+                                    + "</tr>"
+                                    + "<tr>"
+                                    + "<td class='" + floodClassNWSDay1 + "'>" 
+                                    + "<a href='../../chart/public/chart.html?cwms_ts_id=" + tsid_stage_nws_3_day_forecast + "&lookback=96' title='" + tsid_stage_nws_3_day_forecast + " " + nwsData.date_time_day1 + "' target='_blank'>"
+                                    + nws1_value
+                                    + "</a>"
+                                    + "</td>"
+                                    + "<td class='" + floodClassNWSDay2 + "'>" 
+                                    + "<a href='../../chart/public/chart.html?cwms_ts_id=" + tsid_stage_nws_3_day_forecast + "&lookback=96' title='" + tsid_stage_nws_3_day_forecast + " " + nwsData.date_time_day2 + "' target='_blank'>"
+                                    + nws2_value
+                                    + "</a>"
+                                    + "</td>"
+                                    + "<td class='" + floodClassNWSDay3 + "'>" 
+                                    + "<a href='../../chart/public/chart.html?cwms_ts_id=" + tsid_stage_nws_3_day_forecast + "&lookback=96' title='" + tsid_stage_nws_3_day_forecast + " " + nwsData.date_time_day3 + "' target='_blank'>"
+                                    + nws3_value
+                                    + "</a>"
+                                    + "</td>"
+                                    + "</tr>"
+                                    + "<tr>"
+                                    + "<td colspan='3' class='day_nws_ded' title='Data Entry Date'>" + "Forecast Date: " + nwsData.data_entry_date_day1 + "</td>";
+                                    + "</tr>"
+                                    +"<table>";
+
+                console.log('stageCellInnerHTML Day1:', stageCellInnerHTML);
                 
+                // Update the HTML inside the cell with the combined data
+                stageCell.innerHTML += stageCellInnerHTML;
+            } else {
+                // Handle case when data is null
+                stageCellInnerHTML  = "<span class='temp_water'>"
+                                    + "NWS 3 Days Forecast"
+                                    + "</span>"
+                                    + "<span class='missing' title='" + tsid_stage_nws_3_day_forecast + "'>"
+                                    + "-M-"
+                                    + "</span>";
+
+                // Set the combined value to the cell, preserving HTML
+                console.log("stageCellInnerHTML = ", stageCellInnerHTML);
+
+                // Update the HTML inside the cell with the combined data
+                stageCell.innerHTML += stageCellInnerHTML;
+            }      
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    // NON-PROJECT GAGES
+    } else {
+        if (tsid_stage_rev !== null) {
+            // Create an object to hold all the properties you want to pass
+            const stageToSend = {
+                cwms_ts_id: encodeURIComponent(tsid_stage_rev),
+            };
+            console.log("stageToSend: " + stageToSend);
+
+            // Convert the object into a query string
+            const stageQueryString = Object.keys(stageToSend).map(key => key + '=' + stageToSend[key]).join('&');
+            console.log("stageQueryString: " + stageQueryString);
+
+            // Make an AJAX request to the PHP script, passing all the variables
+            const urlStage = `https://wm.mvs.ds.usace.army.mil/php-data-api/public/get_level.php?${stageQueryString}`;
+            console.log("urlStage: ", urlStage);
+            fetch(urlStage, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => {
+                // Check if the response is ok
+                if (!response.ok) {
+                    // If not, throw an error
+                    throw new Error('Network response was not ok');
+                }
+                // If response is ok, parse it as JSON
+                return response.json();
+            })
+            .then(stage => {
+                // Log the stage to the console
+                console.log("stage: ", stage);
+                // GET STAGE VALUE
+                // Format returned data time string to date time object
+                var stage_date_time_cst = stage.date_time_cst;
+                var formattedDateTimeCST = formatStageDateTimeCST(stage_date_time_cst);
+
+                const stage_value = (parseFloat(stage.value)).toFixed(2);
+                console.log("stage_value = ", stage_value);
+
+                const stage_delta_24 = (parseFloat(stage.delta_24)).toFixed(2);
+                console.log("stage_delta_24 = ", stage_delta_24);
+
+                // FLOOD CLASS
+                var floodClass = determineStageClass(stage_value, flood_level);
+                console.log("floodClass:", floodClass);
 
                 // DATATIME CLASS
                 var dateTimeClass = determineStageDateTimeClass(formattedDateTimeCST, currentDateTimeMinusTwoHours);
                 console.log("dateTimeClass:", dateTimeClass);
 
-                // Update HTML
-                //let waterQualityCellInnerHTML = ""; // Initialize variable
-                // Construct HTML content based on received data
-                // waterQualityCellInnerHTML += ...
-                waterQualityCellInnerHTML = "<span class='last_max_value' title='" + waterQuality.cwms_ts_id + " " + water_quality_value + "'>"
-                                                            + "<a href='../../../web_apps/plot_macro/public/plot_macro.php?cwms_ts_id=" + waterQuality.cwms_ts_id + "&start_day=4&end_day=0' target='_blank'>"
-                                                            + formatted_water_quality_value
-                                                            + "</a>"
-                                                            + "</span>"
-                                                            + " "
-                                                            + waterQuality.unit_id
-                                                            + " (" + temp_water_delta_24 + ")"
-                                                            + "<span class='" + dateTimeClass + "'>"
-                                                            + temp_water_date_time_cst
-                                                            + "</span>"
-                                                            + "<span class='" + myWaterQualityClass + "'>"
-                                                            + label
-                                                            + "</span>";
+                stageCellInnerHTML  = "<span class='" + floodClass + "' title='" + stage.cwms_ts_id + "'>"
+                                    + "<a href='https://wm.mvs.ds.usace.army.mil/district_templates/chart/public/chart.html?cwms_ts_id=" + stage.cwms_ts_id + "&lookback=96' target='_blank'>"
+                                    + stage_value 
+                                    + "</a>"
+                                    +"</span>" 
+                                    + " " 
+                                    + stage.unit_id 
+                                    + " (" + stage_delta_24 + ")"
+                                    + "<br>" 
+                                    + "<span class='" + dateTimeClass + "'>"
+                                    + stage_date_time_cst
+                                    + "</span>";
                 
-                console.log("waterQualityCellInnerHTML = ", waterQualityCellInnerHTML);
-
-                // Update the HTML inside the cell with the combined data
-                waterQualityCell.innerHTML += waterQualityCellInnerHTML;	
-            } else {
-                //let waterQualityCellInnerHTML = ""; // Initialize variable
-                // Handle case when data is null
-                waterQualityCellInnerHTML = "<span class='missing' title='" + tsid + "'>"
-                                            + "<a href='../../../web_apps/plot_macro/public/plot_macro.php?cwms_ts_id=" + tsid + "&start_day=4&end_day=0' target='_blank'>"
-                                            + "-M-"
-                                            + "</a>"
-                                            + "</span>"
-                                            + "<span class='" + myWaterQualityClass + "'>"
-                                            + label
-                                            + "</span>";
-
                 // Set the combined value to the cell, preserving HTML
-                console.log("waterQualityCellInnerHTML = ", waterQualityCellInnerHTML);
+                console.log("stageCellInnerHTML = ", stageCellInnerHTML);
 
-                // Update the HTML inside the cell with the combined data
-                waterQualityCell.innerHTML += waterQualityCellInnerHTML;
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
+                // Set the HTML inside the cell once the fetch is complete
+                stageCell.innerHTML = stageCellInnerHTML; 
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        } else {
+            stageCellInnerHTML = "<span>" + "Precip Gage" + "</span>";
+                
+            // Set the combined value to the cell, preserving HTML
+            console.log("stageCellInnerHTML = ", stageCellInnerHTML);
+
+            // Set the HTML inside the cell once the fetch is complete
+            stageCell.innerHTML = stageCellInnerHTML;
+        }
     }
 }
 
@@ -446,7 +633,8 @@ function fetchAndUpdateFlow(tsid, label, currentDateTimeMinusTwoHours, flowCell)
             cwms_ts_id: encodeURIComponent(tsid),
         };
         const flowQueryString = Object.keys(flowDataToSend).map(key => key + '=' + flowDataToSend[key]).join('&');
-        const urlFlow = `get_temp_water.php?${flowQueryString}`;
+        const urlFlow = `https://wm.mvs.ds.usace.army.mil/php-data-api/public/get_level.php?${flowQueryString}`;
+        console.log("urlFlow = ", urlFlow);
 
         // FLOW CLASS
         if (label === "COE") {
@@ -469,7 +657,6 @@ function fetchAndUpdateFlow(tsid, label, currentDateTimeMinusTwoHours, flowCell)
         fetch(urlFlow)
         .then(response => response.json())
         .then(flow => {
-
             let flowCellInnerHTML = ""; // Initialize variable
 
             if (flow !== null) {
@@ -492,8 +679,6 @@ function fetchAndUpdateFlow(tsid, label, currentDateTimeMinusTwoHours, flowCell)
                 }
 
                 console.log("rounded_flow_value = ", rounded_flow_value); // Log the rounded and formatted value to the console
-
-                
 
                 // Format delta
                 let rounded_flow_delta_24; // Declare variable for rounded delta
@@ -518,27 +703,26 @@ function fetchAndUpdateFlow(tsid, label, currentDateTimeMinusTwoHours, flowCell)
                     rounded_flow_delta_24 = "-M-"; // Placeholder value for null delta_24
                 }
 
-
                 // DATATIME CLASS
                 var dateTimeClass = determineStageDateTimeClass(formattedDateTimeCST, currentDateTimeMinusTwoHours);
                 console.log("dateTimeClass:", dateTimeClass);
                 
                 // Update HTML
                 let flowCellInnerHTML = "";
-                flowCellInnerHTML = "<span class='last_max_value' title='" + flow.cwms_ts_id + "'>"
-                                                            + "<a href='../../../web_apps/plot_macro/public/plot_macro.php?cwms_ts_id=" + flow.cwms_ts_id + "&start_day=4&end_day=0' target='_blank'>"
-                                                            + rounded_flow_value
-                                                            + "</a>"
-                                                            + "</span>"
-                                                            + " "
-                                                            + flow.unit_id
-                                                            + " (" + rounded_flow_delta_24 + ")"
-                                                            + "<span class='" + dateTimeClass + "'>"
-                                                            + flow_date_time_cst
-                                                            + "</span>"
-                                                            + "<span class='" + myFlowLabelClass + "'>"
-                                                            + label
-                                                            + "</span>";
+                flowCellInnerHTML   = "<span class='last_max_value' title='" + flow.cwms_ts_id + "'>"
+                                    + "<a href='../../chart/public/chart.html?cwms_ts_id=" + flow.cwms_ts_id + "&lookback=96' target='_blank'>"
+                                    + rounded_flow_value
+                                    + "</a>"
+                                    + "</span>"
+                                    + " "
+                                    + flow.unit_id
+                                    + " (" + rounded_flow_delta_24 + ")"
+                                    + "<span class='" + dateTimeClass + "'>"
+                                    + flow_date_time_cst
+                                    + "</span>"
+                                    + "<span class='" + myFlowLabelClass + "'>"
+                                    + label
+                                    + "</span>";
                 
                 console.log("flowCellInnerHTML = ", flowCellInnerHTML);
 
@@ -546,12 +730,12 @@ function fetchAndUpdateFlow(tsid, label, currentDateTimeMinusTwoHours, flowCell)
                 flowCell.innerHTML += flowCellInnerHTML;	
             } else {
                 // Handle case when data is null
-                flowCellInnerHTML = "<span class='missing'>"
-                                            + "-M-"
-                                            + "</span>"
-                                            + "<span class='temp_water'>"
-                                            + label
-                                            + "</span>";
+                flowCellInnerHTML   = "<span class='missing'>"
+                                    + "-M-"
+                                    + "</span>"
+                                    + "<span class='temp_water'>"
+                                    + label
+                                    + "</span>";
 
                 // Set the combined value to the cell, preserving HTML
                 console.log("flowCellInnerHTML = ", flowCellInnerHTML);
@@ -566,304 +750,6 @@ function fetchAndUpdateFlow(tsid, label, currentDateTimeMinusTwoHours, flowCell)
     }
 }
 
-// Function to get stage data
-function fetchAndUpdateStage(tsid_stage_rev, tsid_stage_29, display_stage_29, tsid_stage_nws_3_day_forecast, flood_level, currentDateTimeMinusTwoHours, stageCell) {
-            // PROJECT GAGE STAGES
-            if (display_stage_29 === true) {
-                // Create an object to hold all the properties you want to pass
-                const stage29ToSend = {
-                    cwms_ts_id: encodeURIComponent(tsid_stage_29),
-                };
-                console.log("stage29ToSend: " + stage29ToSend);
-
-                // Convert the object into a query string
-                const stage29QueryString = Object.keys(stage29ToSend).map(key => key + '=' + stage29ToSend[key]).join('&');
-                console.log("stage29QueryString: " + stage29QueryString);
-
-                // Make an AJAX request to the PHP script, passing all the variables
-                const urlStage29 = `get_stage29.php?${stage29QueryString}`;
-                console.log("urlStage29: " + "https://wm.mvs.ds.usace.army.mil/district_templates/gage_data/public/" + urlStage29);
-                fetch(urlStage29)
-                .then(response => response.json())
-                .then(stage29 => {
-                    // Log the stage to the console
-                    console.log("stage29 = ", stage29);
-                    // GET STAGE VALUE
-                    const stage29_cwms_ts_id = stage29.cwms_ts_id;
-                    console.log("stage29_cwms_ts_id = ", stage29_cwms_ts_id);
-
-                    // Format returned data time string to date time object
-                    var stage29_date_time_cst = stage29.date_time_cst;
-                    var formattedDateTimeCST = formatStageDateTimeCST(stage29_date_time_cst);
-
-                    const stage29_value = (parseFloat(stage29.value)).toFixed(2);
-                    console.log("stage29_value = ", stage29_value);
-
-                    const stage29_delta_24 = (parseFloat(stage29.delta_24)).toFixed(2);
-                    console.log("stage29_delta_24 = ", stage29_delta_24);
-
-                    // FLOOD CLASS
-                    var floodClass = determineStageClass(stage29_value, flood_level);
-                    console.log("floodClass:", floodClass);
-
-                    // DATATIME CLASS
-                    var dateTimeClass = determineStageDateTimeClass(formattedDateTimeCST, currentDateTimeMinusTwoHours);
-                    console.log("dateTimeClass:", dateTimeClass);
-
-                    stage29CwmsIdCellInnerHTML  = "<span class='" + floodClass + "' title='" + stage29.cwms_ts_id + "'>"
-                                                + "<a href='../../../web_apps/plot_macro/public/plot_macro.php?cwms_ts_id=" + stage29_cwms_ts_id + "&start_day=4&end_day=0' target='_blank'>"
-                                                + stage29_value
-                                                + "</a>"
-                                                +"</span>" 
-                                                + " " 
-                                                + stage29.unit_id 
-                                                + " (" + stage29_delta_24 + ")"
-                                                + "<br>" 
-                                                + "<span class='" + dateTimeClass + "'>"
-                                                + stage29_date_time_cst
-                                                + "</span>";
-                    
-                    // Set the combined value to the cell, preserving HTML
-                    console.log("stage29CwmsIdCellInnerHTML = ", stage29CwmsIdCellInnerHTML);
-
-                    // Set the HTML inside the cell once the fetch is complete
-                    stageCell.innerHTML = stage29CwmsIdCellInnerHTML;
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-            
-            // NON-PROJECT GAGE STAGES WITH 3 DAYS NWS FORECAST
-            } else if (display_stage_29 === false && tsid_stage_nws_3_day_forecast !== null) {		
-                // Create an object to hold all the properties you want to pass
-                const stageToSend = {
-                    cwms_ts_id: encodeURIComponent(tsid_stage_rev),
-                };
-                console.log("stageToSend: " + stageToSend);
-
-                // Convert the object into a query string
-                const stageQueryString = Object.keys(stageToSend).map(key => key + '=' + stageToSend[key]).join('&');
-                console.log("stageQueryString: " + stageQueryString);
-            
-                // Make an AJAX request to the PHP script, passing all the variables
-                const urlStage = `get_stage.php?${stageQueryString}`;
-                console.log("urlStage: " + "https://wm.mvs.ds.usace.army.mil/district_templates/gage_data/public/" + urlStage);
-                fetch(urlStage)
-                .then(response => response.json())
-                .then(stage => {
-                    // Log the stage to the console
-                    console.log(stage);
-                // GET STAGE VALUE
-                    const stage_cwms_ts_id = stage.cwms_ts_id;
-                    console.log("stage_cwms_ts_id = ", stage_cwms_ts_id);
-
-                    // Format returned data time string to date time object
-                    var stage_date_time_cst = stage.date_time_cst;
-                    var formattedDateTimeCST = formatStageDateTimeCST(stage_date_time_cst);
-
-                    const stage_value = (parseFloat(stage.value)).toFixed(2);
-                    console.log("stage_value = ", stage_value);
-
-                    const stage_delta_24 = (parseFloat(stage.delta_24)).toFixed(2);
-                    console.log("stage_delta_24 = ", stage_delta_24);
-
-                    // FLOOD CLASS
-                    var floodClass = determineStageClass(stage_value, flood_level);
-                    console.log("floodClass:", floodClass);
-
-                    // DATATIME CLASS
-                    var dateTimeClass = determineStageDateTimeClass(formattedDateTimeCST, currentDateTimeMinusTwoHours);
-                    console.log("dateTimeClass:", dateTimeClass);
-
-                    stageCellInnerHTML  = "<span class='" + floodClass + "' title='" + stage_cwms_ts_id + "   " + "Flood=" + flood_level + "'>"
-                                        + "<a href='../../../web_apps/plot_macro/public/plot_macro.php?cwms_ts_id=" + stage_cwms_ts_id + "&start_day=4&end_day=0' target='_blank'>"
-                                        + stage_value
-                                        + "</a>"
-                                        +"</span>" 
-                                        + " " 
-                                        + stage.unit_id
-                                        + " (" + stage_delta_24 + ")"
-                                        + "<br>" 
-                                        + "<span class='" + dateTimeClass + "'>"
-                                        + stage_date_time_cst
-                                        + "</span>";
-                    
-                    // Set the combined value to the cell, preserving HTML
-                    console.log("stageCellInnerHTML = ", stageCellInnerHTML);
-
-                    // Set the HTML inside the cell once the fetch is complete
-                    stageCell.innerHTML = stageCellInnerHTML;
-
-                    // Create an object to hold all the properties you want to pass
-                    const dataToSendNWSDay1 = {
-                        cwms_ts_id: encodeURIComponent(tsid_stage_nws_3_day_forecast),
-                        nws_day1_date: encodeURIComponent(nws_day1_date),
-                        nws_day2_date: encodeURIComponent(nws_day2_date),
-                        nws_day3_date: encodeURIComponent(nws_day3_date),
-                    };
-                    console.log("dataToSendNWSDay1: " + dataToSendNWSDay1);
-
-                    // Convert the object into a query string
-                    const queryStringNWS = Object.keys(dataToSendNWSDay1).map(key => key + '=' + dataToSendNWSDay1[key]).join('&');
-                    console.log("queryStringNWS: " + queryStringNWS);
-
-                    // Now, make another fetch to get additional data
-                    const secondUrl = `get_nws_forecast.php?${queryStringNWS}`; // Replace with your actual URL
-                    console.log("secondUrl: " + "https://wm.mvs.ds.usace.army.mil/district_templates/gage_data/public/" + secondUrl);
-                    return fetch(secondUrl);
-                })
-
-                .then(response => response.json())
-                .then(nwsData => {
-                    // Process the data from the second fetch
-                    console.log('nwsData:', nwsData);
-
-                    let stageCellInnerHTML = "";
-
-                    if (nwsData !== null) {
-                        // Get nws values from nwsData
-                        const nws1_value = (parseFloat(nwsData.value_day1)).toFixed(2);
-                        console.log("nws1_value = " , nws1_value);
-                        const nws2_value = (parseFloat(nwsData.value_day2)).toFixed(2);
-                        console.log("nws2_value = " , nws2_value);
-                        const nws3_value = (parseFloat(nwsData.value_day3)).toFixed(2);
-                        console.log("nws3_value = " , nws3_value);
-
-                        // FLOOD CLASS
-                        var floodClassNWSDay1 = determineStageClass(nws1_value, flood_level);
-                        console.log("floodClassNWSDay1:", floodClassNWSDay1);
-
-                        var floodClassNWSDay2 = determineStageClass(nws2_value, flood_level);
-                        console.log("floodClassNWSDay2:", floodClassNWSDay2);
-
-                        var floodClassNWSDay3 = determineStageClass(nws3_value, flood_level);
-                        console.log("floodClassNWSDay3:", floodClassNWSDay3);
-
-                        stageCellInnerHTML  = "<table id='nws'>"
-                                            + "<tr>"
-                                            + "<td colspan='3' class='day_nws_forecast'>"
-                                            + "3 Day NWS Forecast"
-                                            + "</td>"
-                                            + "</tr>"
-                                            + "<tr>"
-                                            + "<td class='" + floodClassNWSDay1 + "'>" 
-                                            + "<a href='../../../web_apps/plot_macro/public/plot_macro.php?cwms_ts_id=" + tsid_stage_nws_3_day_forecast + "&start_day=0&end_day=4' title='" + tsid_stage_nws_3_day_forecast + " " + nwsData.date_time_day1 + "' target='_blank'>"
-                                            + nws1_value
-                                            + "</a>"
-                                            + "</td>"
-                                            + "<td class='" + floodClassNWSDay2 + "'>" 
-                                            + "<a href='../../../web_apps/plot_macro/public/plot_macro.php?cwms_ts_id=" + tsid_stage_nws_3_day_forecast + "&start_day=0&end_day=4' title='" + tsid_stage_nws_3_day_forecast + " " + nwsData.date_time_day2 + "' target='_blank'>"
-                                            + nws2_value
-                                            + "</a>"
-                                            + "</td>"
-                                            + "<td class='" + floodClassNWSDay3 + "'>" 
-                                            + "<a href='../../../web_apps/plot_macro/public/plot_macro.php?cwms_ts_id=" + tsid_stage_nws_3_day_forecast + "&start_day=0&end_day=4' title='" + tsid_stage_nws_3_day_forecast + " " + nwsData.date_time_day3 + "' target='_blank'>"
-                                            + nws3_value
-                                            + "</a>"
-                                            + "</td>"
-                                            + "</tr>"
-                                            + "<tr>"
-                                            + "<td colspan='3' class='day_nws_ded' title='Data Entry Date'>" + "Forecast Date: " + nwsData.data_entry_date_day1 + "</td>";
-                                            + "</tr>"
-                                            +"<table>";
-
-                        console.log('stageCellInnerHTML Day1:', stageCellInnerHTML);
-                        
-                        // Update the HTML inside the cell with the combined data
-                        stageCell.innerHTML += stageCellInnerHTML;
-                    } else {
-                        // Handle case when data is null
-                        stageCellInnerHTML  = "<span class='temp_water'>"
-                                            + "NWS 3 Days Forecast"
-                                            + "</span>"
-                                            + "<span class='missing' title='" + tsid_stage_nws_3_day_forecast + "'>"
-                                            + "-M-"
-                                            + "</span>";
-
-                        // Set the combined value to the cell, preserving HTML
-                        console.log("stageCellInnerHTML = ", stageCellInnerHTML);
-
-                        // Update the HTML inside the cell with the combined data
-                        stageCell.innerHTML += stageCellInnerHTML;
-                    }      
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-            // NON-PROJECT GAGES
-            } else {
-                if (tsid_stage_rev !== null) {
-                    // Create an object to hold all the properties you want to pass
-                    const stageToSend = {
-                        cwms_ts_id: encodeURIComponent(tsid_stage_rev),
-                    };
-                    console.log("stageToSend: " + stageToSend);
-
-                    // Convert the object into a query string
-                    const stageQueryString = Object.keys(stageToSend).map(key => key + '=' + stageToSend[key]).join('&');
-                    console.log("stageQueryString: " + stageQueryString);
-
-                    // Make an AJAX request to the PHP script, passing all the variables
-                    const urlStage = `get_stage.php?${stageQueryString}`;
-                    console.log("urlStage: " + "https://wm.mvs.ds.usace.army.mil/district_templates/gage_data/public/" + urlStage);
-                    fetch(urlStage)
-                    .then(response => response.json())
-                    .then(stage => {
-                        // Log the stage to the console
-                        console.log("stage: ", stage);
-                    // GET STAGE VALUE
-                        // Format returned data time string to date time object
-                        var stage_date_time_cst = stage.date_time_cst;
-                        var formattedDateTimeCST = formatStageDateTimeCST(stage_date_time_cst);
-
-                        const stage_value = (parseFloat(stage.value)).toFixed(2);
-                        console.log("stage_value = ", stage_value);
-
-                        const stage_delta_24 = (parseFloat(stage.delta_24)).toFixed(2);
-                        console.log("stage_delta_24 = ", stage_delta_24);
-
-                        // FLOOD CLASS
-                        var floodClass = determineStageClass(stage_value, flood_level);
-                        console.log("floodClass:", floodClass);
-
-                        // DATATIME CLASS
-                        var dateTimeClass = determineStageDateTimeClass(formattedDateTimeCST, currentDateTimeMinusTwoHours);
-                        console.log("dateTimeClass:", dateTimeClass);
-
-                        stageCellInnerHTML  = "<span class='" + floodClass + "' title='" + stage.cwms_ts_id + "'>"
-                                            + "<a href='https://wm.mvs.ds.usace.army.mil/web_apps/plot_macro/public/plot_macro.php?cwms_ts_id=" + stage.cwms_ts_id + "&start_day=4&end_day=0' target='_blank'>"
-                                            + stage_value 
-                                            + "</a>"
-                                            +"</span>" 
-                                            + " " 
-                                            + stage.unit_id 
-                                            + " (" + stage_delta_24 + ")"
-                                            + "<br>" 
-                                            + "<span class='" + dateTimeClass + "'>"
-                                            + stage_date_time_cst
-                                            + "</span>";
-                        
-                        // Set the combined value to the cell, preserving HTML
-                        console.log("stageCellInnerHTML = ", stageCellInnerHTML);
-
-                        // Set the HTML inside the cell once the fetch is complete
-                        stageCell.innerHTML = stageCellInnerHTML; 
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                    });
-                } else {
-                    stageCellInnerHTML = "<span>" + "Precip Gage" + "</span>";
-                        
-                    // Set the combined value to the cell, preserving HTML
-                    console.log("stageCellInnerHTML = ", stageCellInnerHTML);
-
-                    // Set the HTML inside the cell once the fetch is complete
-                    stageCell.innerHTML = stageCellInnerHTML;
-                }
-            }
-}
-
 // Function to get precip data
 function fetchAndUpdatePrecip(tsid_precip_raw, currentDateTimeMinusTwoHours, precipCell) {
     let precipCwmsIdCellInnerHTML = null;
@@ -871,7 +757,7 @@ function fetchAndUpdatePrecip(tsid_precip_raw, currentDateTimeMinusTwoHours, pre
         // GET PRECIP VALUE
         // Create an object to hold all the properties you want to pass
         const precipDataToSend = {
-                cwms_ts_id: encodeURIComponent(tsid_precip_raw),
+            cwms_ts_id: encodeURIComponent(tsid_precip_raw),
         };
         console.log("precipDataToSend: " + precipDataToSend);
 
@@ -880,8 +766,8 @@ function fetchAndUpdatePrecip(tsid_precip_raw, currentDateTimeMinusTwoHours, pre
         console.log("precipQueryString: ", precipQueryString);
 
         // Make an AJAX request to the PHP script, passing all the variables
-        const urlPrecip = `get_precip.php?${precipQueryString}`;
-        console.log("urlPrecip: " + "https://wm.mvs.ds.usace.army.mil/district_templates/gage_data/public/" + urlPrecip);
+        const urlPrecip = `https://wm.mvs.ds.usace.army.mil/php-data-api/public/get_level.php?${precipQueryString}`;
+        console.log("urlPrecip: ", urlPrecip);
         
         fetch(urlPrecip)
         .then(response => response.json())
@@ -994,26 +880,26 @@ function fetchAndUpdatePrecip(tsid_precip_raw, currentDateTimeMinusTwoHours, pre
                 var dateTimeClass = determineStageDateTimeClass(formattedDateTimeCST, currentDateTimeMinusTwoHours);
                 console.log("dateTimeClass:", dateTimeClass);
 
-                precipCwmsIdCellInnerHTML = "<table id='precip'>"
-                                                + "<tr>"
-                                                    + "<td class='" + myClass6 + "' title='6 hr delta'>"
-                                                        + precip_delta_6
-                                                    + "</td>"
-                                                    + "<td class='" + myClass24 + "' title='24 hr delta'>"
-                                                        + precip_delta_24
-                                                    + "</td>"
-                                                + "</tr>"
+                precipCwmsIdCellInnerHTML   = "<table id='precip'>"
+                                            + "<tr>"
+                                            + "<td class='" + myClass6 + "' title='6 hr delta'>"
+                                            + precip_delta_6
+                                            + "</td>"
+                                            + "<td class='" + myClass24 + "' title='24 hr delta'>"
+                                            + precip_delta_24
+                                            + "</td>"
+                                            + "</tr>"
                                             +"</table>"
                                             + "<span class='last_max_value'>"
-                                            + "<a href='../../../web_apps/plot_macro/public/plot_macro.php?cwms_ts_id=" + precip_cwms_ts_id + "&start_day=4&end_day=0' title='" + precip_cwms_ts_id + "' target='_blank'>"
-                                                    + precip_value
-                                                + "</a>"
+                                            + "<a href='../../chart/public/chart.html?cwms_ts_id=" + precip_cwms_ts_id + "&lookback=96' title='" + precip_cwms_ts_id + "' target='_blank'>"
+                                            + precip_value
+                                            + "</a>"
                                             + "</span>"
-                                                + " "
-                                                + precip.unit_id
-                                                + "<span class='" + dateTimeClass + "'>"
-                                                + precip_date_time_cst
-                                                + "</span>";
+                                            + " "
+                                            + precip.unit_id
+                                            + "<span class='" + dateTimeClass + "'>"
+                                            + precip_date_time_cst
+                                            + "</span>";
 
                 // Set the combined value to the cell, preserving HTML
                 console.log("precipCwmsIdCellInnerHTML = ", precipCwmsIdCellInnerHTML);
@@ -1021,15 +907,15 @@ function fetchAndUpdatePrecip(tsid_precip_raw, currentDateTimeMinusTwoHours, pre
                 precipCell.innerHTML = precipCwmsIdCellInnerHTML;
             } else {
                 // NO PRECIP
-                precipCwmsIdCellInnerHTML = "<table id='precip'>"
-                                                + "<tr>"
-                                                    + "<td class='precip_missing' title='6 hr delta'>"
-                                                        + "-M-"
-                                                    + "</td>"
-                                                    + "<td class='precip_missing' title='24 hr delta'>"
-                                                        + "-M-"
-                                                    + "</td>"
-                                                + "</tr>"
+                precipCwmsIdCellInnerHTML   = "<table id='precip'>"
+                                            + "<tr>"
+                                            + "<td class='precip_missing' title='6 hr delta'>"
+                                            + "-M-"
+                                            + "</td>"
+                                            + "<td class='precip_missing' title='24 hr delta'>"
+                                            + "-M-"
+                                            + "</td>"
+                                            + "</tr>"
                                             +"</table>";
 
                 // Set the combined value to the cell, preserving HTML
@@ -1044,6 +930,126 @@ function fetchAndUpdatePrecip(tsid_precip_raw, currentDateTimeMinusTwoHours, pre
         });
     } else {
         precipCell.innerHTML = precipCwmsIdCellInnerHTML;	
+    }
+}
+
+// Function to get water quality data
+function fetchAndUpdateWaterQuality(tsid, label, currentDateTimeMinusTwoHours, waterQualityCell) {
+    if (tsid !== null) {
+        const waterQualityDataToSend = {
+            cwms_ts_id: encodeURIComponent(tsid),
+        };
+        const waterQualityQueryString = Object.keys(waterQualityDataToSend).map(key => key + '=' + waterQualityDataToSend[key]).join('&');
+        const urlWaterQuality = `https://wm.mvs.ds.usace.army.mil/php-data-api/public/get_level.php?${waterQualityQueryString}`;
+        console.log("urlWaterQuality = ", urlWaterQuality);
+
+        // WATER QUALITY CLASS
+        if (label.startsWith("TEMP AIR")) {
+            var myWaterQualityClass = "water_quality_temp_air";
+        } else if (label.startsWith("TEMP WATER")) {
+            var myWaterQualityClass = "water_quality_temp_water";
+        } else if (label.startsWith("DO")) {
+            var myWaterQualityClass = "water_quality_do";
+        } else if (label.startsWith("DEPTH")) {
+            var myWaterQualityClass = "water_quality_depth";
+        } else if (label.startsWith("COND")) {
+            var myWaterQualityClass = "water_quality_cond";
+        } else if (label.startsWith("PH")) {
+            var myWaterQualityClass = "water_quality_ph";
+        } else if (label.startsWith("TURB")) {
+            var myWaterQualityClass = "water_quality_turb";
+        } else if (label.startsWith("SPEED")) {
+            var myWaterQualityClass = "water_quality_speed_wind";
+        } else if (label.startsWith("PRESSURE")) {
+            var myWaterQualityClass = "water_quality_pressure";
+        } else if (label.startsWith("DIR")) {
+            var myWaterQualityClass = "water_quality_dir_wind";
+        } else {
+            var myWaterQualityClass = "flow";
+        }
+        console.log("myWaterQualityClass = ", myWaterQualityClass);
+        
+        fetch(urlWaterQuality)
+        .then(response => response.json())
+        .then(waterQuality => {
+            console.log("waterQuality = ", waterQuality)
+
+            let waterQualityCellInnerHTML = ""; // Initialize variable
+
+            if (waterQuality !== null) {
+                // Format returned data time string to date time object
+                var temp_water_date_time_cst = waterQuality.date_time_cst;
+                var formattedDateTimeCST = formatStageDateTimeCST(temp_water_date_time_cst);
+
+                // Format value
+                const water_quality_value = (parseFloat(waterQuality.value)).toFixed(2);
+                let formatted_water_quality_value;
+
+                if (water_quality_value > 900) {
+                    formatted_water_quality_value = "OL"; // Use "OL" if value is greater than 900
+                } else {
+                    formatted_water_quality_value = water_quality_value; // Convert to a fixed number of decimal places
+                }
+
+                console.log("water_quality_value = ", formatted_water_quality_value);
+
+                // Format delta
+                let temp_water_delta_24;
+
+                if (waterQuality.delta_24 !== null) {
+                    // If delta_24 is not null, format it
+                    temp_water_delta_24 = (parseFloat(waterQuality.delta_24)).toFixed(0); // Convert delta_24 to a fixed number of decimal places
+                    console.log("temp_water_delta_24 = ", temp_water_delta_24); // Log the formatted delta_24 to the console
+                } else {
+                    // If delta_24 is null, set a placeholder value
+                    temp_water_delta_24 = "-M-"; // Placeholder value for null delta_24
+                }
+
+                // DATATIME CLASS
+                var dateTimeClass = determineStageDateTimeClass(formattedDateTimeCST, currentDateTimeMinusTwoHours);
+                console.log("dateTimeClass:", dateTimeClass);
+
+                // Update HTML
+                waterQualityCellInnerHTML   = "<span class='last_max_value' title='" + waterQuality.cwms_ts_id + " " + water_quality_value + "'>"
+                                            + "<a href='../../chart/public/chart.html?cwms_ts_id=" + waterQuality.cwms_ts_id + "&lookback=96' target='_blank'>"
+                                            + formatted_water_quality_value
+                                            + "</a>"
+                                            + "</span>"
+                                            + " "
+                                            + waterQuality.unit_id
+                                            + " (" + temp_water_delta_24 + ")"
+                                            + "<span class='" + dateTimeClass + "'>"
+                                            + temp_water_date_time_cst
+                                            + "</span>"
+                                            + "<span class='" + myWaterQualityClass + "'>"
+                                            + label
+                                            + "</span>";
+                
+                console.log("waterQualityCellInnerHTML = ", waterQualityCellInnerHTML);
+
+                // Update the HTML inside the cell with the combined data
+                waterQualityCell.innerHTML += waterQualityCellInnerHTML;	
+            } else {
+                // Handle case when data is null
+                waterQualityCellInnerHTML = "<span class='missing' title='" + tsid + "'>"
+                                            + "<a href='../../chart/public/chart.html?cwms_ts_id=" + tsid + "&lookback=96' target='_blank'>"
+                                            + "-M-"
+                                            + "</a>"
+                                            + "</span>"
+                                            + "<span class='" + myWaterQualityClass + "'>"
+                                            + label
+                                            + "</span>";
+
+                // Set the combined value to the cell, preserving HTML
+                console.log("waterQualityCellInnerHTML = ", waterQualityCellInnerHTML);
+
+                // Update the HTML inside the cell with the combined data
+                waterQualityCell.innerHTML += waterQualityCellInnerHTML;
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
     }
 }
 
