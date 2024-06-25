@@ -5,8 +5,13 @@ document.addEventListener('DOMContentLoaded', async function () {
     loadingIndicator.style.display = 'block';
 
     // Gage control json file
-    const jsonFileURL = 'https://wm.mvs.ds.usace.army.mil/php-data-api/public/json/gage_control.json';
-    console.log('jsonFileURL: ', jsonFileURL);
+    let jsonFileURL = null;
+        if (cda === "public") {
+            jsonFileURL = 'https://www.mvs-wc.usace.army.mil/php_data_api/public/json/gage_control.json';
+        } else if (cda === "internal") {
+            jsonFileURL = 'https://wm.mvs.ds.usace.army.mil/php_data_api/public/json/gage_control.json';
+        }
+        console.log('jsonFileURL: ', jsonFileURL);
 
     const response = await fetch(jsonFileURL);
     console.log('response: ', response);
