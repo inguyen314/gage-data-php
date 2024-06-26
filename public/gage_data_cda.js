@@ -99,7 +99,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         // Construct the URL for the API first request - metadata
         let firstApiUrl = null;
         if (cda === "public") {
-            firstApiUrl = `https://water.usace.army.mil/cwms-data/locations/${locationId}?office=MVS`;
+            firstApiUrl = `https://cwms-data.usace.army.mil/cwms-data/locations/${locationId}?office=MVS`;
         } else if (cda === "internal") {
             firstApiUrl = `https://coe-mvsuwa04mvs.mvs.usace.army.mil:8243/mvs-data/locations/${locationId}?office=MVS`;
         }
@@ -125,7 +125,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         if (levelIdFlood !== null || levelIdEffectiveDateFlood !== null || levelIdUnitIdFlood !== null) {
             let secondApiUrl = null;
             if (cda === "public") {
-                secondApiUrl = `https://water.usace.army.mil/cwms-data/levels/${levelIdFlood}?office=MVS&effective-date=${levelIdEffectiveDateFlood}&unit=${levelIdUnitIdFlood}`;
+                secondApiUrl = `https://cwms-data.usace.army.mil/cwms-data/levels/${levelIdFlood}?office=MVS&effective-date=${levelIdEffectiveDateFlood}&unit=${levelIdUnitIdFlood}`;
             } else if (cda === "internal") {
                 secondApiUrl = `https://coe-mvsuwa04mvs.mvs.usace.army.mil:8243/mvs-data/levels/${levelIdFlood}?office=MVS&effective-date=${levelIdEffectiveDateFlood}&unit=${levelIdUnitIdFlood}`;
             }
@@ -162,7 +162,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         // Construct the URL for the API third request - basin
         let thirdApiUrl = null;
         if (cda === "public") {
-            thirdApiUrl = `https://water.usace.army.mil/cwms-data/location/group/${basin}?office=MVS&category-id=RDL_Basins`;
+            thirdApiUrl = `https://cwms-data.usace.army.mil/cwms-data/location/group/${basin}?office=MVS&category-id=RDL_Basins`;
         } else if (cda === "internal") {
             thirdApiUrl = `https://coe-mvsuwa04mvs.mvs.usace.army.mil:8243/mvs-data/location/group/${basin}?office=MVS&category-id=RDL_Basins`;
         }
@@ -211,7 +211,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         // Construct the URL for the API forth request - owner
         let forthApiUrl = null;
         if (cda === "public") {
-            forthApiUrl = `https://water.usace.army.mil/cwms-data/location/group/MVS?office=MVS&category-id=RDL_MVS`;
+            forthApiUrl = `https://cwms-data.usace.army.mil/cwms-data/location/group/MVS?office=MVS&category-id=RDL_MVS`;
         } else if (cda === "internal") {
             forthApiUrl = `https://coe-mvsuwa04mvs.mvs.usace.army.mil:8243/mvs-data/location/group/MVS?office=MVS&category-id=RDL_MVS`;
         }
@@ -261,7 +261,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         if (levelIdRecordStage !== null || levelIdEffectiveDateRecordStage !== null || levelIdUnitIdRecordStage !== null) {
             let fifthApiUrl = null;
             if (cda === "public") {
-                fifthApiUrl = `https://water.usace.army.mil/cwms-data/levels/${levelIdRecordStage}?office=MVS&effective-date=${levelIdEffectiveDateRecordStage}&unit=${levelIdUnitIdRecordStage}`;
+                fifthApiUrl = `https://cwms-data.usace.army.mil/cwms-data/levels/${levelIdRecordStage}?office=MVS&effective-date=${levelIdEffectiveDateRecordStage}&unit=${levelIdUnitIdRecordStage}`;
             } else if (cda === "internal") {
                 fifthApiUrl = `https://coe-mvsuwa04mvs.mvs.usace.army.mil:8243/mvs-data/levels/${levelIdRecordStage}?office=MVS&effective-date=${levelIdEffectiveDateRecordStage}&unit=${levelIdUnitIdRecordStage}`;
             }
@@ -302,7 +302,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         // Construct the URL for the API sixth request - NGVD29
         let sixthApiUrl = null;
         if (cda === "public") {
-            sixthApiUrl = `https://water.usace.army.mil/cwms-data/levels/${levelIdNgvd29}?office=MVS&effective-date=${levelIdEffectiveDateNgvd29}&unit=${levelIdUnitIdNgvd29}`;
+            sixthApiUrl = `https://cwms-data.usace.army.mil/cwms-data/levels/${levelIdNgvd29}?office=MVS&effective-date=${levelIdEffectiveDateNgvd29}&unit=${levelIdUnitIdNgvd29}`;
         } else if (cda === "internal") {
             sixthApiUrl = `https://coe-mvsuwa04mvs.mvs.usace.army.mil:8243/mvs-data/levels/${levelIdNgvd29}?office=MVS&effective-date=${levelIdEffectiveDateNgvd29}&unit=${levelIdUnitIdNgvd29}`;
         }
