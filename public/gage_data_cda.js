@@ -1793,7 +1793,7 @@ function generateDateTimeMidNightStringsISO(currentDateTime, currentDateTimePlus
 async function fetchDataFromNwsForecastsOutput() {
     let urlNwsForecast = null;
     if (cda === "public") {
-        urlNwsForecast = '../../../php_data_api/public/json/exportNwsForecasts2Json.json';
+        urlNwsForecast = 'https://www.mvs-wc.usace.army.mil/php_data_api/public/json/exportNwsForecasts2Json.json';
     } else if (cda === "internal") {
         urlNwsForecast = 'https://wm.mvs.ds.usace.army.mil/php_data_api/public/json/exportNwsForecasts2Json.json';
     }
