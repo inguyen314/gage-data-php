@@ -546,6 +546,7 @@ function createGageDataTable(allData) {
             fetchAndUpdateStage(stageCell, tsidStage, flood_level, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
             if (locData.tsid_stage_nws_3_day_forecast !== null) {
                 fetchAndUpdateNWS(stageCell, tsidStage, locData.tsid_stage_nws_3_day_forecast, flood_level, currentDateTime, currentDateTimePlus4Days);
+                fetchAndUpdateNWSForecastDate(stageCell, locData.tsid_stage_nws_3_day_forecast);
             }
 
 
@@ -817,22 +818,21 @@ function fetchAndUpdateStage(stageCell, tsidStage, flood_level, currentDateTimeM
 // Function to fetch and update NWS data
 function fetchAndUpdateNWS(stageCell, tsidStage, tsid_stage_nws_3_day_forecast, flood_level, currentDateTime, currentDateTimePlus4Days) {
     // Log current date and time
-    console.log("currentDateTime = ", currentDateTime);
-    console.log("currentDateTimePlus4Days = ", currentDateTimePlus4Days);
+    // console.log("currentDateTime = ", currentDateTime);
+    // console.log("currentDateTimePlus4Days = ", currentDateTimePlus4Days);
 
     const { currentDateTimeMidNightISO, currentDateTimePlus4DaysMidNightISO } = generateDateTimeMidNightStringsISO(currentDateTime, currentDateTimePlus4Days);
-    console.log("currentDateTimeMidNightISO = ", currentDateTimeMidNightISO);
-    console.log("currentDateTimePlus4DaysMidNightISO = ", currentDateTimePlus4DaysMidNightISO);
+    // console.log("currentDateTimeMidNightISO = ", currentDateTimeMidNightISO);
+    // console.log("currentDateTimePlus4DaysMidNightISO = ", currentDateTimePlus4DaysMidNightISO);
 
     let innerHTMLStage = ""; // Declare innerHTMLStage variable with a default value
 
     if (tsidStage !== null) {
-        console.log("tsidStage:", tsidStage);
-        console.log("tsidStage:", typeof (tsidStage));
-        console.log("tsidStage:", tsidStage.slice(-2));
+        // console.log("tsidStage:", tsidStage);
+        // console.log("tsidStage:", typeof (tsidStage));
+        // console.log("tsidStage:", tsidStage.slice(-2));
 
         if (tsidStage.slice(-2) !== "29" && tsid_stage_nws_3_day_forecast !== null) {
-            console.log("The last two characters are not '29'");
 
             // Fetch the time series data from the API using the determined query string
             let urlNWS = null;
@@ -887,50 +887,53 @@ function fetchAndUpdateNWS(stageCell, tsidStage, tsid_stage_nws_3_day_forecast, 
 
                     // FLOOD CLASS
                     var floodClassDay1 = determineStageClass(firstMiddleValue, flood_level);
-                    console.log("floodClassDay1:", floodClassDay1);
+                    // console.log("floodClassDay1:", floodClassDay1);
 
                     var floodClassDay2 = determineStageClass(secondMiddleValue, flood_level);
-                    console.log("floodClassDay2:", floodClassDay2);
+                    // console.log("floodClassDay2:", floodClassDay2);
 
                     var floodClassDay3 = determineStageClass(thirdMiddleValue, flood_level);
-                    console.log("floodClassDay3:", floodClassDay3);
+                    // console.log("floodClassDay3:", floodClassDay3);
 
 
                     if (nws3Days !== null) {
-                        innerHTMLStage = "<table id='nws'>"
-                            + "<tr>"
-                            + "<td colspan='3' class='day_nws_forecast'>"
-                            + "3 Day NWS Forecast"
-                            + "</td>"
-                            + "</tr>"
-                            + "<tr>"
-                            + "<td class='" + floodClassDay1 + "'>"
-                            + "<a href='../../../district_templates/chart/public/chart.html?cwms_ts_id=" + nws3Days.name + "&lookback=96&cda=public' target='_blank' title='" + nws3Days.name + " " + firstFirstValue + "'>"
-                            + firstMiddleValue
-                            + "</a>"
-                            + "</td>"
-                            + "<td class='" + floodClassDay2 + "'>"
-                            + "<a href='../../../district_templates/chart/public/chart.html?cwms_ts_id=" + nws3Days.name + "&lookback=96&cda=public' target='_blank' title='" + nws3Days.name + " " + secondFirstValue + "'>"
-                            + secondMiddleValue
-                            + "</a>"
-                            + "</td>"
-                            + "<td class='" + floodClassDay3 + "'>"
-                            + "<a href='../../../district_templates/chart/public/chart.html?cwms_ts_id=" + nws3Days.name + "&lookback=96&cda=public' target='_blank' title='" + nws3Days.name + " " + thirdFirstValue + "'>"
-                            + thirdMiddleValue
-                            + "</a>"
-                            + "</td>"
-                            + "</tr>"
-                            + "<tr>"
-                            + "<td colspan='3' class='day_nws_ded' title='Data Entry Date, No Cloud Option Yet'>" + "Forecast Date: " + "--" + "</td>";
-                        + "</tr>"
-                            + "<table>";
+                        innerHTMLStage  = "<table id='nws'>"
+                                        + "<tr>"
+                                        + "<td colspan='3' class='day_nws_forecast'>"
+                                        + "3 Day NWS Forecast"
+                                        + "</td>"
+                                        + "</tr>"
+                                        + "<tr>"
+                                        + "<td class='" + floodClassDay1 + "'>"
+                                        + "<a href='../../../district_templates/chart/public/chart.html?cwms_ts_id=" + nws3Days.name + "&lookback=96&cda=public' target='_blank' title='" + nws3Days.name + " " + firstFirstValue + "'>"
+                                        + firstMiddleValue
+                                        + "</a>"
+                                        + "</td>"
+                                        + "<td class='" + floodClassDay2 + "'>"
+                                        + "<a href='../../../district_templates/chart/public/chart.html?cwms_ts_id=" + nws3Days.name + "&lookback=96&cda=public' target='_blank' title='" + nws3Days.name + " " + secondFirstValue + "'>"
+                                        + secondMiddleValue
+                                        + "</a>"
+                                        + "</td>"
+                                        + "<td class='" + floodClassDay3 + "'>"
+                                        + "<a href='../../../district_templates/chart/public/chart.html?cwms_ts_id=" + nws3Days.name + "&lookback=96&cda=public' target='_blank' title='" + nws3Days.name + " " + thirdFirstValue + "'>"
+                                        + thirdMiddleValue
+                                        + "</a>"
+                                        + "</td>"
+                                        + "</tr>"
+                                        // + "<tr>"
+                                        // + "<td colspan='3' id='stageCell' class='day_nws_ded'></td>" // Placeholder for forecast time
+                                        // + "</tr>"
+                                        + "<table>";
+                                        // document.getElementById('someElementId').innerHTML = innerHTMLStage; // Insert the table into the DOM
+                                        // const stageCell = document.getElementById('stageCell'); // Get the placeholder element
+                                        // fetchAndLogNwsData2(tsid_stage_nws_3_day_forecast, stageCell); // Fetch and update the data
                     } else {
-                        innerHTMLStage = "<span class='missing'>"
-                            + "-M-"
-                            + "</span>"
-                            + "<span class='day_nws_forecast'>"
-                            + "NWS 3 Days Forecast"
-                            + "</span>";
+                        innerHTMLStage  = "<span class='missing'>"
+                                        + "-M-"
+                                        + "</span>"
+                                        + "<span class='day_nws_forecast'>"
+                                        + "NWS 3 Days Forecast"
+                                        + "</span>";
                     }
                     return stageCell.innerHTML += innerHTMLStage;
                 })
@@ -942,6 +945,13 @@ function fetchAndUpdateNWS(stageCell, tsidStage, tsid_stage_nws_3_day_forecast, 
             console.log("The last two characters are '29'");
         }
     }
+}
+
+// Fetch PHP Json File to get Forecast Date
+function fetchAndUpdateNWSForecastDate(stageCell, tsid_stage_nws_3_day_forecast) {
+    fetchAndLogNwsData(stageCell, tsid_stage_nws_3_day_forecast); // Fetch and update the data
+
+
 }
 
 // Function to get flows data
@@ -1774,4 +1784,94 @@ function generateDateTimeMidNightStringsISO(currentDateTime, currentDateTimePlus
         currentDateTimeMidNightISO,
         currentDateTimePlus4DaysMidNightISO
     };
+}
+
+/******************************************************************************
+ *                               FUNCTIONS PHP JSON                           *
+ ******************************************************************************/
+// Function to fetch data from NWS forecasts output
+async function fetchDataFromNwsForecastsOutput() {
+    let urlNwsForecast = null;
+    if (cda === "public") {
+        urlNwsForecast = '../../../php_data_api/public/json/exportNwsForecasts2Json.json';
+    } else if (cda === "internal") {
+        urlNwsForecast = 'https://wm.mvs.ds.usace.army.mil/php_data_api/public/json/exportNwsForecasts2Json.json';
+    }
+    console.log("urlNwsForecast: ", urlNwsForecast);
+
+    try {
+        const response = await fetch(urlNwsForecast);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        return data;
+    } catch (error) {
+        console.error('Error fetching data:', error);
+        throw error; // Propagate the error further if needed
+    }
+}
+
+// Function to filter NWS data by tsid_stage_nws_3_day_forecast
+function filterDataByTsid(NwsOutput, cwms_ts_id) {
+    return NwsOutput.filter(item => item !== null && item.cwms_ts_id_day1 === cwms_ts_id);
+}
+
+// Function to fetch and log NWS data
+async function fetchAndLogNwsData(stageCell, tsid_stage_nws_3_day_forecast) {
+    try {
+        const NwsOutput = await fetchDataFromNwsForecastsOutput();
+        console.log('NwsOutput:', NwsOutput);
+        
+        const filteredData = filterDataByTsid(NwsOutput, tsid_stage_nws_3_day_forecast);
+        console.log("Filtered NwsOutput Data for", tsid_stage_nws_3_day_forecast + ":", filteredData);
+
+        // Update the HTML element with filtered data
+        updateNwsForecastTimeHTML(filteredData, stageCell);
+
+        // Further processing of NWS data as needed
+    } catch (error) {
+        // Handle errors from fetchDataFromNwsForecastsOutput
+        console.error('Failed to fetch data:', error);
+    }
+}
+
+// Function to update the HTML element with filtered data
+function updateNwsForecastTimeHTML(filteredData, stageCell) {
+    const locationData = filteredData.find(item => item !== null); // Find the first non-null item
+    if (!locationData) {
+        stageCell.innerHTML = ''; // Handle case where no valid data is found
+        return;
+    }
+
+    const entryDate = locationData.data_entry_date_cst1;
+    
+    // Parse the entry date string
+    const dateParts = entryDate.split('-'); // Split by hyphen
+    const day = dateParts[0]; // Day part
+    const monthAbbreviation = dateParts[1]; // Month abbreviation (e.g., JUL)
+    const year = dateParts[2].substring(0, 2); // Last two digits of the year (e.g., 24)
+    
+    // Map month abbreviation to month number
+    const months = {
+        'JAN': '01', 'FEB': '02', 'MAR': '03', 'APR': '04',
+        'MAY': '05', 'JUN': '06', 'JUL': '07', 'AUG': '08',
+        'SEP': '09', 'OCT': '10', 'NOV': '11', 'DEC': '12'
+    };
+    
+    const month = months[monthAbbreviation]; // Get numeric month
+    
+    // Parse time parts
+    const timeParts = entryDate.split(' ')[1].split('.'); // Split time part by period
+    const hours = timeParts[0]; // Hours part
+    const minutes = timeParts[1]; // Minutes part
+    
+    // Determine period (AM/PM)
+    const period = timeParts[3] === 'PM' ? 'PM' : 'AM';
+    
+    // Construct formatted date and time
+    const formattedDateTime = `${month}-${day}-${year} ${hours}:${minutes} ${period}`;
+    
+    // Update the HTML content
+    stageCell.innerHTML += `<span class="hard_coded">Forecast Date: ${formattedDateTime}<span><br>`;
 }
