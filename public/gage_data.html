@@ -40,7 +40,7 @@
 								</h2>
 								<div class="box-content" style="background-color:white;margin:auto">
 									<div class="content">
-                                        <script>
+                                        <!-- <script>
                                             // Calculate the document root
                                             const documentRoot = window.location.protocol + "//" + window.location.host + "/";
 
@@ -79,7 +79,7 @@
                                             } else {
                                                 console.log('Document root does not match the specified URL.');
                                             }
-                                        </script>
+                                        </script> -->
 									</div>
 								</div>
 							</div>
@@ -88,13 +88,25 @@
 
                     <!-- Setup url parameters -->
                     <script>
+                        // Calculate the document root
+                        const documentRoot = window.location.protocol + "//" + window.location.host + "/";
+                                        
+                                        // Determine the default value of cda based on documentRoot
+                                        const cdaDefault = (documentRoot === "https://wm.mvs.ds.usace.army.mil/") ? "internal" : "public";
+                                        console.log("cdaDefault: ", cdaDefault);
+
+                                        // Determine the default value of cda based on documentRoot
+                                        const typeDefault = (documentRoot === "https://wm.mvs.ds.usace.army.mil/") ? "internal" : "public";
+                                        console.log("typeDefault: ", typeDefault);
+
                         // Create a URL object with the current page URL
                         const urlParams = new URLSearchParams(window.location.search);
 
                         // Get the value of a specific parameter
-                        const param1Value = urlParams.get('basin'); // Output: "value1"
-                        const param2Value = urlParams.get('cda'); // Output: "value2"
-                        const param3Value = urlParams.get('gage'); // Output: "value2"
+                        const param1Value = urlParams.get('basin') || 'Mississippi';
+                        const param2Value = urlParams.get('cda') || cdaDefault; 
+                        const param3Value = urlParams.get('gage'); 
+                        const param4Value = urlParams.get('type') || typeDefault; 
 
                         urlParams.forEach(function(value, key) {
                             console.log(key, value);
@@ -103,14 +115,17 @@
 
                     <!-- Get url parameters -->
                     <script>
-                        var basin = urlParams.get('basin');
+                        var basin = urlParams.get('basin') || 'Mississippi';
                         console.log('basin: ', basin);
 
-                        var cda = urlParams.get('cda');
+                        var cda = urlParams.get('cda') || cdaDefault; 
                         console.log('cda: ', cda);
 
                         var gage = urlParams.get('gage');
                         console.log('gage: ', gage);
+
+                        var type = urlParams.get('type') || typeDefault;
+                        console.log('type: ', type);
                     </script>
 
                     <div id="container"></div>
@@ -237,6 +252,7 @@
         // Get the value of a specific parameter
         const param1Value = urlParams.get('basin'); // Output: "value1"
         const param3Value = urlParams.get('cda'); // Output: "value3"
+        const param4Value = urlParams.get('type'); // Output: "value4"
 
         urlParams.forEach(function(value, key) {
             console.log(key, value);
@@ -245,7 +261,7 @@
         // Set the title and the span content based on the 'type' parameter
         const type = urlParams.get('type');
         // title = "Gage Data" + " - " + urlParams.get('basin') + " - " + urlParams.get('cda');
-        title = "Gage Data" + " " + urlParams.get('basin');
+        title = "Realtime Gage Data - " + " " + urlParams.get('basin');
         
         
 
