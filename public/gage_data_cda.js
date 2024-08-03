@@ -1,7 +1,4 @@
 var allData = [];
-
-// TODO: make public version dont have nws forecast, less water quality data.
-
 document.addEventListener('DOMContentLoaded', async function () {
     // Display the loading_alarm_mvs indicator
     const loadingIndicator = document.getElementById('loading_gage_data_cda');
@@ -547,7 +544,7 @@ function createGageDataTable(allData) {
             const stageCell = row.insertCell();
             const tsidStage = locData.display_stage_29 ? locData.tsid_stage_29 : locData.tsid_stage_rev;
             fetchAndUpdateStage(stageCell, tsidStage, flood_level, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-            if (locData.tsid_stage_nws_3_day_forecast !== null && type === 'internal') {
+            if (locData.tsid_stage_nws_3_day_forecast !== null) {
                 fetchAndUpdateNWS(stageCell, tsidStage, locData.tsid_stage_nws_3_day_forecast, flood_level, currentDateTime, currentDateTimePlus4Days);
                 fetchAndUpdateNWSForecastDate(stageCell, locData.tsid_stage_nws_3_day_forecast);
             }
@@ -557,23 +554,11 @@ function createGageDataTable(allData) {
 
             // FLOW
             const flowCell = row.insertCell();
-            if (type === 'internal') {
-                fetchAndUpdateFlow(flowCell, locData.tsid_flow_coe, locData.tsid_flow_coe_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateFlow(flowCell, locData.tsid_flow_usgs, locData.tsid_flow_usgs_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateFlow(flowCell, locData.tsid_flow_nws, locData.tsid_flow_nws_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateFlow(flowCell, locData.tsid_flow_mvr, locData.tsid_flow_mvr_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateFlow(flowCell, locData.tsid_flow_slope, locData.tsid_flow_slope_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-            } else {
-                if (locData.tsid_flow_coe !== null) {
-                    fetchAndUpdateFlow(flowCell, locData.tsid_flow_coe, locData.tsid_flow_coe_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                } else if (locData.tsid_flow_usgs !== null) {
-                    fetchAndUpdateFlow(flowCell, locData.tsid_flow_usgs, locData.tsid_flow_usgs_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                } else if (locData.tsid_flow_nws !== null) {
-                    fetchAndUpdateFlow(flowCell, locData.tsid_flow_nws, locData.tsid_flow_nws_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                } else if (locData.tsid_flow_mvr !== null) {
-                    fetchAndUpdateFlow(flowCell, locData.tsid_flow_mvr, locData.tsid_flow_mvr_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                }
-            }
+            fetchAndUpdateFlow(flowCell, locData.tsid_flow_coe, locData.tsid_flow_coe_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            fetchAndUpdateFlow(flowCell, locData.tsid_flow_usgs, locData.tsid_flow_usgs_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            fetchAndUpdateFlow(flowCell, locData.tsid_flow_nws, locData.tsid_flow_nws_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            fetchAndUpdateFlow(flowCell, locData.tsid_flow_mvr, locData.tsid_flow_mvr_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            fetchAndUpdateFlow(flowCell, locData.tsid_flow_slope, locData.tsid_flow_slope_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
 
 
 
@@ -586,78 +571,75 @@ function createGageDataTable(allData) {
 
             // WATER QUALITY
             const waterQualityCell = row.insertCell();
-            if (type === 'internal') {
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water, locData.tsid_temp_water_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water2, locData.tsid_temp_water2_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water3, locData.tsid_temp_water3_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water4, locData.tsid_temp_water4_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water5, locData.tsid_temp_water5_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water6, locData.tsid_temp_water6_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water7, locData.tsid_temp_water7_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water8, locData.tsid_temp_water8_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water9, locData.tsid_temp_water9_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water10, locData.tsid_temp_water10_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water11, locData.tsid_temp_water11_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water12, locData.tsid_temp_water12_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water13, locData.tsid_temp_water13_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water14, locData.tsid_temp_water14_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water15, locData.tsid_temp_water15_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water16, locData.tsid_temp_water16_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water, locData.tsid_temp_water_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water2, locData.tsid_temp_water2_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water3, locData.tsid_temp_water3_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water4, locData.tsid_temp_water4_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water5, locData.tsid_temp_water5_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water6, locData.tsid_temp_water6_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water7, locData.tsid_temp_water7_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water8, locData.tsid_temp_water8_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water9, locData.tsid_temp_water9_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water10, locData.tsid_temp_water10_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water11, locData.tsid_temp_water11_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water12, locData.tsid_temp_water12_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water13, locData.tsid_temp_water13_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water14, locData.tsid_temp_water14_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water15, locData.tsid_temp_water15_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water16, locData.tsid_temp_water16_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
 
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_air, locData.tsid_temp_air_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_air2, locData.tsid_temp_air2_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_air_max, locData.tsid_temp_air_max_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_air_min, locData.tsid_temp_air_min_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_air, locData.tsid_temp_air_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_air2, locData.tsid_temp_air2_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_air_max, locData.tsid_temp_air_max_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_air_min, locData.tsid_temp_air_min_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
 
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_do, locData.tsid_do_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_do2, locData.tsid_do2_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_do3, locData.tsid_do3_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_do4, locData.tsid_do4_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_do5, locData.tsid_do5_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_do6, locData.tsid_do6_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_do7, locData.tsid_do7_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_do8, locData.tsid_do8_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_do9, locData.tsid_do9_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_do10, locData.tsid_do10_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_do11, locData.tsid_do11_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_do12, locData.tsid_do12_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_do13, locData.tsid_do13_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_do14, locData.tsid_do14_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_do15, locData.tsid_do15_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_do, locData.tsid_do_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_do2, locData.tsid_do2_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_do3, locData.tsid_do3_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_do4, locData.tsid_do4_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_do5, locData.tsid_do5_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_do6, locData.tsid_do6_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_do7, locData.tsid_do7_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_do8, locData.tsid_do8_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_do9, locData.tsid_do9_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_do10, locData.tsid_do10_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_do11, locData.tsid_do11_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_do12, locData.tsid_do12_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_do13, locData.tsid_do13_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_do14, locData.tsid_do14_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_do15, locData.tsid_do15_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
 
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_cond, locData.tsid_cond_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_cond2, locData.tsid_cond2_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_cond, locData.tsid_cond_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_cond2, locData.tsid_cond2_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
 
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_depth, locData.tsid_depth_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_depth2, locData.tsid_depth2_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_depth3, locData.tsid_depth3_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_depth4, locData.tsid_depth4_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_depth5, locData.tsid_depth5_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_depth6, locData.tsid_depth6_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_depth7, locData.tsid_depth7_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_depth8, locData.tsid_depth8_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_depth9, locData.tsid_depth9_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_depth10, locData.tsid_depth10_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_depth11, locData.tsid_depth11_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_depth12, locData.tsid_depth12_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_depth13, locData.tsid_depth13_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_depth14, locData.tsid_depth14_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_depth15, locData.tsid_depth15_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_depth, locData.tsid_depth_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_depth2, locData.tsid_depth2_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_depth3, locData.tsid_depth3_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_depth4, locData.tsid_depth4_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_depth5, locData.tsid_depth5_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_depth6, locData.tsid_depth6_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_depth7, locData.tsid_depth7_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_depth8, locData.tsid_depth8_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_depth9, locData.tsid_depth9_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_depth10, locData.tsid_depth10_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_depth11, locData.tsid_depth11_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_depth12, locData.tsid_depth12_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_depth13, locData.tsid_depth13_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_depth14, locData.tsid_depth14_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_depth15, locData.tsid_depth15_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
 
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_ph, locData.tsid_ph_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_ph, locData.tsid_ph_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
 
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_turb, locData.tsid_turb_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_turb, locData.tsid_turb_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
 
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_speed_wind, locData.tsid_speed_wind_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_speed_wind, locData.tsid_speed_wind_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
 
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_speed, locData.tsid_speed_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_speed, locData.tsid_speed_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
 
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_pressure, locData.tsid_pressure_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_pressure, locData.tsid_pressure_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
 
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_dir_wind, locData.tsid_dir_wind_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-            } else {
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_do, locData.tsid_do_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-            }
+            fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_dir_wind, locData.tsid_dir_wind_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+
 
 
 
@@ -915,43 +897,43 @@ function fetchAndUpdateNWS(stageCell, tsidStage, tsid_stage_nws_3_day_forecast, 
 
 
                     if (nws3Days !== null) {
-                        innerHTMLStage = "<table id='nws'>"
-                            + "<tr>"
-                            + "<td colspan='3' class='day_nws_forecast'>"
-                            + "3 Day NWS Forecast"
-                            + "</td>"
-                            + "</tr>"
-                            + "<tr>"
-                            + "<td class='" + floodClassDay1 + "'>"
-                            + "<a href='../../../district_templates/chart/public/chart.html?cwms_ts_id=" + nws3Days.name + "&lookback=96&cda=public' target='_blank' title='" + nws3Days.name + " " + firstFirstValue + "'>"
-                            + firstMiddleValue
-                            + "</a>"
-                            + "</td>"
-                            + "<td class='" + floodClassDay2 + "'>"
-                            + "<a href='../../../district_templates/chart/public/chart.html?cwms_ts_id=" + nws3Days.name + "&lookback=96&cda=public' target='_blank' title='" + nws3Days.name + " " + secondFirstValue + "'>"
-                            + secondMiddleValue
-                            + "</a>"
-                            + "</td>"
-                            + "<td class='" + floodClassDay3 + "'>"
-                            + "<a href='../../../district_templates/chart/public/chart.html?cwms_ts_id=" + nws3Days.name + "&lookback=96&cda=public' target='_blank' title='" + nws3Days.name + " " + thirdFirstValue + "'>"
-                            + thirdMiddleValue
-                            + "</a>"
-                            + "</td>"
-                            + "</tr>"
-                            // + "<tr>"
-                            // + "<td colspan='3' id='stageCell' class='day_nws_ded'></td>" // Placeholder for forecast time
-                            // + "</tr>"
-                            + "<table>";
-                        // document.getElementById('someElementId').innerHTML = innerHTMLStage; // Insert the table into the DOM
-                        // const stageCell = document.getElementById('stageCell'); // Get the placeholder element
-                        // fetchAndLogNwsData2(tsid_stage_nws_3_day_forecast, stageCell); // Fetch and update the data
+                        innerHTMLStage  = "<table id='nws'>"
+                                        + "<tr>"
+                                        + "<td colspan='3' class='day_nws_forecast'>"
+                                        + "3 Day NWS Forecast"
+                                        + "</td>"
+                                        + "</tr>"
+                                        + "<tr>"
+                                        + "<td class='" + floodClassDay1 + "'>"
+                                        + "<a href='../../../district_templates/chart/public/chart.html?cwms_ts_id=" + nws3Days.name + "&lookback=96&cda=public' target='_blank' title='" + nws3Days.name + " " + firstFirstValue + "'>"
+                                        + firstMiddleValue
+                                        + "</a>"
+                                        + "</td>"
+                                        + "<td class='" + floodClassDay2 + "'>"
+                                        + "<a href='../../../district_templates/chart/public/chart.html?cwms_ts_id=" + nws3Days.name + "&lookback=96&cda=public' target='_blank' title='" + nws3Days.name + " " + secondFirstValue + "'>"
+                                        + secondMiddleValue
+                                        + "</a>"
+                                        + "</td>"
+                                        + "<td class='" + floodClassDay3 + "'>"
+                                        + "<a href='../../../district_templates/chart/public/chart.html?cwms_ts_id=" + nws3Days.name + "&lookback=96&cda=public' target='_blank' title='" + nws3Days.name + " " + thirdFirstValue + "'>"
+                                        + thirdMiddleValue
+                                        + "</a>"
+                                        + "</td>"
+                                        + "</tr>"
+                                        // + "<tr>"
+                                        // + "<td colspan='3' id='stageCell' class='day_nws_ded'></td>" // Placeholder for forecast time
+                                        // + "</tr>"
+                                        + "<table>";
+                                        // document.getElementById('someElementId').innerHTML = innerHTMLStage; // Insert the table into the DOM
+                                        // const stageCell = document.getElementById('stageCell'); // Get the placeholder element
+                                        // fetchAndLogNwsData2(tsid_stage_nws_3_day_forecast, stageCell); // Fetch and update the data
                     } else {
-                        innerHTMLStage = "<span class='missing'>"
-                            + "-M-"
-                            + "</span>"
-                            + "<span class='day_nws_forecast'>"
-                            + "NWS 3 Days Forecast"
-                            + "</span>";
+                        innerHTMLStage  = "<span class='missing'>"
+                                        + "-M-"
+                                        + "</span>"
+                                        + "<span class='day_nws_forecast'>"
+                                        + "NWS 3 Days Forecast"
+                                        + "</span>";
                     }
                     return stageCell.innerHTML += innerHTMLStage;
                 })
@@ -1840,7 +1822,7 @@ async function fetchAndLogNwsData(stageCell, tsid_stage_nws_3_day_forecast) {
     try {
         const NwsOutput = await fetchDataFromNwsForecastsOutput();
         console.log('NwsOutput:', NwsOutput);
-
+        
         const filteredData = filterDataByTsid(NwsOutput, tsid_stage_nws_3_day_forecast);
         console.log("Filtered NwsOutput Data for", tsid_stage_nws_3_day_forecast + ":", filteredData);
 
@@ -1863,33 +1845,33 @@ function updateNwsForecastTimeHTML(filteredData, stageCell) {
     }
 
     const entryDate = locationData.data_entry_date_cst1;
-
+    
     // Parse the entry date string
     const dateParts = entryDate.split('-'); // Split by hyphen
     const day = dateParts[0]; // Day part
     const monthAbbreviation = dateParts[1]; // Month abbreviation (e.g., JUL)
     const year = dateParts[2].substring(0, 2); // Last two digits of the year (e.g., 24)
-
+    
     // Map month abbreviation to month number
     const months = {
         'JAN': '01', 'FEB': '02', 'MAR': '03', 'APR': '04',
         'MAY': '05', 'JUN': '06', 'JUL': '07', 'AUG': '08',
         'SEP': '09', 'OCT': '10', 'NOV': '11', 'DEC': '12'
     };
-
+    
     const month = months[monthAbbreviation]; // Get numeric month
-
+    
     // Parse time parts
     const timeParts = entryDate.split(' ')[1].split('.'); // Split time part by period
     const hours = timeParts[0]; // Hours part
     const minutes = timeParts[1]; // Minutes part
-
+    
     // Determine period (AM/PM)
     const period = timeParts[3] === 'PM' ? 'PM' : 'AM';
-
+    
     // Construct formatted date and time
     const formattedDateTime = `${month}-${day}-${year} ${hours}:${minutes} ${period}`;
-
+    
     // Update the HTML content
     stageCell.innerHTML += `<span class="hard_coded_php" title="Uses PHP Json Output, No Cloud Option Yet">Forecast Date: ${formattedDateTime}<span><br>`;
 }
