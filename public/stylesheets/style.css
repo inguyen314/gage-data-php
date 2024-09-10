@@ -10,7 +10,7 @@
     padding-top: 10px;
     padding-bottom: 10px;
     text-align: left;
-    background-color: #444444;
+    background-color: purple;
     color: white;
 	border: 1px solid #ddd;
 	padding: 5px;
@@ -55,11 +55,11 @@ hr {
 }
 .hard_coded {
 	color: black; /* Base text color */
-	text-shadow: 0 0 5px orange;
+	text-shadow: 0 0 2px orange;
 }
 .hard_coded_php {
 	color: black; /* Base text color */
-	text-shadow: 0 0 5px purple;
+	text-shadow: 0 0 2px purple;
 }
 
 

@@ -1,7 +1,5 @@
 var allData = [];
 
-// TODO: make public version dont have nws forecast, less water quality data.
-
 document.addEventListener('DOMContentLoaded', async function () {
     // Display the loading_alarm_mvs indicator
     const loadingIndicator = document.getElementById('loading_gage_data_cda');
@@ -14,10 +12,10 @@ document.addEventListener('DOMContentLoaded', async function () {
     } else if (cda === "internal") {
         jsonFileURL = '../../../php_data_api/public/json/gage_control.json';
     }
-    console.log('jsonFileURL: ', jsonFileURL);
+    // console.log('jsonFileURL: ', jsonFileURL);
 
     const response = await fetch(jsonFileURL);
-    console.log('response: ', response);
+    // console.log('response: ', response);
 
     if (!response.ok) {
         throw new Error('Network response was not ok');
@@ -25,9 +23,9 @@ document.addEventListener('DOMContentLoaded', async function () {
     const gageControlData = await response.json();
 
     // Check if data_items array is present in the gageControlData
-    console.log('gageControlData: ', gageControlData);
+    // console.log('gageControlData: ', gageControlData);
 
-    console.log('basin: ', basin);
+    // console.log('basin: ', basin);
 
     // Function to filter gageControlData for the "Big Muddy" basin
     function filterBasin(gageControlData) {
@@ -38,11 +36,11 @@ document.addEventListener('DOMContentLoaded', async function () {
     let basinData = null;
     let basinDataTemp = null;
     if (gage !== null) {
-        console.log("gage: ", gage);
+        // console.log("gage: ", gage);
 
         // Extracted gageControlData for the basin
         basinDataTemp = filterBasin(gageControlData);
-        console.log('basinDataTemp: ', basinDataTemp);
+        // console.log('basinDataTemp: ', basinDataTemp);
 
         // Function to filter gageControlData for the "Big Muddy" basin
         function filterGage(basinDataTemp, gage) {
@@ -55,15 +53,15 @@ document.addEventListener('DOMContentLoaded', async function () {
         }
 
         basinData = filterGage(basinDataTemp, gage);
-        console.log("basinData: ", basinData);
+        // console.log("basinData: ", basinData);
     } else {
         // Extracted gageControlData for the basin
         basinData = filterBasin(gageControlData);
     }
 
     // Print the extracted data for basin
-    console.log('basinData: ', basinData);
-    console.log('basinData: ', typeof (basinData));
+    // console.log('basinData: ', basinData);
+    // console.log('basinData: ', typeof (basinData));
 
     // Combine all secondDataArray into one object based on name
     const combinedFirstData = [];
@@ -80,7 +78,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     for (const locData of basinData[0].gages) {
         // Prepare variable to pass in when call api
         const locationId = locData.location_id;
-        console.log('locationId: ', locationId);
+        // console.log('locationId: ', locationId);
 
         // Location level "Flood"
         const levelIdFlood = locData.level_id_flood;
@@ -106,7 +104,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         } else if (cda === "internal") {
             firstApiUrl = `https://coe-mvsuwa04mvs.mvs.usace.army.mil:8243/mvs-data/locations/${locationId}?office=MVS`;
         }
-        console.log('firstApiUrl: ', firstApiUrl);
+        // console.log('firstApiUrl: ', firstApiUrl);
 
         // Push the fetch promise to the apiPromises array
         apiPromises.push(fetch(firstApiUrl)
@@ -118,7 +116,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             })
             .then(firstData => {
                 // Process the response firstData as needed
-                console.log('firstData :', firstData);
+                // console.log('firstData :', firstData);
                 combinedFirstData.push(firstData);
             })
         );
@@ -132,7 +130,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             } else if (cda === "internal") {
                 secondApiUrl = `https://coe-mvsuwa04mvs.mvs.usace.army.mil:8243/mvs-data/levels/${levelIdFlood}?office=MVS&effective-date=${levelIdEffectiveDateFlood}&unit=${levelIdUnitIdFlood}`;
             }
-            console.log('secondApiUrl: ', secondApiUrl);
+            // console.log('secondApiUrl: ', secondApiUrl);
 
             apiPromises.push(
                 fetch(secondApiUrl)
@@ -146,11 +144,11 @@ document.addEventListener('DOMContentLoaded', async function () {
                         // Check if secondData is null
                         if (secondData === null) {
                             // Handle the case when secondData is null
-                            console.log('secondData is null');
+                            // console.log('secondData is null');
                             // You can choose to return or do something else here
                         } else {
                             // Process the response from another API as needed
-                            console.log('secondData:', secondData);
+                            // console.log('secondData:', secondData);
                             combinedSecondData.push(secondData);
                         }
                     })
@@ -169,7 +167,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         } else if (cda === "internal") {
             thirdApiUrl = `https://coe-mvsuwa04mvs.mvs.usace.army.mil:8243/mvs-data/location/group/${basin}?office=MVS&category-id=RDL_Basins`;
         }
-        console.log('thirdApiUrl: ', thirdApiUrl);
+        // console.log('thirdApiUrl: ', thirdApiUrl);
 
         // Push the fetch promise to the apiPromises array
         apiPromises.push(
@@ -184,11 +182,11 @@ document.addEventListener('DOMContentLoaded', async function () {
                 .then(thirdData => {
                     // Check if thirdData is null
                     if (thirdData === null) {
-                        console.log('thirdData is null');
+                        // console.log('thirdData is null');
                         // Handle the case when thirdData is null (optional)
                     } else {
                         // Process the response from another API as needed
-                        console.log('thirdData:', thirdData);
+                        // console.log('thirdData:', thirdData);
 
                         // Filter the assigned locations array to find the desired location
                         const foundThirdLocation = thirdData["assigned-locations"].find(location => location["location-id"] === locationId);
@@ -202,7 +200,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                                 "location-id": foundThirdLocation["location-id"]
                             };
                         }
-                        console.log("extractedThirdData", extractedThirdData);
+                        // console.log("extractedThirdData", extractedThirdData);
 
                         // Push the extracted thirdData to the combinedThirdData array
                         combinedThirdData.push(extractedThirdData);
@@ -218,7 +216,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         } else if (cda === "internal") {
             forthApiUrl = `https://coe-mvsuwa04mvs.mvs.usace.army.mil:8243/mvs-data/location/group/MVS?office=MVS&category-id=RDL_MVS`;
         }
-        console.log('forthApiUrl: ', forthApiUrl);
+        // console.log('forthApiUrl: ', forthApiUrl);
 
         // Push the fetch promise to the apiPromises array
         apiPromises.push(
@@ -233,11 +231,11 @@ document.addEventListener('DOMContentLoaded', async function () {
                 .then(forthData => {
                     // Check if forthData is null
                     if (forthData === null) {
-                        console.log('forthData is null');
+                        // console.log('forthData is null');
                         // Handle the case when forthData is null (optional)
                     } else {
                         // Process the response from another API as needed
-                        console.log('forthData:', forthData);
+                        // console.log('forthData:', forthData);
 
                         // Filter the assigned locations array to find the desired location
                         const foundForthLocation = forthData["assigned-locations"].find(location => location["location-id"] === locationId);
@@ -251,7 +249,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                                 "location-id": foundForthLocation["location-id"]
                             };
                         }
-                        console.log("extractedForthData", extractedForthData);
+                        // console.log("extractedForthData", extractedForthData);
 
                         // Push the extracted forthData to the combinedForthData array
                         combinedForthData.push(extractedForthData);
@@ -268,7 +266,7 @@ document.addEventListener('DOMContentLoaded', async function () {
             } else if (cda === "internal") {
                 fifthApiUrl = `https://coe-mvsuwa04mvs.mvs.usace.army.mil:8243/mvs-data/levels/${levelIdRecordStage}?office=MVS&effective-date=${levelIdEffectiveDateRecordStage}&unit=${levelIdUnitIdRecordStage}`;
             }
-            console.log('fifthApiUrl: ', fifthApiUrl);
+            // console.log('fifthApiUrl: ', fifthApiUrl);
 
             apiPromises.push(
                 fetch(fifthApiUrl)
@@ -282,11 +280,11 @@ document.addEventListener('DOMContentLoaded', async function () {
                         // Check if fifthData is null
                         if (fifthData === null) {
                             // Handle the case when fifthData is null
-                            console.log('fifthData is null');
+                            // console.log('fifthData is null');
                         } else {
                             // Process the response from another API as needed
                             combinedFifthData.push(fifthData);
-                            console.log('combinedFifthData:', combinedFifthData);
+                            // console.log('combinedFifthData:', combinedFifthData);
                         }
                     })
                     .catch(error => {
@@ -309,7 +307,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         } else if (cda === "internal") {
             sixthApiUrl = `https://coe-mvsuwa04mvs.mvs.usace.army.mil:8243/mvs-data/levels/${levelIdNgvd29}?office=MVS&effective-date=${levelIdEffectiveDateNgvd29}&unit=${levelIdUnitIdNgvd29}`;
         }
-        console.log('sixthApiUrl: ', sixthApiUrl);
+        // console.log('sixthApiUrl: ', sixthApiUrl);
 
         apiPromises.push(
             fetch(sixthApiUrl)
@@ -323,11 +321,11 @@ document.addEventListener('DOMContentLoaded', async function () {
                     // Check if sixthData is null
                     if (sixthData === null) {
                         // Handle the case when sixthData is null
-                        console.log('sixthData is null');
+                        // console.log('sixthData is null');
                     } else {
                         // Process the response from another API as needed
                         combinedSixthData.push(sixthData);
-                        console.log('combinedSixthData:', combinedSixthData);
+                        // console.log('combinedSixthData:', combinedSixthData);
                     }
                 })
                 .catch(error => {
@@ -343,7 +341,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     // Call mergeData
     mergeData(basinData, combinedFirstData, combinedSecondData, combinedThirdData, combinedForthData, combinedFifthData, combinedSixthData);
-    console.log('allData:', allData);
+    // console.log('allData:', allData);
 
     // Call the function to create and populate the table
     createGageDataTable(allData);
@@ -440,7 +438,7 @@ function mergeData(basinData, combinedFirstData, combinedSecondData, combinedThi
 
 // Function to create and populate the table
 function createGageDataTable(allData) {
-    console.log("createGageDataTable function is called."); // Check if the function is being called
+    // console.log("createGageDataTable function is called."); // Check if the function is being called
 
     // Create a table element
     const table = document.createElement('table');
@@ -469,23 +467,23 @@ function createGageDataTable(allData) {
 
     // Get current date and time
     const currentDateTime = new Date();
-    console.log('currentDateTime:', currentDateTime);
+    // console.log('currentDateTime:', currentDateTime);
 
     // Subtract two hours from current date and time
     const currentDateTimeMinus2Hours = subtractHoursFromDate(currentDateTime, 2);
-    console.log('currentDateTimeMinus2Hours :', currentDateTimeMinus2Hours);
+    // console.log('currentDateTimeMinus2Hours :', currentDateTimeMinus2Hours);
 
     // Subtract thirty hours from current date and time
     const currentDateTimeMinus30Hours = subtractHoursFromDate(currentDateTime, 64);
-    console.log('currentDateTimeMinus30Hours :', currentDateTimeMinus30Hours);
+    // console.log('currentDateTimeMinus30Hours :', currentDateTimeMinus30Hours);
 
     // Add thirty hours to current date and time
     const currentDateTimePlus30Hours = plusHoursFromDate(currentDateTime, 30);
-    console.log('currentDateTimePlus30Hours :', currentDateTimePlus30Hours);
+    // console.log('currentDateTimePlus30Hours :', currentDateTimePlus30Hours);
 
     // Add four days to current date and time
     const currentDateTimePlus4Days = addDaysToDate(currentDateTime, 4);
-    console.log('currentDateTimePlus4Days :', currentDateTimePlus4Days);
+    // console.log('currentDateTimePlus4Days :', currentDateTimePlus4Days);
 
 
     // Iterate through the mergedData to populate the table
@@ -497,7 +495,7 @@ function createGageDataTable(allData) {
             // Prepare c_count to get 24 hour values to calculate delta 
             let c_count = null;
             c_count = locData.c_count;
-            console.log("c_count hardcoded:", c_count);
+            // console.log("c_count hardcoded:", c_count);
 
             // ***** START 
 
@@ -518,172 +516,177 @@ function createGageDataTable(allData) {
                 flood_level = null;
             }
 
-
             // LOCATION
-            // Create a new table cell for displaying location information
-            const locationCell = row.insertCell();
-            locationCell.style.textAlign = 'left'; // Align text to the left
-            locationCell.style.fontWeight = 'bold'; // Make text bold
+            if (1 === 1) {
+                // Create a new table cell for displaying location information
+                const locationCell = row.insertCell();
+                locationCell.style.textAlign = 'left'; // Align text to the left
+                locationCell.style.fontWeight = 'bold'; // Make text bold
 
-            // Check if locData has an 'owner' property
-            if (locData.owner) {
-                // If locData has an 'owner' property, check if the owner's ID is "MVS"
-                if (locData.owner['id'] === "MVS") {
-                    // If the owner's ID is "MVS", set the text color to dark blue
-                    locationCell.style.color = 'darkblue';
+                // Check if locData has an 'owner' property
+                if (locData.owner) {
+                    // If locData has an 'owner' property, check if the owner's ID is "MVS"
+                    if (locData.owner['id'] === "MVS") {
+                        // If the owner's ID is "MVS", set the text color to dark blue
+                        locationCell.style.color = 'darkblue';
+                    }
+                    // Set the inner HTML of locationCell to include the order and location ID
+                    locationCell.innerHTML = "<span title='MVS Own This Gage'>" + locData.order + " " + locData.location_id + "</span>";
+                } else {
+                    // If locData does not have an 'owner' property, set the inner HTML of locationCell to include the order and location ID
+                    locationCell.innerHTML = locData.order + " " + locData.location_id;
                 }
-                // Set the inner HTML of locationCell to include the order and location ID
-                locationCell.innerHTML = "<span title='MVS Own This Gage'>" + locData.order + " " + locData.location_id + "</span>";
-            } else {
-                // If locData does not have an 'owner' property, set the inner HTML of locationCell to include the order and location ID
-                locationCell.innerHTML = locData.order + " " + locData.location_id;
             }
-
-
-
 
             // STAGE
-            // Create a new table cell
-            const stageCell = row.insertCell();
-            const tsidStage = locData.display_stage_29 ? locData.tsid_stage_29 : locData.tsid_stage_rev;
-            fetchAndUpdateStage(stageCell, tsidStage, flood_level, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-            if (locData.tsid_stage_nws_3_day_forecast !== null && type === 'internal') {
-                fetchAndUpdateNWS(stageCell, tsidStage, locData.tsid_stage_nws_3_day_forecast, flood_level, currentDateTime, currentDateTimePlus4Days);
-                fetchAndUpdateNWSForecastDate(stageCell, locData.tsid_stage_nws_3_day_forecast);
-            }
-
-
-
-
-            // FLOW
-            const flowCell = row.insertCell();
-            if (type === 'internal') {
-                fetchAndUpdateFlow(flowCell, locData.tsid_flow_coe, locData.tsid_flow_coe_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateFlow(flowCell, locData.tsid_flow_usgs, locData.tsid_flow_usgs_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateFlow(flowCell, locData.tsid_flow_nws, locData.tsid_flow_nws_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateFlow(flowCell, locData.tsid_flow_mvr, locData.tsid_flow_mvr_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateFlow(flowCell, locData.tsid_flow_slope, locData.tsid_flow_slope_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-            } else {
-                if (locData.tsid_flow_coe !== null) {
-                    fetchAndUpdateFlow(flowCell, locData.tsid_flow_coe, locData.tsid_flow_coe_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                } else if (locData.tsid_flow_usgs !== null) {
-                    fetchAndUpdateFlow(flowCell, locData.tsid_flow_usgs, locData.tsid_flow_usgs_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                } else if (locData.tsid_flow_nws !== null) {
-                    fetchAndUpdateFlow(flowCell, locData.tsid_flow_nws, locData.tsid_flow_nws_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                } else if (locData.tsid_flow_mvr !== null) {
-                    fetchAndUpdateFlow(flowCell, locData.tsid_flow_mvr, locData.tsid_flow_mvr_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            if (2 === 2) {
+                // Create a new table cell
+                const stageCell = row.insertCell();
+                const tsidStage = locData.display_stage_29 ? locData.tsid_stage_29 : locData.tsid_stage_rev;
+                fetchAndUpdateStage(stageCell, tsidStage, flood_level, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                if (locData.tsid_stage_nws_3_day_forecast !== null && type === 'internal') {
+                    fetchAndUpdateNWS(stageCell, tsidStage, locData.tsid_stage_nws_3_day_forecast, flood_level, currentDateTime, currentDateTimePlus4Days);
+                    fetchAndUpdateNWSForecastDate(stageCell, locData.tsid_stage_nws_3_day_forecast);
                 }
             }
 
-
+            // FLOW
+            if (3 === 3) {
+                const flowCell = row.insertCell();
+                if (type === 'internal') {
+                    fetchAndUpdateFlow(flowCell, locData.tsid_flow_coe, locData.tsid_flow_coe_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateFlow(flowCell, locData.tsid_flow_usgs, locData.tsid_flow_usgs_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateFlow(flowCell, locData.tsid_flow_nws, locData.tsid_flow_nws_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateFlow(flowCell, locData.tsid_flow_mvr, locData.tsid_flow_mvr_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateFlow(flowCell, locData.tsid_flow_slope, locData.tsid_flow_slope_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                } else {
+                    if (locData.tsid_flow_coe !== null) {
+                        fetchAndUpdateFlow(flowCell, locData.tsid_flow_coe, locData.tsid_flow_coe_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    } else if (locData.tsid_flow_usgs !== null) {
+                        fetchAndUpdateFlow(flowCell, locData.tsid_flow_usgs, locData.tsid_flow_usgs_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    } else if (locData.tsid_flow_nws !== null) {
+                        fetchAndUpdateFlow(flowCell, locData.tsid_flow_nws, locData.tsid_flow_nws_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    } else if (locData.tsid_flow_mvr !== null) {
+                        fetchAndUpdateFlow(flowCell, locData.tsid_flow_mvr, locData.tsid_flow_mvr_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    }
+                }
+            }
 
             // PRECIP
-            const precipCell = row.insertCell();
-            fetchAndUpdatePrecip(precipCell, locData.tsid_precip_raw, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-
-
-
+            if (4 === 4) {
+                const precipCell = row.insertCell();
+                fetchAndUpdatePrecip(precipCell, locData.tsid_precip_raw, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            }
 
             // WATER QUALITY
-            const waterQualityCell = row.insertCell();
-            if (type === 'internal') {
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water, locData.tsid_temp_water_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water2, locData.tsid_temp_water2_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water3, locData.tsid_temp_water3_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water4, locData.tsid_temp_water4_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water5, locData.tsid_temp_water5_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water6, locData.tsid_temp_water6_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water7, locData.tsid_temp_water7_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water8, locData.tsid_temp_water8_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water9, locData.tsid_temp_water9_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water10, locData.tsid_temp_water10_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water11, locData.tsid_temp_water11_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water12, locData.tsid_temp_water12_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water13, locData.tsid_temp_water13_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water14, locData.tsid_temp_water14_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water15, locData.tsid_temp_water15_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water16, locData.tsid_temp_water16_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+            if (5 === 5) {
+                const waterQualityCell = row.insertCell();
+                if (type === 'internal') {
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water, locData.tsid_temp_water_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water2, locData.tsid_temp_water2_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water3, locData.tsid_temp_water3_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water4, locData.tsid_temp_water4_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water5, locData.tsid_temp_water5_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water6, locData.tsid_temp_water6_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water7, locData.tsid_temp_water7_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water8, locData.tsid_temp_water8_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water9, locData.tsid_temp_water9_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water10, locData.tsid_temp_water10_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water11, locData.tsid_temp_water11_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water12, locData.tsid_temp_water12_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water13, locData.tsid_temp_water13_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water14, locData.tsid_temp_water14_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water15, locData.tsid_temp_water15_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_water16, locData.tsid_temp_water16_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
 
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_air, locData.tsid_temp_air_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_air2, locData.tsid_temp_air2_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_air_max, locData.tsid_temp_air_max_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_air_min, locData.tsid_temp_air_min_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_air, locData.tsid_temp_air_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_air2, locData.tsid_temp_air2_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_air_max, locData.tsid_temp_air_max_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_air_min, locData.tsid_temp_air_min_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
 
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_do, locData.tsid_do_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_do2, locData.tsid_do2_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_do3, locData.tsid_do3_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_do4, locData.tsid_do4_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_do5, locData.tsid_do5_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_do6, locData.tsid_do6_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_do7, locData.tsid_do7_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_do8, locData.tsid_do8_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_do9, locData.tsid_do9_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_do10, locData.tsid_do10_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_do11, locData.tsid_do11_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_do12, locData.tsid_do12_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_do13, locData.tsid_do13_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_do14, locData.tsid_do14_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_do15, locData.tsid_do15_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_do, locData.tsid_do_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_do2, locData.tsid_do2_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_do3, locData.tsid_do3_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_do4, locData.tsid_do4_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_do5, locData.tsid_do5_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_do6, locData.tsid_do6_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_do7, locData.tsid_do7_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_do8, locData.tsid_do8_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_do9, locData.tsid_do9_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_do10, locData.tsid_do10_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_do11, locData.tsid_do11_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_do12, locData.tsid_do12_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_do13, locData.tsid_do13_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_do14, locData.tsid_do14_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_do15, locData.tsid_do15_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
 
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_cond, locData.tsid_cond_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_cond2, locData.tsid_cond2_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_cond, locData.tsid_cond_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_cond2, locData.tsid_cond2_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
 
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_depth, locData.tsid_depth_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_depth2, locData.tsid_depth2_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_depth3, locData.tsid_depth3_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_depth4, locData.tsid_depth4_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_depth5, locData.tsid_depth5_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_depth6, locData.tsid_depth6_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_depth7, locData.tsid_depth7_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_depth8, locData.tsid_depth8_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_depth9, locData.tsid_depth9_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_depth10, locData.tsid_depth10_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_depth11, locData.tsid_depth11_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_depth12, locData.tsid_depth12_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_depth13, locData.tsid_depth13_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_depth14, locData.tsid_depth14_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_depth15, locData.tsid_depth15_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_depth, locData.tsid_depth_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_depth2, locData.tsid_depth2_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_depth3, locData.tsid_depth3_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_depth4, locData.tsid_depth4_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_depth5, locData.tsid_depth5_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_depth6, locData.tsid_depth6_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_depth7, locData.tsid_depth7_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_depth8, locData.tsid_depth8_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_depth9, locData.tsid_depth9_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_depth10, locData.tsid_depth10_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_depth11, locData.tsid_depth11_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_depth12, locData.tsid_depth12_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_depth13, locData.tsid_depth13_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_depth14, locData.tsid_depth14_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_depth15, locData.tsid_depth15_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
 
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_ph, locData.tsid_ph_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_ph, locData.tsid_ph_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
 
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_turb, locData.tsid_turb_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_turb, locData.tsid_turb_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
 
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_speed_wind, locData.tsid_speed_wind_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_speed_wind, locData.tsid_speed_wind_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
 
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_speed, locData.tsid_speed_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_speed, locData.tsid_speed_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
 
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_pressure, locData.tsid_pressure_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_pressure, locData.tsid_pressure_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
 
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_dir_wind, locData.tsid_dir_wind_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-            } else {
-                fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_do, locData.tsid_do_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_dir_wind, locData.tsid_dir_wind_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                } else if (type === 'public' && gage === "Rend Lk-Big Muddy") {
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_speed_wind, locData.tsid_speed_wind_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_air, locData.tsid_temp_air_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_pressure, locData.tsid_pressure_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_dir_wind, locData.tsid_dir_wind_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                } else if (type === 'public' && gage === "Lk Shelbyville-Kaskaskia") {
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_speed_wind, locData.tsid_speed_wind_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_air, locData.tsid_temp_air_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_pressure, locData.tsid_pressure_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_dir_wind, locData.tsid_dir_wind_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                } else {
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_do, locData.tsid_do_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                }
             }
-
-
 
             // RIVER MILE
-            const riverMileCell = row.insertCell();
-            if (locData.river_mile_hard_coded !== null) {
-                riverMileCell.innerHTML = "<span class='hard_coded' title='Hard Coded in JSON, No Cloud Option Yet'>" + (parseFloat(locData.river_mile_hard_coded)).toFixed(2) + "<span>";
-            } else {
-                riverMileCell.innerHTML = "<div class='hard_coded'></div>";
+            if (6 === 6) {
+                const riverMileCell = row.insertCell();
+                if (locData.river_mile_hard_coded !== null) {
+                    riverMileCell.innerHTML = "<span class='hard_coded' title='Hard Coded in JSON, No Cloud Option Yet'>" + (parseFloat(locData.river_mile_hard_coded)).toFixed(2) + "<span>";
+                } else {
+                    riverMileCell.innerHTML = "<div class='hard_coded'></div>";
+                }
             }
 
-
-
             // FLOOD LEVEL
-            const floodCell = row.insertCell();
-            floodCell.innerHTML = flood_level;
-
-
-
+            if (7 === 7) {
+                const floodCell = row.insertCell();
+                floodCell.innerHTML = flood_level;
+            }
             // ***** END
         }
     };
 
     // Append the table to the document or a specific container
     const tableContainer = document.getElementById('table_container_gage_data_cda');
-    console.log("Table container:", tableContainer); // Check if the container element is found
+    // console.log("Table container:", tableContainer); // Check if the container element is found
     if (tableContainer) {
         tableContainer.appendChild(table);
     }
@@ -702,7 +705,7 @@ function fetchAndUpdateStage(stageCell, tsidStage, flood_level, currentDateTimeM
         } else if (cda === "internal") {
             urlStage = `https://coe-mvsuwa04mvs.mvs.usace.army.mil:8243/mvs-data/timeseries?name=${tsidStage}&begin=${currentDateTimeMinus30Hours.toISOString()}&end=${currentDateTime.toISOString()}&office=MVS`;
         }
-        console.log("urlStage = ", urlStage);
+        // console.log("urlStage = ", urlStage);
         fetch(urlStage, {
             method: 'GET',
             headers: {
@@ -719,7 +722,7 @@ function fetchAndUpdateStage(stageCell, tsidStage, flood_level, currentDateTimeM
                 return response.json();
             })
             .then(stage => {
-                console.log("stage:", stage);
+                // console.log("stage:", stage);
 
                 // Convert timestamps in the JSON object
                 stage.values.forEach(entry => {
@@ -727,14 +730,14 @@ function fetchAndUpdateStage(stageCell, tsidStage, flood_level, currentDateTimeM
                 });
 
                 // Output the updated JSON object
-                // console.log(JSON.stringify(stage, null, 2));
+                // // console.log(JSON.stringify(stage, null, 2));
 
-                console.log("stageFormatted = ", stage);
+                // console.log("stageFormatted = ", stage);
 
 
                 // Get the last non-null value from the stage data
                 const lastNonNullValue = getLastNonNullValue(stage);
-                console.log("lastNonNullValue:", lastNonNullValue);
+                // console.log("lastNonNullValue:", lastNonNullValue);
 
                 // Check if a non-null value was found
                 if (lastNonNullValue !== null) {
@@ -744,20 +747,20 @@ function fetchAndUpdateStage(stageCell, tsidStage, flood_level, currentDateTimeM
                     var qualityCodeLast = lastNonNullValue.qualityCode;
 
                     // Log the extracted valueLasts
-                    console.log("timestampLast:", timestampLast);
-                    console.log("valueLast:", valueLast);
-                    console.log("qualityCodeLast:", qualityCodeLast);
+                    // console.log("timestampLast:", timestampLast);
+                    // console.log("valueLast:", valueLast);
+                    // console.log("qualityCodeLast:", qualityCodeLast);
                 } else {
                     // If no non-null valueLast is found, log a message
-                    console.log("No non-null valueLast found.");
+                    // console.log("No non-null valueLast found.");
                 }
 
                 const c_count = calculateCCount(tsidStage);
-                console.log("c_count:", c_count);
+                // console.log("c_count:", c_count);
 
 
                 const lastNonNull24HoursValue = getLastNonNull24HoursValue(stage, c_count);
-                console.log("lastNonNull24HoursValue:", lastNonNull24HoursValue);
+                // console.log("lastNonNull24HoursValue:", lastNonNull24HoursValue);
 
                 // Check if a non-null value was found
                 if (lastNonNull24HoursValue !== null) {
@@ -767,39 +770,39 @@ function fetchAndUpdateStage(stageCell, tsidStage, flood_level, currentDateTimeM
                     var qualityCode24HoursLast = lastNonNull24HoursValue.qualityCode;
 
                     // Log the extracted valueLasts
-                    console.log("timestamp24HoursLast:", timestamp24HoursLast);
-                    console.log("value24HoursLast:", value24HoursLast);
-                    console.log("qualityCode24HoursLast:", qualityCode24HoursLast);
+                    // console.log("timestamp24HoursLast:", timestamp24HoursLast);
+                    // console.log("value24HoursLast:", value24HoursLast);
+                    // console.log("qualityCode24HoursLast:", qualityCode24HoursLast);
                 } else {
                     // If no non-null valueLast is found, log a message
-                    console.log("No non-null valueLast found.");
+                    // console.log("No non-null valueLast found.");
                 }
 
 
                 // Calculate the 24 hours change between first and last value
                 const delta_24 = (valueLast - value24HoursLast).toFixed(2);
-                console.log("delta_24:", delta_24);
+                // console.log("delta_24:", delta_24);
 
                 // Format the last valueLast's timestampLast to a string
                 const formattedLastValueTimeStamp = formatTimestampToString(timestampLast);
-                console.log("formattedLastValueTimeStamp = ", formattedLastValueTimeStamp);
+                // console.log("formattedLastValueTimeStamp = ", formattedLastValueTimeStamp);
 
                 // Create a Date object from the timestampLast
                 const timeStampDateObject = new Date(timestampLast);
-                console.log("timeStampDateObject = ", timeStampDateObject);
+                // console.log("timeStampDateObject = ", timeStampDateObject);
 
                 // Subtract 24 hours (24 * 60 * 60 * 1000 milliseconds) from the timestampLast date
                 const timeStampDateObjectMinus24Hours = new Date(timestampLast - (24 * 60 * 60 * 1000));
-                console.log("timeStampDateObjectMinus24Hours = ", timeStampDateObjectMinus24Hours);
+                // console.log("timeStampDateObjectMinus24Hours = ", timeStampDateObjectMinus24Hours);
 
 
                 // FLOOD CLASS
                 var floodClass = determineStageClass(valueLast, flood_level);
-                console.log("floodClass:", floodClass);
+                // console.log("floodClass:", floodClass);
 
                 // DATATIME CLASS
                 var dateTimeClass = determineDateTimeClass(timeStampDateObject, currentDateTimeMinus2Hours);
-                console.log("dateTimeClass:", dateTimeClass);
+                // console.log("dateTimeClass:", dateTimeClass);
 
                 if (valueLast === null) {
                     // innerHTMLStage = "-M-";
@@ -836,19 +839,19 @@ function fetchAndUpdateStage(stageCell, tsidStage, flood_level, currentDateTimeM
 // Function to fetch and update NWS data
 function fetchAndUpdateNWS(stageCell, tsidStage, tsid_stage_nws_3_day_forecast, flood_level, currentDateTime, currentDateTimePlus4Days) {
     // Log current date and time
-    // console.log("currentDateTime = ", currentDateTime);
-    // console.log("currentDateTimePlus4Days = ", currentDateTimePlus4Days);
+    // // console.log("currentDateTime = ", currentDateTime);
+    // // console.log("currentDateTimePlus4Days = ", currentDateTimePlus4Days);
 
     const { currentDateTimeMidNightISO, currentDateTimePlus4DaysMidNightISO } = generateDateTimeMidNightStringsISO(currentDateTime, currentDateTimePlus4Days);
-    // console.log("currentDateTimeMidNightISO = ", currentDateTimeMidNightISO);
-    // console.log("currentDateTimePlus4DaysMidNightISO = ", currentDateTimePlus4DaysMidNightISO);
+    // // console.log("currentDateTimeMidNightISO = ", currentDateTimeMidNightISO);
+    // // console.log("currentDateTimePlus4DaysMidNightISO = ", currentDateTimePlus4DaysMidNightISO);
 
     let innerHTMLStage = ""; // Declare innerHTMLStage variable with a default value
 
     if (tsidStage !== null) {
-        // console.log("tsidStage:", tsidStage);
-        // console.log("tsidStage:", typeof (tsidStage));
-        // console.log("tsidStage:", tsidStage.slice(-2));
+        // // console.log("tsidStage:", tsidStage);
+        // // console.log("tsidStage:", typeof (tsidStage));
+        // // console.log("tsidStage:", tsidStage.slice(-2));
 
         if (tsidStage.slice(-2) !== "29" && tsid_stage_nws_3_day_forecast !== null) {
 
@@ -859,7 +862,7 @@ function fetchAndUpdateNWS(stageCell, tsidStage, tsid_stage_nws_3_day_forecast, 
             } else if (cda === "internal") {
                 urlNWS = `https://coe-mvsuwa04mvs.mvs.usace.army.mil:8243/mvs-data/timeseries?name=${tsid_stage_nws_3_day_forecast}&begin=${currentDateTimeMidNightISO}&end=${currentDateTimePlus4DaysMidNightISO}&office=MVS`;
             }
-            console.log("urlNWS = ", urlNWS);
+            // console.log("urlNWS = ", urlNWS);
             fetch(urlNWS, {
                 method: 'GET',
                 headers: {
@@ -876,20 +879,20 @@ function fetchAndUpdateNWS(stageCell, tsidStage, tsid_stage_nws_3_day_forecast, 
                     return response.json();
                 })
                 .then(nws3Days => {
-                    console.log("nws3Days: ", nws3Days);
+                    // console.log("nws3Days: ", nws3Days);
 
                     // Convert timestamps in the JSON object
                     nws3Days.values.forEach(entry => {
                         entry[0] = formatNWSDate(entry[0]); // Update timestamp
                     });
 
-                    console.log("nws3DaysFormatted = ", nws3Days);
+                    // console.log("nws3DaysFormatted = ", nws3Days);
 
                     // Extract values with time ending in "13:00"
                     const valuesWithTimeNoon = extractValuesWithTimeNoon(nws3Days.values);
 
                     // Output the extracted values
-                    console.log("valuesWithTimeNoon = ", valuesWithTimeNoon);
+                    // console.log("valuesWithTimeNoon = ", valuesWithTimeNoon);
 
                     // Extract the second middle value
                     const firstFirstValue = valuesWithTimeNoon[1][0];
@@ -905,13 +908,13 @@ function fetchAndUpdateNWS(stageCell, tsidStage, tsid_stage_nws_3_day_forecast, 
 
                     // FLOOD CLASS
                     var floodClassDay1 = determineStageClass(firstMiddleValue, flood_level);
-                    // console.log("floodClassDay1:", floodClassDay1);
+                    // // console.log("floodClassDay1:", floodClassDay1);
 
                     var floodClassDay2 = determineStageClass(secondMiddleValue, flood_level);
-                    // console.log("floodClassDay2:", floodClassDay2);
+                    // // console.log("floodClassDay2:", floodClassDay2);
 
                     var floodClassDay3 = determineStageClass(thirdMiddleValue, flood_level);
-                    // console.log("floodClassDay3:", floodClassDay3);
+                    // // console.log("floodClassDay3:", floodClassDay3);
 
 
                     if (nws3Days !== null) {
@@ -960,7 +963,7 @@ function fetchAndUpdateNWS(stageCell, tsidStage, tsid_stage_nws_3_day_forecast, 
                     console.error("Error fetching or processing data:", error);
                 });
         } else {
-            console.log("The last two characters are '29'");
+            // console.log("The last two characters are '29'");
         }
     }
 }
@@ -981,7 +984,7 @@ function fetchAndUpdateFlow(flowCell, tsidFlow, label, currentDateTimeMinus2Hour
         } else if (cda === "internal") {
             urlFlow = `https://coe-mvsuwa04mvs.mvs.usace.army.mil:8243/mvs-data/timeseries?name=${tsidFlow}&begin=${currentDateTimeMinus30Hours.toISOString()}&end=${currentDateTime.toISOString()}&office=MVS`;
         }
-        console.log("urlFlow = ", urlFlow);
+        // console.log("urlFlow = ", urlFlow);
         // Fetch the time series data from the API using the determined query string
         fetch(urlFlow, {
             method: 'GET',
@@ -1000,7 +1003,7 @@ function fetchAndUpdateFlow(flowCell, tsidFlow, label, currentDateTimeMinus2Hour
             })
             .then(flow => {
                 // Once data is fetched, log the fetched data structure
-                console.log("flow: ", flow);
+                // console.log("flow: ", flow);
 
                 // Convert timestamps in the JSON object
                 flow.values.forEach(entry => {
@@ -1008,9 +1011,9 @@ function fetchAndUpdateFlow(flowCell, tsidFlow, label, currentDateTimeMinus2Hour
                 });
 
                 // Output the updated JSON object
-                // console.log(JSON.stringify(flow, null, 2));
+                // // console.log(JSON.stringify(flow, null, 2));
 
-                console.log("flowFormatted = ", flow);
+                // console.log("flowFormatted = ", flow);
 
                 // FLOW CLASS
                 if (label === "COE") {
@@ -1028,7 +1031,7 @@ function fetchAndUpdateFlow(flowCell, tsidFlow, label, currentDateTimeMinus2Hour
                 } else {
                     var myFlowLabelClass = "flow";
                 }
-                console.log("myFlowLabelClass = ", myFlowLabelClass);
+                // console.log("myFlowLabelClass = ", myFlowLabelClass);
 
 
                 // Get the last non-null value from the stage data
@@ -1041,12 +1044,12 @@ function fetchAndUpdateFlow(flowCell, tsidFlow, label, currentDateTimeMinus2Hour
                     var qualityCodeFlowLast = lastNonNullFlowValue.qualityCode;
 
                     // Log the extracted valueLasts
-                    console.log("timestampFlowLast:", timestampFlowLast);
-                    console.log("valueFlowLast:", valueFlowLast);
-                    console.log("qualityCodeFlowLast:", qualityCodeFlowLast);
+                    // console.log("timestampFlowLast:", timestampFlowLast);
+                    // console.log("valueFlowLast:", valueFlowLast);
+                    // console.log("qualityCodeFlowLast:", qualityCodeFlowLast);
                 } else {
                     // If no non-null valueLast is found, log a message
-                    console.log("No non-null valueLast found.");
+                    // console.log("No non-null valueLast found.");
                 }
 
 
@@ -1054,7 +1057,7 @@ function fetchAndUpdateFlow(flowCell, tsidFlow, label, currentDateTimeMinus2Hour
 
 
                 const lastNonNull24HoursFlowValue = getLastNonNull24HoursValue(flow, c_count);
-                console.log("lastNonNull24HoursFlowValue:", lastNonNull24HoursFlowValue);
+                // console.log("lastNonNull24HoursFlowValue:", lastNonNull24HoursFlowValue);
 
 
                 // Check if a non-null value was found
@@ -1065,18 +1068,18 @@ function fetchAndUpdateFlow(flowCell, tsidFlow, label, currentDateTimeMinus2Hour
                     var qualityCodeFlow24HoursLast = lastNonNull24HoursFlowValue.qualityCode;
 
                     // Log the extracted valueLasts
-                    console.log("timestampFlow24HoursLast:", timestampFlow24HoursLast);
-                    console.log("valueFlow24HoursLast:", valueFlow24HoursLast);
-                    console.log("qualityCodeFlow24HoursLast:", qualityCodeFlow24HoursLast);
+                    // console.log("timestampFlow24HoursLast:", timestampFlow24HoursLast);
+                    // console.log("valueFlow24HoursLast:", valueFlow24HoursLast);
+                    // console.log("qualityCodeFlow24HoursLast:", qualityCodeFlow24HoursLast);
                 } else {
                     // If no non-null valueLast is found, log a message
-                    console.log("No non-null valueLast found.");
+                    // console.log("No non-null valueLast found.");
                 }
 
 
                 // Calculate the 24 hours change between first and last value
                 const delta24Flow = (valueFlowLast - valueFlow24HoursLast).toFixed(0);
-                console.log("delta24Flow:", delta24Flow);
+                // console.log("delta24Flow:", delta24Flow);
 
 
                 // Check if the value is greater than or equal to 1000
@@ -1087,7 +1090,7 @@ function fetchAndUpdateFlow(flowCell, tsidFlow, label, currentDateTimeMinus2Hour
                     // If less than 1000, simply add commas at thousands place
                     roundedDelta24Flow = (parseFloat(delta24Flow)).toLocaleString();
                 }
-                console.log("roundedDelta24Flow = ", roundedDelta24Flow); // Log the rounded and formatted value to the console
+                // console.log("roundedDelta24Flow = ", roundedDelta24Flow); // Log the rounded and formatted value to the console
 
 
                 // Check if the value is greater than or equal to 1000
@@ -1098,27 +1101,27 @@ function fetchAndUpdateFlow(flowCell, tsidFlow, label, currentDateTimeMinus2Hour
                     // If less than 1000, simply add commas at thousands place
                     roundedValueFlowLast = (parseFloat(valueFlowLast)).toLocaleString();
                 }
-                console.log("roundedValueFlowLast = ", roundedValueFlowLast); // Log the rounded and formatted value to the console
+                // console.log("roundedValueFlowLast = ", roundedValueFlowLast); // Log the rounded and formatted value to the console
 
 
                 // Format the last valueLast's timestampFlowLast to a string
                 const formattedLastValueTimeStamp = formatTimestampToString(timestampFlowLast);
-                console.log("formattedLastValueTimeStamp = ", formattedLastValueTimeStamp);
+                // console.log("formattedLastValueTimeStamp = ", formattedLastValueTimeStamp);
 
 
                 // Create a Date object from the timestampFlowLast
                 const timeStampDateObject = new Date(timestampFlowLast);
-                console.log("timeStampDateObject = ", timeStampDateObject);
+                // console.log("timeStampDateObject = ", timeStampDateObject);
 
 
                 // Subtract 24 hours (24 * 60 * 60 * 1000 milliseconds) from the timestampFlowLast date
                 const timeStampDateObjectMinus24Hours = new Date(timestampFlowLast - (24 * 60 * 60 * 1000));
-                console.log("timeStampDateObjectMinus24Hours = ", timeStampDateObjectMinus24Hours);
+                // console.log("timeStampDateObjectMinus24Hours = ", timeStampDateObjectMinus24Hours);
 
 
                 // DATATIME CLASS
                 var dateTimeClass = determineDateTimeClass(timeStampDateObject, currentDateTimeMinus2Hours);
-                console.log("dateTimeClass:", dateTimeClass);
+                // console.log("dateTimeClass:", dateTimeClass);
 
 
                 if (lastNonNullFlowValue === null) {
@@ -1164,7 +1167,7 @@ function fetchAndUpdatePrecip(precipCell, tsid, currentDateTimeMinus2Hours, curr
         } else if (cda === "internal") {
             urlPrecip = `https://coe-mvsuwa04mvs.mvs.usace.army.mil:8243/mvs-data/timeseries?name=${tsid}&begin=${currentDateTimeMinus30Hours.toISOString()}&end=${currentDateTime.toISOString()}&office=MVS`;
         }
-        console.log("urlPrecip = ", urlPrecip);
+        // console.log("urlPrecip = ", urlPrecip);
         fetch(urlPrecip, {
             method: 'GET',
             headers: {
@@ -1182,7 +1185,7 @@ function fetchAndUpdatePrecip(precipCell, tsid, currentDateTimeMinus2Hours, curr
             })
             .then(precip => {
                 // Once data is fetched, log the fetched data structure
-                console.log("precip: ", precip);
+                // console.log("precip: ", precip);
 
                 // Convert timestamps in the JSON object
                 precip.values.forEach(entry => {
@@ -1190,14 +1193,14 @@ function fetchAndUpdatePrecip(precipCell, tsid, currentDateTimeMinus2Hours, curr
                 });
 
                 // Output the updated JSON object
-                // console.log(JSON.stringify(precip, null, 2));
+                // // console.log(JSON.stringify(precip, null, 2));
 
-                console.log("precipFormatted = ", precip);
+                // console.log("precipFormatted = ", precip);
 
 
                 // Get the last non-null value from the stage data
                 const lastNonNullPrecipValue = getLastNonNullValue(precip);
-                console.log("lastNonNullPrecipValue:", lastNonNullPrecipValue);
+                // console.log("lastNonNullPrecipValue:", lastNonNullPrecipValue);
 
                 // Check if a non-null value was found
                 if (lastNonNullPrecipValue !== null) {
@@ -1207,12 +1210,12 @@ function fetchAndUpdatePrecip(precipCell, tsid, currentDateTimeMinus2Hours, curr
                     var qualityCodePrecipLast = lastNonNullPrecipValue.qualityCode;
 
                     // Log the extracted valueLasts
-                    console.log("timestampPrecipLast:", timestampPrecipLast);
-                    console.log("valuePrecipLast:", valuePrecipLast);
-                    console.log("qualityCodePrecipLast:", qualityCodePrecipLast);
+                    // console.log("timestampPrecipLast:", timestampPrecipLast);
+                    // console.log("valuePrecipLast:", valuePrecipLast);
+                    // console.log("qualityCodePrecipLast:", qualityCodePrecipLast);
                 } else {
                     // If no non-null valueLast is found, log a message
-                    console.log("No non-null valueLast found.");
+                    // console.log("No non-null valueLast found.");
                 }
 
 
@@ -1220,7 +1223,7 @@ function fetchAndUpdatePrecip(precipCell, tsid, currentDateTimeMinus2Hours, curr
 
 
                 const lastNonNull6HoursPrecipValue = getLastNonNull6HoursValue(precip, c_count);
-                console.log("lastNonNull6HoursPrecipValue:", lastNonNull6HoursPrecipValue);
+                // console.log("lastNonNull6HoursPrecipValue:", lastNonNull6HoursPrecipValue);
 
 
                 // Check if a non-null value was found
@@ -1231,17 +1234,17 @@ function fetchAndUpdatePrecip(precipCell, tsid, currentDateTimeMinus2Hours, curr
                     var qualityCodePrecip6HoursLast = lastNonNull6HoursPrecipValue.qualityCode;
 
                     // Log the extracted valueLasts
-                    console.log("timestampPrecip6HoursLast:", timestampPrecip6HoursLast);
-                    console.log("valuePrecip6HoursLast:", valuePrecip6HoursLast);
-                    console.log("qualityCodePrecip6HoursLast:", qualityCodePrecip6HoursLast);
+                    // console.log("timestampPrecip6HoursLast:", timestampPrecip6HoursLast);
+                    // console.log("valuePrecip6HoursLast:", valuePrecip6HoursLast);
+                    // console.log("qualityCodePrecip6HoursLast:", qualityCodePrecip6HoursLast);
                 } else {
                     // If no non-null valueLast is found, log a message
-                    console.log("No non-null valueLast found.");
+                    // console.log("No non-null valueLast found.");
                 }
 
 
                 const lastNonNull24HoursPrecipValue = getLastNonNull24HoursValue(precip, c_count);
-                console.log("lastNonNull24HoursPrecipValue:", lastNonNull24HoursPrecipValue);
+                // console.log("lastNonNull24HoursPrecipValue:", lastNonNull24HoursPrecipValue);
 
 
                 // Check if a non-null value was found
@@ -1252,117 +1255,117 @@ function fetchAndUpdatePrecip(precipCell, tsid, currentDateTimeMinus2Hours, curr
                     var qualityCodePrecip24HoursLast = lastNonNull24HoursPrecipValue.qualityCode;
 
                     // Log the extracted valueLasts
-                    console.log("timestampPrecip24HoursLast:", timestampPrecip24HoursLast);
-                    console.log("valuePrecip24HoursLast:", valuePrecip24HoursLast);
-                    console.log("qualityCodePrecip24HoursLast:", qualityCodePrecip24HoursLast);
+                    // console.log("timestampPrecip24HoursLast:", timestampPrecip24HoursLast);
+                    // console.log("valuePrecip24HoursLast:", valuePrecip24HoursLast);
+                    // console.log("qualityCodePrecip24HoursLast:", qualityCodePrecip24HoursLast);
                 } else {
                     // If no non-null valueLast is found, log a message
-                    console.log("No non-null valueLast found.");
+                    // console.log("No non-null valueLast found.");
                 }
 
 
                 // Calculate the 24 hours change between first and last value
                 const precip_delta_6 = (valuePrecipLast - valuePrecip6HoursLast).toFixed(2);
-                console.log("precip_delta_6:", precip_delta_6);
+                // console.log("precip_delta_6:", precip_delta_6);
 
 
                 // Calculate the 24 hours change between first and last value
                 const precip_delta_24 = (valuePrecipLast - valuePrecip24HoursLast).toFixed(2);
-                console.log("precip_delta_24:", precip_delta_24);
+                // console.log("precip_delta_24:", precip_delta_24);
 
 
                 // Format the last valueLast's timestampFlowLast to a string
                 const formattedLastValueTimeStamp = formatTimestampToString(timestampPrecipLast);
-                console.log("formattedLastValueTimeStamp = ", formattedLastValueTimeStamp);
+                // console.log("formattedLastValueTimeStamp = ", formattedLastValueTimeStamp);
 
                 // Create a Date object from the timestampFlowLast
                 const timeStampDateObject = new Date(timestampPrecipLast);
-                console.log("timeStampDateObject = ", timeStampDateObject);
+                // console.log("timeStampDateObject = ", timeStampDateObject);
 
                 // Subtract 24 hours (24 * 60 * 60 * 1000 milliseconds) from the timestampFlowLast date
                 const timeStampDateObjectMinus24Hours = new Date(timestampPrecipLast - (24 * 60 * 60 * 1000));
-                console.log("timeStampDateObjectMinus24Hours = ", timeStampDateObjectMinus24Hours);
+                // console.log("timeStampDateObjectMinus24Hours = ", timeStampDateObjectMinus24Hours);
 
                 // SET THE CLASS FOR PRECIP TO DISPLAY THE BACKGROUND COLOR
                 if (precip_delta_6 < 0) {
-                    console.log("precip_delta_6 less than 0");
+                    // console.log("precip_delta_6 less than 0");
                     var myClass6 = "precip_less_0";
-                    console.log("myClass6 = ", tsid + " = " + myClass6);
+                    // console.log("myClass6 = ", tsid + " = " + myClass6);
                 } else if (precip_delta_6 === 0) {
-                    console.log("precip_delta_6 equal to 0");
+                    // console.log("precip_delta_6 equal to 0");
                     var myClass6 = "precip_equal_0";
-                    console.log("myClass6 = ", tsid + " = " + myClass6);
+                    // console.log("myClass6 = ", tsid + " = " + myClass6);
                 } else if (precip_delta_6 > 0.00 && precip_delta_6 <= 0.25) {
-                    console.log("precip_delta_6 greater than 0 and less than or equal to 0.25");
+                    // console.log("precip_delta_6 greater than 0 and less than or equal to 0.25");
                     var myClass6 = "precip_greater_0";
-                    console.log("myClass6 = ", tsid + " = " + myClass6);
+                    // console.log("myClass6 = ", tsid + " = " + myClass6);
                 } else if (precip_delta_6 > 0.25 && precip_delta_6 <= 0.50) {
-                    console.log("precip_delta_6 greater than 0.25 and less than or equal to 0.50");
+                    // console.log("precip_delta_6 greater than 0.25 and less than or equal to 0.50");
                     var myClass6 = "precip_greater_25";
-                    console.log("myClass6 = ", tsid + " = " + myClass6);
+                    // console.log("myClass6 = ", tsid + " = " + myClass6);
                 } else if (precip_delta_6 > 0.50 && precip_delta_6 <= 1.00) {
-                    console.log("precip_delta_6 greater than 0.50 and less than or equal to 1.00");
+                    // console.log("precip_delta_6 greater than 0.50 and less than or equal to 1.00");
                     var myClass6 = "precip_greater_50";
-                    console.log("myClass6 = ", tsid + " = " + myClass6);
+                    // console.log("myClass6 = ", tsid + " = " + myClass6);
                 } else if (precip_delta_6 > 1.00 && precip_delta_6 <= 2.00) {
-                    console.log("precip_delta_6 greater than 1.00 and less than or equal to 2.00");
+                    // console.log("precip_delta_6 greater than 1.00 and less than or equal to 2.00");
                     var myClass6 = "precip_greater_100";
-                    console.log("myClass6 = ", tsid + " = " + myClass6);
+                    // console.log("myClass6 = ", tsid + " = " + myClass6);
                 } else if (precip_delta_6 > 2.00) {
-                    console.log("precip_delta_6 greater than 2.00");
+                    // console.log("precip_delta_6 greater than 2.00");
                     var myClass6 = "precip_greater_200";
-                    console.log("myClass6 = ", tsid + " = " + myClass6);
+                    // console.log("myClass6 = ", tsid + " = " + myClass6);
                 } else if (precip_delta_6 === null) {
-                    console.log("precip_delta_6 missing");
+                    // console.log("precip_delta_6 missing");
                     var myClass6 = "precip_missing";
-                    console.log("myClass6 = ", tsid + " = " + myClass6);
+                    // console.log("myClass6 = ", tsid + " = " + myClass6);
                 } else {
-                    console.log("precip_delta_6 equal to else");
+                    // console.log("precip_delta_6 equal to else");
                     var myClass6 = "blank";
-                    console.log("myClass6 = ", tsid + " = " + myClass6);
+                    // console.log("myClass6 = ", tsid + " = " + myClass6);
                 }
 
                 if (precip_delta_24 < 0) {
-                    console.log("precip_delta_24 less than 0");
+                    // console.log("precip_delta_24 less than 0");
                     var myClass24 = "precip_less_0";
-                    console.log("myClass24 =", tsid + " = " + myClass24);
+                    // console.log("myClass24 =", tsid + " = " + myClass24);
                 } else if (precip_delta_24 === 0) {
-                    console.log("precip_delta_24 equal to 0");
+                    // console.log("precip_delta_24 equal to 0");
                     var myClass24 = "precip_equal_0";
-                    console.log("myClass24 =", tsid + " = " + myClass24);
+                    // console.log("myClass24 =", tsid + " = " + myClass24);
                 } else if (precip_delta_24 > 0.00 && precip_delta_24 <= 0.25) {
-                    console.log("precip_delta_24 greater than 0 and less than or equal to 0.25");
+                    // console.log("precip_delta_24 greater than 0 and less than or equal to 0.25");
                     var myClass24 = "precip_greater_0";
-                    console.log("myClass24 =", tsid + " = " + myClass24);
+                    // console.log("myClass24 =", tsid + " = " + myClass24);
                 } else if (precip_delta_24 > 0.25 && precip_delta_24 <= 0.50) {
-                    console.log("precip_delta_24 greater than 0.25 and less than or equal to 0.50");
+                    // console.log("precip_delta_24 greater than 0.25 and less than or equal to 0.50");
                     var myClass24 = "precip_greater_25";
-                    console.log("myClass24 =", tsid + " = " + myClass24);
+                    // console.log("myClass24 =", tsid + " = " + myClass24);
                 } else if (precip_delta_24 > 0.50 && precip_delta_24 <= 1.00) {
-                    console.log("precip_delta_24 greater than 0.50 and less than or equal to 1.00");
+                    // console.log("precip_delta_24 greater than 0.50 and less than or equal to 1.00");
                     var myClass24 = "precip_greater_50";
-                    console.log("myClass24 =", tsid + " = " + myClass24);
+                    // console.log("myClass24 =", tsid + " = " + myClass24);
                 } else if (precip_delta_24 > 1.00 && precip_delta_24 <= 2.00) {
-                    console.log("precip_delta_24 greater than 1.00 and less than or equal to 2.00");
+                    // console.log("precip_delta_24 greater than 1.00 and less than or equal to 2.00");
                     var myClass24 = "precip_greater_100";
-                    console.log("myClass24 =", tsid + " = " + myClass24);
+                    // console.log("myClass24 =", tsid + " = " + myClass24);
                 } else if (precip_delta_24 > 2.00) {
-                    console.log("precip_delta_24 greater than 2.00");
+                    // console.log("precip_delta_24 greater than 2.00");
                     var myClass24 = "precip_greater_200";
-                    console.log("myClass24 =", tsid + " = " + myClass24);
+                    // console.log("myClass24 =", tsid + " = " + myClass24);
                 } else if (precip_delta_24 === null) {
-                    console.log("precip_delta_24 missing");
+                    // console.log("precip_delta_24 missing");
                     var myClass24 = "precip_missing";
-                    console.log("myClass24 =", tsid + " = " + myClass24);
+                    // console.log("myClass24 =", tsid + " = " + myClass24);
                 } else {
-                    console.log("precip_delta_24 equal to else");
+                    // console.log("precip_delta_24 equal to else");
                     var myClass24 = "blank";
-                    console.log("myClass24 =", tsid + " = " + myClass24);
+                    // console.log("myClass24 =", tsid + " = " + myClass24);
                 }
 
                 // DATATIME CLASS
                 var dateTimeClass = determineDateTimeClass(timeStampDateObject, currentDateTimeMinus2Hours);
-                console.log("dateTimeClass:", dateTimeClass);
+                // console.log("dateTimeClass:", dateTimeClass);
 
                 if (lastNonNullPrecipValue === null) {
                     innerHTMLPrecip = "<table id='precip'>"
@@ -1418,7 +1421,7 @@ function fetchAndUpdateWaterQuality(waterQualityCell, tsid, label, currentDateTi
         } else if (cda === "internal") {
             urlWaterQuality = `https://coe-mvsuwa04mvs.mvs.usace.army.mil:8243/mvs-data/timeseries?name=${tsid}&begin=${currentDateTimeMinus30Hours.toISOString()}&end=${currentDateTime.toISOString()}&office=MVS`;
         }
-        console.log("urlWaterQuality = ", urlWaterQuality);
+        // console.log("urlWaterQuality = ", urlWaterQuality);
         fetch(urlWaterQuality, {
             method: 'GET',
             headers: {
@@ -1436,7 +1439,7 @@ function fetchAndUpdateWaterQuality(waterQualityCell, tsid, label, currentDateTi
             })
             .then(waterQuality => {
                 // Once data is fetched, log the fetched data structure
-                console.log("waterQuality:", waterQuality);
+                // console.log("waterQuality:", waterQuality);
 
                 // Convert timestamps in the JSON object
                 waterQuality.values.forEach(entry => {
@@ -1444,9 +1447,9 @@ function fetchAndUpdateWaterQuality(waterQualityCell, tsid, label, currentDateTi
                 });
 
                 // Output the updated JSON object
-                // console.log(JSON.stringify(waterQuality, null, 2));
+                // // console.log(JSON.stringify(waterQuality, null, 2));
 
-                console.log("lastNonNullWaterQualityValue = ", waterQuality);
+                // console.log("lastNonNullWaterQualityValue = ", waterQuality);
 
                 // WATER QUALITY CLASS
                 if (label.startsWith("TEMP AIR")) {
@@ -1472,7 +1475,7 @@ function fetchAndUpdateWaterQuality(waterQualityCell, tsid, label, currentDateTi
                 } else {
                     var myWaterQualityClass = "";
                 }
-                console.log("myWaterQualityClass = ", myWaterQualityClass);
+                // console.log("myWaterQualityClass = ", myWaterQualityClass);
 
 
                 // Get the last non-null value from the stage data
@@ -1486,12 +1489,12 @@ function fetchAndUpdateWaterQuality(waterQualityCell, tsid, label, currentDateTi
                     var qualityCodeWaterQualityLast = lastNonNullWaterQualityValue.qualityCode;
 
                     // Log the extracted valueLasts
-                    console.log("timestampWaterQualityLast:", timestampWaterQualityLast);
-                    console.log("valueWaterQualityLast:", valueWaterQualityLast);
-                    console.log("qualityCodeWaterQualityLast:", qualityCodeWaterQualityLast);
+                    // console.log("timestampWaterQualityLast:", timestampWaterQualityLast);
+                    // console.log("valueWaterQualityLast:", valueWaterQualityLast);
+                    // console.log("qualityCodeWaterQualityLast:", qualityCodeWaterQualityLast);
                 } else {
                     // If no non-null valueLast is found, log a message
-                    console.log("No non-null valueLast found.");
+                    // console.log("No non-null valueLast found.");
                 }
 
 
@@ -1499,7 +1502,7 @@ function fetchAndUpdateWaterQuality(waterQualityCell, tsid, label, currentDateTi
 
 
                 const lastNonNull24HoursWaterQualityValue = getLastNonNull24HoursValue(waterQuality, c_count);
-                console.log("lastNonNull24HoursWaterQualityValue:", lastNonNull24HoursWaterQualityValue);
+                // console.log("lastNonNull24HoursWaterQualityValue:", lastNonNull24HoursWaterQualityValue);
 
 
                 // Check if a non-null value was found
@@ -1510,33 +1513,33 @@ function fetchAndUpdateWaterQuality(waterQualityCell, tsid, label, currentDateTi
                     var qualityCodeWaterQuality24HoursLast = lastNonNull24HoursWaterQualityValue.qualityCode;
 
                     // Log the extracted valueLasts
-                    console.log("timestampWaterQuality24HoursLast:", timestampWaterQuality24HoursLast);
-                    console.log("valueWaterQuality24HoursLast:", valueWaterQuality24HoursLast);
-                    console.log("qualityCodeWaterQuality24HoursLast:", qualityCodeWaterQuality24HoursLast);
+                    // console.log("timestampWaterQuality24HoursLast:", timestampWaterQuality24HoursLast);
+                    // console.log("valueWaterQuality24HoursLast:", valueWaterQuality24HoursLast);
+                    // console.log("qualityCodeWaterQuality24HoursLast:", qualityCodeWaterQuality24HoursLast);
                 } else {
                     // If no non-null valueLast is found, log a message
-                    console.log("No non-null valueLast found.");
+                    // console.log("No non-null valueLast found.");
                 }
 
                 // Calculate the 24 hours change between first and last value
                 const delta_24_water_quality = (valueWaterQualityLast - valueWaterQuality24HoursLast).toFixed(0);
-                console.log("delta_24_water_quality:", delta_24_water_quality);
+                // console.log("delta_24_water_quality:", delta_24_water_quality);
 
                 // Format the last valueLast's timestampFlowLast to a string
                 const formattedLastValueTimeStamp = formatTimestampToString(timestampWaterQualityLast);
-                console.log("formattedLastValueTimeStamp = ", formattedLastValueTimeStamp);
+                // console.log("formattedLastValueTimeStamp = ", formattedLastValueTimeStamp);
 
                 // Create a Date object from the timestampFlowLast
                 const timeStampDateObject = new Date(timestampWaterQualityLast);
-                console.log("timeStampDateObject = ", timeStampDateObject);
+                // console.log("timeStampDateObject = ", timeStampDateObject);
 
                 // Subtract 24 hours (24 * 60 * 60 * 1000 milliseconds) from the timestampFlowLast date
                 const timeStampDateObjectMinus24Hours = new Date(timestampWaterQualityLast - (24 * 60 * 60 * 1000));
-                console.log("timeStampDateObjectMinus24Hours = ", timeStampDateObjectMinus24Hours);
+                // console.log("timeStampDateObjectMinus24Hours = ", timeStampDateObjectMinus24Hours);
 
                 // DATATIME CLASS
                 var dateTimeClass = determineDateTimeClass(timeStampDateObject, currentDateTimeMinus2Hours);
-                console.log("dateTimeClass:", dateTimeClass);
+                // console.log("dateTimeClass:", dateTimeClass);
 
                 if (lastNonNullWaterQualityValue === null) {
                     innerHTMLWaterQuality = "<span class='missing' title='" + waterQuality.name + "'>"
@@ -1653,13 +1656,13 @@ function getFirstNonNullValue(data) {
  ******************************************************************************/
 // Function determine last max class
 function determineStageClass(stage_value, flood_value) {
-    console.log("determineStageClass = ", stage_value + typeof (stage_value) + " " + flood_value + typeof (flood_value));
+    // console.log("determineStageClass = ", stage_value + typeof (stage_value) + " " + flood_value + typeof (flood_value));
     var myStageClass;
     if (parseFloat(stage_value) >= parseFloat(flood_value)) {
-        console.log("determineStageClass = ", stage_value + " >= " + flood_value);
+        // console.log("determineStageClass = ", stage_value + " >= " + flood_value);
         myStageClass = "last_max_value_flood";
     } else {
-        console.log("Stage Below Flood Level");
+        // console.log("Stage Below Flood Level");
         myStageClass = "last_max_value";
     }
     return myStageClass;
@@ -1670,13 +1673,13 @@ function determineDateTimeClass(formattedDate, currentDateTimeMinus2Hours) {
     var myDateTimeClass;
     if (formattedDate >= currentDateTimeMinus2Hours) {
         myDateTimeClass = "date_time_current";
-        console.log("formattedDate = ", formattedDate);
+        // console.log("formattedDate = ", formattedDate);
     } else {
         myDateTimeClass = "date_time_late";
-        console.log("formattedDate = ", formattedDate);
-        console.log("currentDateTimeMinus2Hours = ", currentDateTimeMinus2Hours);
+        // console.log("formattedDate = ", formattedDate);
+        // console.log("currentDateTimeMinus2Hours = ", currentDateTimeMinus2Hours);
     }
-    console.log("myDateTimeClass = ", myDateTimeClass);
+    // console.log("myDateTimeClass = ", myDateTimeClass);
     return myDateTimeClass;
 }
 
@@ -1734,7 +1737,7 @@ function calculateCCount(tsid) {
 
     // Access the fifth element
     const forthElement = splitString[3];
-    console.log("forthElement = ", forthElement);
+    // console.log("forthElement = ", forthElement);
 
     // Initialize c_count variable
     let c_count;
@@ -1815,7 +1818,7 @@ async function fetchDataFromNwsForecastsOutput() {
     } else if (cda === "internal") {
         urlNwsForecast = 'https://wm.mvs.ds.usace.army.mil/php_data_api/public/json/exportNwsForecasts2Json.json';
     }
-    console.log("urlNwsForecast: ", urlNwsForecast);
+    // console.log("urlNwsForecast: ", urlNwsForecast);
 
     try {
         const response = await fetch(urlNwsForecast);
@@ -1839,10 +1842,10 @@ function filterDataByTsid(NwsOutput, cwms_ts_id) {
 async function fetchAndLogNwsData(stageCell, tsid_stage_nws_3_day_forecast) {
     try {
         const NwsOutput = await fetchDataFromNwsForecastsOutput();
-        console.log('NwsOutput:', NwsOutput);
+        // console.log('NwsOutput:', NwsOutput);
 
         const filteredData = filterDataByTsid(NwsOutput, tsid_stage_nws_3_day_forecast);
-        console.log("Filtered NwsOutput Data for", tsid_stage_nws_3_day_forecast + ":", filteredData);
+        // console.log("Filtered NwsOutput Data for", tsid_stage_nws_3_day_forecast + ":", filteredData);
 
         // Update the HTML element with filtered data
         updateNwsForecastTimeHTML(filteredData, stageCell);
