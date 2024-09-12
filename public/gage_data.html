@@ -110,6 +110,7 @@
                     const param2Value = urlParams.get('cda') || cdaDefault;
                     const param3Value = urlParams.get('gage');
                     const param4Value = urlParams.get('type') || typeDefault;
+                    const param5Value = urlParams.get('office') || 'MVS';
 
                     urlParams.forEach(function (value, key) {
                         console.log(key, value);
@@ -129,6 +130,9 @@
 
                     var type = urlParams.get('type') || typeDefault;
                     console.log('type: ', type);
+
+                    var office = urlParams.get('office') || 'MVS';
+                    console.log('office: ', office);
                 </script>
 
                 <div id="container"></div>

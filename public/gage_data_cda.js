@@ -650,6 +650,12 @@ function createGageDataTable(allData) {
                     fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_pressure, locData.tsid_pressure_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
 
                     fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_dir_wind, locData.tsid_dir_wind_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_nitrate, locData.tsid_nitrate_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_chlorophyll, locData.tsid_chlorophyll_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+
+                    fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_phycocyanin, locData.tsid_phycocyanin_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
                 } else if (type === 'public' && gage === "Rend Lk-Big Muddy") {
                     fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_speed_wind, locData.tsid_speed_wind_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
                     fetchAndUpdateWaterQuality(waterQualityCell, locData.tsid_temp_air, locData.tsid_temp_air_label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
@@ -815,7 +821,7 @@ function fetchAndUpdateStage(stageCell, tsidStage, flood_level, currentDateTimeM
                 } else {
                     // innerHTMLStage = lastValue.toFixed(2)
                     innerHTMLStage = "<span class='" + floodClass + "' title='" + stage.name + ", Value = " + valueLast + ", Date Time = " + timestampLast + "'>"
-                        + "<a href='../../../district_templates/chart/public/chart.html?cwms_ts_id=" + stage.name + "&lookback=96&cda=public' target='_blank'>"
+                        + "<a href='../../../district_templates/chart/public/chart.html?office=MVS&cwms_ts_id=" + stage.name + "&lookback=96&cda=public' target='_blank'>"
                         + valueLast
                         + "</a>"
                         + "</span>"
@@ -926,17 +932,17 @@ function fetchAndUpdateNWS(stageCell, tsidStage, tsid_stage_nws_3_day_forecast, 
                             + "</tr>"
                             + "<tr>"
                             + "<td class='" + floodClassDay1 + "'>"
-                            + "<a href='../../../district_templates/chart/public/chart.html?cwms_ts_id=" + nws3Days.name + "&lookback=96&cda=public' target='_blank' title='" + nws3Days.name + " " + firstFirstValue + "'>"
+                            + "<a href='../../../district_templates/chart/public/chart.html?office=MVS&cwms_ts_id=" + nws3Days.name + "&lookback=96&cda=public' target='_blank' title='" + nws3Days.name + " " + firstFirstValue + "'>"
                             + firstMiddleValue
                             + "</a>"
                             + "</td>"
                             + "<td class='" + floodClassDay2 + "'>"
-                            + "<a href='../../../district_templates/chart/public/chart.html?cwms_ts_id=" + nws3Days.name + "&lookback=96&cda=public' target='_blank' title='" + nws3Days.name + " " + secondFirstValue + "'>"
+                            + "<a href='../../../district_templates/chart/public/chart.html?office=MVS&cwms_ts_id=" + nws3Days.name + "&lookback=96&cda=public' target='_blank' title='" + nws3Days.name + " " + secondFirstValue + "'>"
                             + secondMiddleValue
                             + "</a>"
                             + "</td>"
                             + "<td class='" + floodClassDay3 + "'>"
-                            + "<a href='../../../district_templates/chart/public/chart.html?cwms_ts_id=" + nws3Days.name + "&lookback=96&cda=public' target='_blank' title='" + nws3Days.name + " " + thirdFirstValue + "'>"
+                            + "<a href='../../../district_templates/chart/public/chart.html?office=MVS&cwms_ts_id=" + nws3Days.name + "&lookback=96&cda=public' target='_blank' title='" + nws3Days.name + " " + thirdFirstValue + "'>"
                             + thirdMiddleValue
                             + "</a>"
                             + "</td>"
@@ -1133,7 +1139,7 @@ function fetchAndUpdateFlow(flowCell, tsidFlow, label, currentDateTimeMinus2Hour
                         + "</span>";
                 } else {
                     innerHTMLFlow = "<span class='last_max_value' title='" + flow.name + ", Value = " + roundedValueFlowLast + ", Date Time = " + timestampFlowLast + "'>"
-                        + "<a href='../../../district_templates/chart/public/chart.html?cwms_ts_id=" + flow.name + "&lookback=96&cda=public' target='_blank'>"
+                        + "<a href='../../../district_templates/chart/public/chart.html?office=MVS&cwms_ts_id=" + flow.name + "&lookback=96&cda=public' target='_blank'>"
                         + roundedValueFlowLast
                         + "</a>"
                         + "</span>"
@@ -1390,7 +1396,7 @@ function fetchAndUpdatePrecip(precipCell, tsid, currentDateTimeMinus2Hours, curr
                         + "</tr>"
                         + "</table>"
                         + "<span class='last_max_value' title='" + precip.name + ", Value = " + valuePrecipLast + ", Date Time = " + timestampPrecipLast + "'>"
-                        + "<a href='../../../district_templates/chart/public/chart.html?cwms_ts_id=" + precip.name + "&lookback=96&cda=public' target='_blank'>"
+                        + "<a href='../../../district_templates/chart/public/chart.html?office=MVS&cwms_ts_id=" + precip.name + "&lookback=96&cda=public' target='_blank'>"
                         + valuePrecipLast
                         + "</a>"
                         + "</span>"
@@ -1421,7 +1427,7 @@ function fetchAndUpdateWaterQuality(waterQualityCell, tsid, label, currentDateTi
         } else if (cda === "internal") {
             urlWaterQuality = `https://coe-mvsuwa04mvs.mvs.usace.army.mil:8243/mvs-data/timeseries?name=${tsid}&begin=${currentDateTimeMinus30Hours.toISOString()}&end=${currentDateTime.toISOString()}&office=MVS`;
         }
-        // console.log("urlWaterQuality = ", urlWaterQuality);
+        console.log("urlWaterQuality = ", urlWaterQuality);
         fetch(urlWaterQuality, {
             method: 'GET',
             headers: {
@@ -1471,6 +1477,12 @@ function fetchAndUpdateWaterQuality(waterQualityCell, tsid, label, currentDateTi
                 } else if (label.startsWith("PRESSURE")) {
                     var myWaterQualityClass = "water_quality_pressure";
                 } else if (label.startsWith("DIR")) {
+                    var myWaterQualityClass = "water_quality_dir_wind";
+                } else if (label.startsWith("NITRATE")) {
+                    var myWaterQualityClass = "water_quality_dir_wind";
+                } else if (label.startsWith("CHLOROPHYLL")) {
+                    var myWaterQualityClass = "water_quality_dir_wind";
+                } else if (label.startsWith("PHYCOCYANIN")) {
                     var myWaterQualityClass = "water_quality_dir_wind";
                 } else {
                     var myWaterQualityClass = "";
@@ -1550,7 +1562,7 @@ function fetchAndUpdateWaterQuality(waterQualityCell, tsid, label, currentDateTi
                         + "</span>";
                 } else {
                     innerHTMLWaterQuality = "<span class='last_max_value' title='" + waterQuality.name + ", Value = " + valueWaterQualityLast + ", Date Time = " + timestampWaterQualityLast + "'>"
-                        + "<a href='../../../district_templates/chart/public/chart.html?cwms_ts_id=" + waterQuality.name + "&lookback=96&cda=public' target='_blank'>"
+                        + "<a href='../../../district_templates/chart/public/chart.html?office=MVS&cwms_ts_id=" + waterQuality.name + "&lookback=96&cda=public' target='_blank'>"
                         + valueWaterQualityLast
                         + "</a>"
                         + "</span>"
