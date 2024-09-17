@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Array to store all promises from API requests
             const apiPromises = [];
-            const combinedFirstData = []; // Array to store combined data
+            const combinedData = []; // Array to store combined data
 
             // Loop through the basins array
             basins.forEach(basin => {
@@ -66,13 +66,13 @@ document.addEventListener('DOMContentLoaded', function () {
                                 return;
                             }
                             console.log('firstData:', firstData);
-                            // Process and append the fetched data to combinedFirstData
-                            combinedFirstData.push(firstData);
+                            // Process and append the fetched data to combinedData
+                            combinedData.push(firstData);
 
                             // Process each location within the basin data
                             if (firstData['assigned-locations']) {
                                 firstData['assigned-locations'].forEach(loc => {
-                                    console.log('Processing location:', loc['location-id']);
+                                    // console.log('Processing location:', loc['location-id']);
 
                                     // Construct the URL for the location metadata request
                                     let locApiUrl = cda === "public" 
@@ -148,8 +148,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 .then(() => Promise.all(metadataPromises))
                 .then(() => Promise.all(floodPromises))
                 .then(() => {
-                    // Update combinedFirstData with location metadata and flood data
-                    combinedFirstData.forEach(basinData => {
+                    // Update combinedData with location metadata and flood data
+                    combinedData.forEach(basinData => {
                         if (basinData['assigned-locations']) {
                             basinData['assigned-locations'].forEach(loc => {
                                 const locData = locationMetadataMap.get(loc['location-id']);
@@ -165,7 +165,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     });
 
                     // Output the combined data
-                    console.log('Combined firstData with location metadata and flood data:', combinedFirstData);
+                    console.log('combinedData:', combinedData);
                 })
                 .catch(error => {
                     console.error('There was a problem with one or more fetch operations:', error);

@@ -125,7 +125,7 @@
                             for (var i = 0; i < basins.length; i++) {
                                 var th = document.createElement('th');
                                 var link = document.createElement('a');
-                                link.href = 'gage_data.html?basin=' + basins[i] + "&cda=public";
+                                link.href = 'index.html?office=' + office + 'basin=' + basins[i] + "&cda=public";
                                 link.innerHTML = '<strong>' + basins[i] + '</strong>';
                                 var p = document.createElement('p');
                                 p.appendChild(link);
@@ -136,7 +136,7 @@
                             for (var i = 0; i < basins.length; i++) {
                                 var th = document.createElement('th');
                                 var link = document.createElement('a');
-                                link.href = 'gage_data.html?basin=' + basins[i] + "&cda=internal";
+                                link.href = 'index.html?office=' + office + 'basin=' + basins[i] + "&cda=internal";
                                 link.innerHTML = '<strong>' + basins[i] + '</strong>';
                                 var p = document.createElement('p');
                                 p.appendChild(link);
@@ -213,7 +213,7 @@
         // Set the title and the span content based on the 'type' parameter
         const type = urlParams.get('type');
         // title = "Gage Data" + " - " + urlParams.get('basin') + " - " + urlParams.get('cda');
-        title = "Realtime Gage Data - " + " " + urlParams.get('basin');
+        title = "Realtime Gage Data - " + " " + basin;
 
 
 
