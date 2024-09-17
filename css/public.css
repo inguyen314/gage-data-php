@@ -1,0 +1,524 @@
+/*** ===================================================================================== ***/
+/*** GAGE DATA INSIDE TABLE ***/
+/*** ===================================================================================== ***/
+.last_max_value {
+	color:black;
+	font-weight:bold;
+	font-size: 1.0em
+}
+.last_max_value_flood {
+	color:red;
+	font-weight:bold;
+	font-size: 1.0em
+}
+.last_max_value_flood a {
+	color:red;
+}
+
+
+.day_nws_forecast {
+	background-color: lightyellow; 
+	text-align: center
+}
+.day_nws_ded {
+	color:blue; 
+	text-align: center;
+	font-size: 1.0em;
+}
+.day_nws_ded_missing {
+	color:red; 
+	text-align: center;
+	font-size: 1.0em;
+}
+
+
+.date_time_late {
+	color:red;
+	font-weight:normal;
+	font-size: 0.9em;
+	font-style: normal;
+	display: block
+}
+.date_time_current {
+	color:black;
+	font-weight:normal;
+	font-size: 0.9em;
+	font-style: normal;
+	display: block
+}
+
+
+.flow {
+	font-weight:bold;
+	font-size:0.8em;
+	padding-bottom: 5px;
+	display: block
+}
+.flow_coe {
+	color:red;
+	font-weight:bold;
+	font-size:0.8em;
+	padding-bottom: 5px;
+	display: block
+}
+.flow_coe a {
+	color:red;
+}
+.flow_coe_mvr {
+	color:brown;
+	font-weight:bold;
+	font-size:0.8em;
+	padding-bottom: 5px;
+	display: block
+}
+.flow_usgs {
+	color:orange;
+	font-weight:bold;
+	font-size:0.8em;
+	padding-bottom: 5px;
+	display: block
+}
+.flow_usgs a {
+	color:orange;
+}
+.flow_nws {
+	color:magenta;
+	font-weight:bold;
+	font-size:0.8em;
+	padding-bottom: 5px;
+	display: block
+}
+.flow_nws a {
+	color:magenta;
+}
+.flow_slopeadj {
+	color:saddlebrown;
+	font-weight:bold;
+	font-size:0.8em;
+	padding-bottom: 5px;
+	display: block
+}
+.flow_slopeadj a {
+	color:saddlebrown;
+}
+.flow_usgsraw {
+	color:orange;
+	font-weight:bold;
+	font-size:0.8em;
+	padding-bottom: 5px;
+	display: block
+}
+.flow_usgsraw a {
+	color:orange;
+}
+
+
+.missing {
+	color:red;
+	font-weight:bold;
+	font-size: 1.0em;
+	display: block
+}
+
+.missing a {
+	color:red;
+	font-weight:bold;
+	font-size: 1.2em;
+	display: block
+}
+
+
+.water_quality_temp_water {
+	color:blue;
+	font-weight:bold;
+	font-size:0.8em;
+	padding-bottom: 5px;
+	display: block
+}
+.water_quality_temp_air {
+	color:darkslategray;
+	font-weight:bold;
+	font-size:0.8em;
+	padding-bottom: 5px;
+	display: block
+}
+
+
+.water_quality_do {
+	color:darkgreen;
+	font-weight:bold;
+	font-size:0.8em;
+	padding-bottom: 5px;
+	display: block
+}
+
+.water_quality_dir_wind {
+	color:teal;
+	font-weight:bold;
+	font-size:0.8em;
+	padding-bottom: 5px;
+	display: block
+}
+
+
+.water_quality_pressure {
+	color:peru;
+	font-weight:bold;
+	font-size:0.8em;
+	padding-bottom: 5px;
+	display: block
+}
+
+
+.water_quality_speed_wind {
+	color:lightseagreen;
+	font-weight:bold;
+	font-size:0.8em;
+	padding-bottom: 5px;
+	display: block
+}
+
+
+.water_quality_ph {
+	color:orangered;
+	font-weight:bold;
+	font-size:0.8em;
+	padding-bottom: 5px;
+	display: block
+}
+
+
+.water_quality_turb {
+	color:yellowgreen;
+	font-weight:bold;
+	font-size:0.8em;
+	padding-bottom: 5px;
+	display: block
+}
+
+
+.water_quality_depth {
+	color:darkblue;
+	font-weight:bold;
+	font-size:0.8em;
+	padding-bottom: 5px;
+	display: block
+}
+
+
+.water_quality_cond {
+	color:firebrick;
+	font-weight:bold;
+	font-size:0.8em;
+	padding-bottom: 5px;
+	display: block
+}
+
+
+.alert {
+	padding: 15px;
+	background-color: #f44336;
+	color: white;
+	text-align: center;
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+
+
+/*** ===================================================================================== ***/
+/*** CUSTOMERS TABLE ***/
+/*** ===================================================================================== ***/
+#customers {
+    border-collapse: collapse;
+    width: 100%;
+	margin-top: 5px;
+	margin-bottom: 25px;
+}
+
+#customers th {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    text-align: left;
+    background-color: #444;
+    color: white;
+}
+
+#customers td, #customers th {
+	border: 1px solid #ddd;
+	padding: 5px;
+}
+
+#customers th a {
+	color: white;
+	text-decoration: none;
+}
+
+#customers td a {
+	color: black;
+	text-decoration: none;
+}
+
+#customers td a:hover, #customers th a:hover {
+	text-decoration: underline;
+}
+
+#customers tr:nth-child(even){
+	background-color: #f2f2f2;
+	
+}
+
+#customers tr:hover {background-color: #ddd;}
+
+
+/*** ===================================================================================== ***/
+/*** GAGE DATA ***/
+/*** ===================================================================================== ***/
+#gage_data {
+    border-collapse: collapse;
+    width: 100%;
+	margin-bottom: 100px;
+}
+#gage_data th {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    text-align: left;
+    background-color: #666666;
+    color: white;
+	border: 1px solid #ddd;
+	padding: 5px;
+	text-align: center;
+}
+#gage_data th a {
+	color: black;
+	text-decoration: none;
+}
+#gage_data td {
+	border: 1px solid #ddd;
+	padding: 10px;
+	text-align: center;
+}
+#gage_data td a:hover, #gage_data th a:hover {
+	text-decoration: underline;
+}
+#gage_data tr:nth-child(even){
+	background-color: #f2f2f2;
+}
+#gage_data tr:hover {background-color: #ddd;}
+
+hr {
+	border: none; /* Remove any default border */
+  	border-top: 1px solid #000; /* Set the top border to be 1 pixel thick and black */
+}
+
+
+/*** ===================================================================================== ***/
+/*** NWS FORECAST TABLE ***/
+/*** ===================================================================================== ***/
+#nws {
+    border-spacing: 1px; 
+	text-align: center;
+	width: 100%;
+	margin-top: 5px;
+}
+#nws td {
+	border: 1px solid gray; 
+	padding-top: 2px; 
+	padding-right: 15px; 
+	padding-bottom: 2px; 
+	padding-left: 15px;
+	border: none;
+	width: 33.333%;
+}
+
+
+/*** ===================================================================================== ***/
+/*** NWS FORECAST WEBREP TABLE ***/
+/*** ===================================================================================== ***/
+#nws_webrep {
+	text-align: center;
+	width: 100%;
+	margin-top: 5px;
+}
+#nws_webrep td {
+	padding-top: 2px; 
+	padding-right: 15px; 
+	padding-bottom: 2px; 
+	padding-left: 15px;
+	border: none;
+	width: 33.333%;
+}
+
+/*** ===================================================================================== ***/
+/*** BASIN ***/
+/*** ===================================================================================== ***/
+#basins {
+    border-collapse: collapse;
+    width: 100%;
+}
+#basins th {
+    padding-top: 30px;
+    padding-bottom: 10px;
+    text-align: center;
+}
+#basins td {
+	text-decoration: none;
+}
+#basins td a, #basins th a {
+	color: black;
+	text-decoration: none;
+}
+#basins td a:hover, #basins th a:hover {
+	text-decoration: underline;
+}
+
+/*** ===================================================================================== ***/
+/*** PRECIP TABLE ***/
+/*** ===================================================================================== ***/
+#precip_title {
+	width: 100%;
+	margin-top: 20px;
+}
+#precip {
+    border-spacing: 10px; 
+	align: center;
+	margin-left:auto; 
+    margin-right:auto;
+
+}
+#precip td {
+    color:black; 
+	font-weight:normal; 
+	font-size: 1.0em; 
+	border: 1px solid gray; 
+	padding-top: 2px; 
+	padding-right: 25px; 
+	padding-bottom: 2px; 
+	padding-left: 25px;
+}
+.precip_missing {
+	background-color: red
+}
+.precip_missing_legend {
+	background-color: red;
+	text-align: center; 
+	border: solid; 
+	color: red; 
+	border-color: #000000
+}
+.precip_less_0 {
+	background-color: red
+}
+.precip_less_0_legend {
+	background-color: red;
+	text-align: center; 
+	border: solid; 
+	color: red; 
+	border-color: #000000
+}
+.precip_equal_0 {
+	background-color: white
+}
+.precip_equal_0_legend {
+	background-color: white;
+	text-align: center; 
+	border: solid; 
+	color: white; 
+	border-color: #000000
+}
+.precip_greater_0 {
+	background-color: limegreen
+}
+.precip_greater_0_legend {
+	background-color: limegreen;
+	text-align: center; 
+	border: solid; 
+	color: limegreen; 
+	border-color: #000000
+}
+.precip_greater_25 {
+	background-color: sandybrown
+}
+.precip_greater_25_legend {
+	background-color: sandybrown;
+	text-align: center; 
+	border: solid; 
+	color: sandybrown; 
+	border-color: #000000
+}
+.precip_greater_50 {
+	background-color: gold
+}
+.precip_greater_50_legend {
+	background-color: gold;
+	text-align: center; 
+	border: solid; 
+	color: gold; 
+	border-color: #000000
+}
+.precip_greater_100 {
+	background-color: orange
+}
+.precip_greater_100_legend {
+	background-color: orange;
+	text-align: center; 
+	border: solid; 
+	color: orange; 
+	border-color: #000000
+}
+.precip_greater_200 {
+	background-color: red
+}
+.precip_greater_200_legend {
+	background-color: red;
+	text-align: center; 
+	border: solid; 
+	color: red; 
+	border-color: #000000
+}
+/*** ===================================================================================== ***/
+/*** WEBREP TABLE ***/
+/*** ===================================================================================== ***/
+#webrep {
+    border-collapse: collapse;
+    width: 100%;
+	margin-bottom: 25px;
+	/*font-size: 12px;*/
+}
+#webrep th {
+    padding-top: 0px;
+    padding-bottom: 0px;
+	padding-right: 5px;
+	padding-left: 5px;
+    text-align: left;
+    background-color: #444;
+    color: white;
+	border: 1px solid #ddd;
+	text-align: center;
+}
+#webrep th a {
+	color: black;
+	text-decoration: none;
+}
+#webrep td {
+	border: 1px solid #ddd;
+	padding-right: 5px;
+	padding-left: 5px;
+	padding-top: 0px;
+	padding-bottom: 0px;
+	text-align: center;
+}
+#webrep td a:hover {
+	text-decoration: underline;
+}
+#gage_data th a:hover {
+	text-decoration: underline;
+}
+#webrep tr:nth-child(even){
+	background-color: #f2f2f2;
+}
+#webrep tr:hover {background-color: #ddd;}
+
+hr {
+	border: none; /* Remove any default border */
+  	border-top: 1px solid #000; /* Set the top border to be 1 pixel thick and black */
+}

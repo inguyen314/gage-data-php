@@ -7,14 +7,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gage Data Json</title>
     <meta name="Description" content="U.S. Army Corps of Engineers St. Louis District Home Page" />
-    <link rel="stylesheet" href="../../css/body.css" />
-    <link rel="stylesheet" href="stylesheets/style.css" />
-    <link rel="stylesheet" href="../../css/breadcrumbs.css" />
-    <link rel="stylesheet" href="../../css/jumpMenu.css" />
-    <script type="text/javascript" src="../../js/main.js"></script>
+    <link rel="stylesheet" href="css/body.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/breadcrumbs.css" />
+    <link rel="stylesheet" href="css/jumpMenu.css" />
+    <script type="text/javascript" src="js/main.js"></script>
 
     <!-- Add sidebar.css IF NOT LOAD SIDEBAR TEMPLATE -->
-    <link rel="stylesheet" href="../../css/sidebar.css" />
+    <link rel="stylesheet" href="css/sidebar.css" />
     <!-- Include Moment.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
     <!-- Include the Chart.js library -->
@@ -170,7 +170,7 @@
                 </script>
 
                 <!-- Report Container -->
-                <div id="loading_json" style="display: none;"><img src="../../images/loading4.gif"
+                <div id="loading_json" style="display: none;"><img src="../images/loading4.gif"
                         style='height: 50px; width: 50px;' alt="Loading..." /></div>
                 <div id="table_container_json"></div>
                 <script src="json.js"></script>
@@ -182,14 +182,14 @@
     <footer id="footer">
         <!--Footer content populated here by script tag at end of body -->
     </footer>
-    <script src="../../js/libraries/jQuery-3.3.6.min.js"></script>
+    <script src="../js/libraries/jQuery-3.3.6.min.js"></script>
     <script defer>
         // When the document has loaded pull in the page header and footer skins
         $(document).ready(function () {
             // Change the v= to a different number to force clearing the cached version on the client browser
-            $('#header').load('../../templates/DISTRICT.header.html');
-            //$('#sidebar').load('../../templates/DISTRICT.sidebar.html');
-            $('#footer').load('../../templates/DISTRICT.footer.html');
+            $('#header').load('templates/DISTRICT.header.html');
+            //$('#sidebar').load('../templates/DISTRICT.sidebar.html');
+            $('#footer').load('templates/DISTRICT.footer.html');
         })
     </script>
 </body>
