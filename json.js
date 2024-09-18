@@ -7,10 +7,12 @@ document.addEventListener('DOMContentLoaded', function () {
     // Store location metadata and flood data
     const locationMetadataMap = new Map();
     const locationFloodMap = new Map();
-    
+    const locationStageTsidMap = new Map();
+
     // Arrays to track promises for metadata and flood data fetches
     const metadataPromises = [];
     const floodPromises = [];
+    const stageTsidPromises = [];
 
     // Fetch the initial data
     fetch(apiUrl)
@@ -41,6 +43,10 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             console.log(basins);
+
+            const selectedBasin = basins.includes(basin) ? basin : null;
+
+            console.log(selectedBasin); // Output: "Mississippi"
 
             // Array to store all promises from API requests
             const apiPromises = [];
@@ -75,7 +81,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                     // console.log('Processing location:', loc['location-id']);
 
                                     // Construct the URL for the location metadata request
-                                    let locApiUrl = cda === "public" 
+                                    let locApiUrl = cda === "public"
                                         ? `https://cwms-data.usace.army.mil/cwms-data/locations/${loc['location-id']}?office=MVS`
                                         : `https://coe-mvsuwa04mvs.mvs.usace.army.mil:8243/mvs-data/locations/${loc['location-id']}?office=MVS`;
 
@@ -104,8 +110,10 @@ document.addEventListener('DOMContentLoaded', function () {
                                         );
                                     }
 
+
+
                                     // Construct the URL for the flood data request
-                                    let floodApiUrl = cda === "public" 
+                                    let floodApiUrl = cda === "public"
                                         ? `https://cwms-data.usace.army.mil/cwms-data/levels/${loc['location-id']}.Stage.Inst.0.Flood?office=MVS&effective-date=2024-01-01T08:00:00&unit=ft`
                                         : `https://coe-mvsuwa04mvs.mvs.usace.army.mil:8243/mvs-data/levels/${loc['location-id']}.Stage.Inst.0.Flood?office=MVS&effective-date=2024-01-01T08:00:00&unit=ft`;
 
@@ -134,6 +142,42 @@ document.addEventListener('DOMContentLoaded', function () {
                                         );
                                     }
 
+
+
+                                    // Construct the URL for the stage tsid data request
+                                    let stageTsidApiUrl = cda === "public"
+                                        ? `https://cwms-data.usace.army.mil/cwms-data/timeseries/group/Stage?office=MVS&category-id=${loc['location-id']}`
+                                        : `https://coe-mvsuwa04mvs.mvs.usace.army.mil:8243/mvs-data/timeseries/group/Stage?office=MVS&category-id=${loc['location-id']}`;
+
+                                    if (stageTsidApiUrl) {
+                                        stageTsidPromises.push(
+                                            fetch(stageTsidApiUrl)
+                                                .then(response => {
+                                                    if (response.status === 404) {
+                                                        console.warn(`Stage TSID data not found for location: ${loc['location-id']}`);
+                                                        return null; // Skip processing if no data is found
+                                                    }
+                                                    if (!response.ok) {
+                                                        throw new Error(`Network response was not ok: ${response.statusText}`);
+                                                    }
+                                                    return response.json();
+                                                })
+                                                .then(stageTsidData => {
+                                                    if (stageTsidData) {
+                                                        locationStageTsidMap.set(loc['location-id'], stageTsidData);
+                                                    }
+                                                })
+                                                .catch(error => {
+                                                    console.error(`Problem with the fetch operation for stage TSID data at ${stageTsidApiUrl}:`, error);
+                                                })
+                                        );
+                                    }
+
+
+
+
+
+
                                 });
                             }
                         })
@@ -147,6 +191,7 @@ document.addEventListener('DOMContentLoaded', function () {
             Promise.all(apiPromises)
                 .then(() => Promise.all(metadataPromises))
                 .then(() => Promise.all(floodPromises))
+                .then(() => Promise.all(stageTsidPromises))
                 .then(() => {
                     // Update combinedData with location metadata and flood data
                     combinedData.forEach(basinData => {
@@ -156,9 +201,15 @@ document.addEventListener('DOMContentLoaded', function () {
                                 if (locData) {
                                     loc['metadata'] = locData; // Append locData to the location object
                                 }
+
                                 const locDataFlood = locationFloodMap.get(loc['location-id']);
                                 if (locDataFlood) {
                                     loc['flood'] = locDataFlood; // Append locDataFlood to the location object
+                                }
+
+                                const tsidStageData = locationStageTsidMap.get(loc['location-id']);
+                                if (tsidStageData) {
+                                    loc['tsid_stage'] = tsidStageData; // Append tsidStageData to the location object
                                 }
                             });
                         }
@@ -166,6 +217,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
                     // Output the combined data
                     console.log('combinedData:', combinedData);
+
+                    // Use find to get the specific basin object
+                    const selectedBasinData = combinedData.find(item => item.id === basin);
+
+                    if (selectedBasinData) {
+                        console.log("selectedBasinData:", selectedBasinData); // Output: { "office-id": "MVS", "id": "Mississippi" }
+                    } else {
+                        console.log("Basin not found");
+                    }
+
+                    // Call the function to create and populate the table
+                    createGageDataTable(selectedBasinData);
                 })
                 .catch(error => {
                     console.error('There was a problem with one or more fetch operations:', error);

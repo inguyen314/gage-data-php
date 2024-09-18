@@ -42,7 +42,7 @@
                             </h2>
                             <div class="box-content" style="background-color:white;margin:auto">
                                 <div class="content">
-                                   
+
                                 </div>
                             </div>
                         </div>
@@ -125,7 +125,7 @@
                             for (var i = 0; i < basins.length; i++) {
                                 var th = document.createElement('th');
                                 var link = document.createElement('a');
-                                link.href = 'index.html?office=' + office + 'basin=' + basins[i] + "&cda=public";
+                                link.href = 'index.html?office=' + office + '&basin=' + basins[i] + "&cda=public";
                                 link.innerHTML = '<strong>' + basins[i] + '</strong>';
                                 var p = document.createElement('p');
                                 p.appendChild(link);
@@ -136,7 +136,7 @@
                             for (var i = 0; i < basins.length; i++) {
                                 var th = document.createElement('th');
                                 var link = document.createElement('a');
-                                link.href = 'index.html?office=' + office + 'basin=' + basins[i] + "&cda=internal";
+                                link.href = 'index.html?office=' + office + '&basin=' + basins[i] + "&cda=internal";
                                 link.innerHTML = '<strong>' + basins[i] + '</strong>';
                                 var p = document.createElement('p');
                                 p.appendChild(link);
@@ -172,8 +172,9 @@
                 <!-- Report Container -->
                 <div id="loading_json" style="display: none;"><img src="../images/loading4.gif"
                         style='height: 50px; width: 50px;' alt="Loading..." /></div>
-                <div id="table_container_json"></div>
+                <div id="table_container_gage_data_cda"></div>
                 <script src="json.js"></script>
+                <script src="gage_data_cda.js"></script>
             </div>
         </div>
         <button id="returnTop" title="Return to Top of Page">Top</button>
