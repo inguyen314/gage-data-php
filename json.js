@@ -1,5 +1,5 @@
-document.addEventListener('DOMContentLoaded', function () {
-    const apiUrl = 'https://coe-mvsuwa04mvs.mvs.usace.army.mil:8243/mvs-data/location/group?office=MVS&include-assigned=false&location-category-like=Basins';
+document.addEventListener('DOMContentLoaded', async function () {
+    const apiUrl = `https://coe-${office.toLocaleLowerCase()}uwa04${office.toLocaleLowerCase()}.${office.toLocaleLowerCase()}.usace.army.mil:8243/${office.toLocaleLowerCase()}-data/location/group?office=${office}&include-assigned=false&location-category-like=Basins`;
 
     // Example configuration; adjust as needed
     const cda = "public"; // or "internal", set based on your needs
@@ -8,11 +8,17 @@ document.addEventListener('DOMContentLoaded', function () {
     const locationMetadataMap = new Map();
     const locationFloodMap = new Map();
     const locationStageTsidMap = new Map();
+    const locationFlowTsidMap = new Map();
+    const locationPrecipTsidMap = new Map();
+    const locationTempAirTsidMap = new Map();
 
     // Arrays to track promises for metadata and flood data fetches
     const metadataPromises = [];
     const floodPromises = [];
     const stageTsidPromises = [];
+    const flowTsidPromises = [];
+    const precipTsidPromises = [];
+    const tempAirTsidPromises = [];
 
     // Fetch the initial data
     fetch(apiUrl)
@@ -30,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             console.log('Data fetched:', data);
 
-            const targetCategory = { "office-id": "MVS", "id": "Basins" };
+            const targetCategory = { "office-id": office, "id": "Basins" };
 
             const filteredArray = filterByLocationCategory(data, targetCategory);
             console.log(filteredArray);
@@ -53,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const combinedData = []; // Array to store combined data
 
             // Construct the URL for the API request - basin
-            const firstApiUrl = `https://coe-mvsuwa04mvs.mvs.usace.army.mil:8243/mvs-data/location/group/${basin}?office=MVS&category-id=Basins`;
+            const firstApiUrl = `https://coe-${office.toLocaleLowerCase()}uwa04${office.toLocaleLowerCase()}.${office.toLocaleLowerCase()}.usace.army.mil:8243/${office.toLocaleLowerCase()}-data/location/group/${basin}?office=${office}&category-id=Basins`;
 
             // Push the fetch promise to the apiPromises array
             apiPromises.push(
@@ -70,6 +76,17 @@ document.addEventListener('DOMContentLoaded', function () {
                             return;
                         }
                         console.log('firstData:', firstData);
+
+                        // Remove locations where the attribute is greater than 900
+                        firstData[`assigned-locations`] = firstData[`assigned-locations`].filter(location => location.attribute <= 900);
+
+                        console.log('firstData after remove gages with attribute greater than 900:', firstData);
+
+                        // Reorder assigned-locations based on the "attribute" value
+                        firstData[`assigned-locations`].sort((a, b) => a.attribute - b.attribute);
+
+                        console.log('firstData after reorder based on attribute:', firstData);
+
                         // Process and append the fetched data to combinedData
                         combinedData.push(firstData);
 
@@ -79,10 +96,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 // console.log('Processing location:', loc['location-id']);
 
                                 // Construct the URL for the location metadata request
-                                let locApiUrl = cda === "public"
-                                    ? `https://cwms-data.usace.army.mil/cwms-data/locations/${loc['location-id']}?office=MVS`
-                                    : `https://coe-mvsuwa04mvs.mvs.usace.army.mil:8243/mvs-data/locations/${loc['location-id']}?office=MVS`;
-
+                                let locApiUrl = `https://coe-${office.toLocaleLowerCase()}uwa04${office.toLocaleLowerCase()}.${office.toLocaleLowerCase()}.usace.army.mil:8243/${office.toLocaleLowerCase()}-data/locations/${loc['location-id']}?office=${office}`;
                                 if (locApiUrl) {
                                     // Push the fetch promise to the metadataPromises array
                                     metadataPromises.push(
@@ -111,10 +125,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
                                 // Construct the URL for the flood data request
-                                let floodApiUrl = cda === "public"
-                                    ? `https://cwms-data.usace.army.mil/cwms-data/levels/${loc['location-id']}.Stage.Inst.0.Flood?office=MVS&effective-date=2024-01-01T08:00:00&unit=ft`
-                                    : `https://coe-mvsuwa04mvs.mvs.usace.army.mil:8243/mvs-data/levels/${loc['location-id']}.Stage.Inst.0.Flood?office=MVS&effective-date=2024-01-01T08:00:00&unit=ft`;
-
+                                let floodApiUrl = `https://coe-${office.toLocaleLowerCase()}uwa04${office.toLocaleLowerCase()}.${office.toLocaleLowerCase()}.usace.army.mil:8243/${office.toLocaleLowerCase()}-data/levels/${loc['location-id']}.Stage.Inst.0.Flood?office=${office}&effective-date=2024-01-01T08:00:00&unit=ft`;
                                 if (floodApiUrl) {
                                     // Push the fetch promise to the floodPromises array
                                     floodPromises.push(
@@ -143,10 +154,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
                                 // Construct the URL for the stage tsid data request
-                                let stageTsidApiUrl = cda === "public"
-                                    ? `https://cwms-data.usace.army.mil/cwms-data/timeseries/group/Stage?office=MVS&category-id=${loc['location-id']}`
-                                    : `https://coe-mvsuwa04mvs.mvs.usace.army.mil:8243/mvs-data/timeseries/group/Stage?office=MVS&category-id=${loc['location-id']}`;
-
+                                let stageTsidApiUrl = `https://coe-${office.toLocaleLowerCase()}uwa04${office.toLocaleLowerCase()}.${office.toLocaleLowerCase()}.usace.army.mil:8243/${office.toLocaleLowerCase()}-data/timeseries/group/Stage?office=${office}&category-id=${loc['location-id']}`;
                                 if (stageTsidApiUrl) {
                                     stageTsidPromises.push(
                                         fetch(stageTsidApiUrl)
@@ -172,6 +180,89 @@ document.addEventListener('DOMContentLoaded', function () {
                                 }
 
 
+                                // Construct the URL for the flow tsid data request
+                                let flowTsidApiUrl = `https://coe-${office.toLocaleLowerCase()}uwa04${office.toLocaleLowerCase()}.${office.toLocaleLowerCase()}.usace.army.mil:8243/${office.toLocaleLowerCase()}-data/timeseries/group/Flow?office=${office}&category-id=${loc['location-id']}`;
+                                if (flowTsidApiUrl) {
+                                    flowTsidPromises.push(
+                                        fetch(flowTsidApiUrl)
+                                            .then(response => {
+                                                if (response.status === 404) {
+                                                    console.warn(`Flow TSID data not found for location: ${loc['location-id']}`);
+                                                    return null; // Skip processing if no data is found
+                                                }
+                                                if (!response.ok) {
+                                                    throw new Error(`Network response was not ok: ${response.statusText}`);
+                                                }
+                                                return response.json();
+                                            })
+                                            .then(flowTsidData => {
+                                                if (flowTsidData) {
+                                                    locationFlowTsidMap.set(loc['location-id'], flowTsidData);
+                                                }
+                                            })
+                                            .catch(error => {
+                                                console.error(`Problem with the fetch operation for stage TSID data at ${flowTsidApiUrl}:`, error);
+                                            })
+                                    );
+                                }
+
+
+
+                                // Construct the URL for the precip tsid data request
+                                let precipTsidApiUrl = `https://coe-${office.toLocaleLowerCase()}uwa04${office.toLocaleLowerCase()}.${office.toLocaleLowerCase()}.usace.army.mil:8243/${office.toLocaleLowerCase()}-data/timeseries/group/Precip?office=${office}&category-id=${loc['location-id']}`;
+                                if (precipTsidApiUrl) {
+                                    precipTsidPromises.push(
+                                        fetch(precipTsidApiUrl)
+                                            .then(response => {
+                                                if (response.status === 404) {
+                                                    console.warn(`Precip TSID data not found for location: ${loc['location-id']}`);
+                                                    return null; // Skip processing if no data is found
+                                                }
+                                                if (!response.ok) {
+                                                    throw new Error(`Network response was not ok: ${response.statusText}`);
+                                                }
+                                                return response.json();
+                                            })
+                                            .then(precipTsidData => {
+                                                if (precipTsidData) {
+                                                    locationPrecipTsidMap.set(loc['location-id'], precipTsidData);
+                                                }
+                                            })
+                                            .catch(error => {
+                                                console.error(`Problem with the fetch operation for stage TSID data at ${precipTsidApiUrl}:`, error);
+                                            })
+                                    );
+                                }
+
+
+
+                                // Construct the URL for the temp air tsid data request
+                                let tempAirTsidApiUrl = `https://coe-${office.toLocaleLowerCase()}uwa04${office.toLocaleLowerCase()}.${office.toLocaleLowerCase()}.usace.army.mil:8243/${office.toLocaleLowerCase()}-data/timeseries/group/Temp-Air?office=${office}&category-id=${loc['location-id']}`;
+                                if (tempAirTsidApiUrl) {
+                                    tempAirTsidPromises.push(
+                                        fetch(tempAirTsidApiUrl)
+                                            .then(response => {
+                                                if (response.status === 404) {
+                                                    console.warn(`Temp-Air TSID data not found for location: ${loc['location-id']}`);
+                                                    return null; // Skip processing if no data is found
+                                                }
+                                                if (!response.ok) {
+                                                    throw new Error(`Network response was not ok: ${response.statusText}`);
+                                                }
+                                                return response.json();
+                                            })
+                                            .then(tempAirTsidData => {
+                                                if (tempAirTsidData) {
+                                                    locationTempAirTsidMap.set(loc['location-id'], tempAirTsidData);
+                                                }
+                                            })
+                                            .catch(error => {
+                                                console.error(`Problem with the fetch operation for stage TSID data at ${tempAirTsidApiUrl}:`, error);
+                                            })
+                                    );
+                                }
+
+
 
 
 
@@ -189,12 +280,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 .then(() => Promise.all(metadataPromises))
                 .then(() => Promise.all(floodPromises))
                 .then(() => Promise.all(stageTsidPromises))
+                .then(() => Promise.all(flowTsidPromises))
+                .then(() => Promise.all(precipTsidPromises))
+                .then(() => Promise.all(tempAirTsidPromises))
                 .then(() => {
                     // Update combinedData with location metadata and flood data
                     combinedData.forEach(basinData => {
                         if (basinData['assigned-locations']) {
                             basinData['assigned-locations'].forEach(loc => {
                                 const locData = locationMetadataMap.get(loc['location-id']);
+
                                 if (locData) {
                                     loc['metadata'] = locData; // Append locData to the location object
                                 }
@@ -208,6 +303,21 @@ document.addEventListener('DOMContentLoaded', function () {
                                 if (tsidStageData) {
                                     loc['tsid_stage'] = tsidStageData; // Append tsidStageData to the location object
                                 }
+
+                                const tsidFlowData = locationFlowTsidMap.get(loc['location-id']);
+                                if (tsidFlowData) {
+                                    loc['tsid_flow'] = tsidFlowData; // Append tsidStageData to the location object
+                                }
+
+                                const tsidPrecipData = locationPrecipTsidMap.get(loc['location-id']);
+                                if (tsidPrecipData) {
+                                    loc['tsid_precip'] = tsidPrecipData; // Append tsidStageData to the location object
+                                }
+
+                                const tsidTempAirData = locationTempAirTsidMap.get(loc['location-id']);
+                                if (tsidTempAirData) {
+                                    loc['tsid_temp_air'] = tsidTempAirData; // Append tsidStageData to the location object
+                                }
                             });
                         }
                     });
@@ -216,7 +326,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     console.log('combinedData:', combinedData);
 
                     // Call the function to create and populate the table
-                    // createGageDataTable(selectedBasinData);
+                    createGageDataTable(combinedData);
                 })
                 .catch(error => {
                     console.error('There was a problem with one or more fetch operations:', error);
