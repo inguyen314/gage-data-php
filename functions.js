@@ -7,9 +7,9 @@ function fetchAndUpdateStage(stageCell, tsidStage, flood_level, currentDateTimeM
         // Fetch the time series data from the API using the determined query string
         let urlStage = null;
         if (cda === "public") {
-            urlStage = `https://cwms-data.usace.army.mil/cwms-data/timeseries?name=${tsidStage}&begin=${currentDateTimeMinus30Hours.toISOString()}&end=${currentDateTime.toISOString()}&office=MVS`;
+            urlStage = `https://cwms-data.usace.army.mil/cwms-data/timeseries?name=${tsidStage}&begin=${currentDateTimeMinus30Hours.toISOString()}&end=${currentDateTime.toISOString()}&office=${office}`;
         } else if (cda === "internal") {
-            urlStage = `https://coe-mvsuwa04mvs.mvs.usace.army.mil:8243/mvs-data/timeseries?name=${tsidStage}&begin=${currentDateTimeMinus30Hours.toISOString()}&end=${currentDateTime.toISOString()}&office=MVS`;
+            urlStage = `https://coe-${office}uwa04${office.toLocaleLowerCase()}.${office.toLocaleLowerCase()}.usace.army.mil:8243/${office.toLocaleLowerCase()}-data/timeseries?name=${tsidStage}&begin=${currentDateTimeMinus30Hours.toISOString()}&end=${currentDateTime.toISOString()}&office=${office}`;
         }
         // console.log("urlStage = ", urlStage);
         fetch(urlStage, {
@@ -121,7 +121,7 @@ function fetchAndUpdateStage(stageCell, tsidStage, flood_level, currentDateTimeM
                 } else {
                     // innerHTMLStage = lastValue.toFixed(2)
                     innerHTMLStage = "<span class='" + floodClass + "' title='" + stage.name + ", Value = " + valueLast + ", Date Time = " + timestampLast + "'>"
-                        + "<a href='../../../district_templates/chart/index.html?office=MVS&cwms_ts_id=" + stage.name + "&lookback=96&cda=public' target='_blank'>"
+                        + "<a href='../chart/index.html?office=" + office + "&cwms_ts_id=" + stage.name + "&lookback=96&cda=public' target='_blank'>"
                         + valueLast
                         + "</a>"
                         + "</span>"
@@ -164,9 +164,9 @@ function fetchAndUpdateNWS(stageCell, tsidStage, tsid_stage_nws_3_day_forecast, 
             // Fetch the time series data from the API using the determined query string
             let urlNWS = null;
             if (cda === "public") {
-                urlNWS = `https://cwms-data.usace.army.mil/cwms-data/timeseries?name=${tsid_stage_nws_3_day_forecast}&begin=${currentDateTimeMidNightISO}&end=${currentDateTimePlus4DaysMidNightISO}&office=MVS`;
+                urlNWS = `https://cwms-data.usace.army.mil/cwms-data/timeseries?name=${tsid_stage_nws_3_day_forecast}&begin=${currentDateTimeMidNightISO}&end=${currentDateTimePlus4DaysMidNightISO}&office=${office}`;
             } else if (cda === "internal") {
-                urlNWS = `https://coe-mvsuwa04mvs.mvs.usace.army.mil:8243/mvs-data/timeseries?name=${tsid_stage_nws_3_day_forecast}&begin=${currentDateTimeMidNightISO}&end=${currentDateTimePlus4DaysMidNightISO}&office=MVS`;
+                urlNWS = `https://coe-${office.toLocaleLowerCase()}uwa04${office.toLocaleLowerCase()}.${office.toLocaleLowerCase()}.usace.army.mil:8243/${office.toLocaleLowerCase()}-data/timeseries?name=${tsid_stage_nws_3_day_forecast}&begin=${currentDateTimeMidNightISO}&end=${currentDateTimePlus4DaysMidNightISO}&office=${office}`;
             }
             // console.log("urlNWS = ", urlNWS);
             fetch(urlNWS, {
@@ -232,17 +232,17 @@ function fetchAndUpdateNWS(stageCell, tsidStage, tsid_stage_nws_3_day_forecast, 
                             + "</tr>"
                             + "<tr>"
                             + "<td class='" + floodClassDay1 + "'>"
-                            + "<a href='../../../district_templates/chart/index.html?office=MVS&cwms_ts_id=" + nws3Days.name + "&lookback=96&cda=public' target='_blank' title='" + nws3Days.name + " " + firstFirstValue + "'>"
+                            + "<a href='../chart/index.html?office=" + office + "&cwms_ts_id=" + nws3Days.name + "&lookback=6&lookforward=96&cda=public' target='_blank' title='" + nws3Days.name + " " + firstFirstValue + "'>"
                             + firstMiddleValue
                             + "</a>"
                             + "</td>"
                             + "<td class='" + floodClassDay2 + "'>"
-                            + "<a href='../../../district_templates/chart/index.html?office=MVS&cwms_ts_id=" + nws3Days.name + "&lookback=96&cda=public' target='_blank' title='" + nws3Days.name + " " + secondFirstValue + "'>"
+                            + "<a href='../chart/index.html?office=" + office + "&cwms_ts_id=" + nws3Days.name + "&lookback=6&lookforward=96&cda=public' target='_blank' title='" + nws3Days.name + " " + secondFirstValue + "'>"
                             + secondMiddleValue
                             + "</a>"
                             + "</td>"
                             + "<td class='" + floodClassDay3 + "'>"
-                            + "<a href='../../../district_templates/chart/index.html?office=MVS&cwms_ts_id=" + nws3Days.name + "&lookback=96&cda=public' target='_blank' title='" + nws3Days.name + " " + thirdFirstValue + "'>"
+                            + "<a href='../chart/index.html?office=" + office + "&cwms_ts_id=" + nws3Days.name + "&lookback=6&lookforward=96&cda=public' target='_blank' title='" + nws3Days.name + " " + thirdFirstValue + "'>"
                             + thirdMiddleValue
                             + "</a>"
                             + "</td>"
@@ -286,9 +286,9 @@ function fetchAndUpdateFlow(flowCell, tsidFlow, label, currentDateTimeMinus2Hour
     if (tsidFlow !== null) {
         let urlFlow = null;
         if (cda === "public") {
-            urlFlow = `https://cwms-data.usace.army.mil/cwms-data/timeseries?name=${tsidFlow}&begin=${currentDateTimeMinus30Hours.toISOString()}&end=${currentDateTime.toISOString()}&office=MVS`;
+            urlFlow = `https://cwms-data.usace.army.mil/cwms-data/timeseries?name=${tsidFlow}&begin=${currentDateTimeMinus30Hours.toISOString()}&end=${currentDateTime.toISOString()}&office=${office}`;
         } else if (cda === "internal") {
-            urlFlow = `https://coe-mvsuwa04mvs.mvs.usace.army.mil:8243/mvs-data/timeseries?name=${tsidFlow}&begin=${currentDateTimeMinus30Hours.toISOString()}&end=${currentDateTime.toISOString()}&office=MVS`;
+            urlFlow = `https://coe-${office.toLocaleLowerCase()}uwa04${office.toLocaleLowerCase()}.${office.toLocaleLowerCase()}.usace.army.mil:8243/${office.toLocaleLowerCase()}-data/timeseries?name=${tsidFlow}&begin=${currentDateTimeMinus30Hours.toISOString()}&end=${currentDateTime.toISOString()}&office=${office}`;
         }
         // console.log("urlFlow = ", urlFlow);
         // Fetch the time series data from the API using the determined query string
@@ -322,11 +322,11 @@ function fetchAndUpdateFlow(flowCell, tsidFlow, label, currentDateTimeMinus2Hour
                 // console.log("flowFormatted = ", flow);
 
                 // FLOW CLASS
-                if (label === "COE" || label === "RatingCOE") {
+                if (label === "COE") {
                     var myFlowLabelClass = "flow_coe";
-                } else if (label === "USGS" || label === "RatingUSGS") {
+                } else if (label === "USGS") {
                     var myFlowLabelClass = "flow_usgs";
-                } else if (label === "NWS" || label === "RatingNWS") {
+                } else if (label === "NWS") {
                     var myFlowLabelClass = "flow_nws";
                 } else if (label === "MVR") {
                     var myFlowLabelClass = "flow_coe_mvr";
@@ -338,7 +338,6 @@ function fetchAndUpdateFlow(flowCell, tsidFlow, label, currentDateTimeMinus2Hour
                     var myFlowLabelClass = "flow";
                 }
                 // console.log("myFlowLabelClass = ", myFlowLabelClass);
-
 
                 // Get the last non-null value from the stage data
                 const lastNonNullFlowValue = getLastNonNullValue(flow);
@@ -358,13 +357,10 @@ function fetchAndUpdateFlow(flowCell, tsidFlow, label, currentDateTimeMinus2Hour
                     // console.log("No non-null valueLast found.");
                 }
 
-
                 const c_count = calculateCCount(tsidFlow);
-
 
                 const lastNonNull24HoursFlowValue = getLastNonNull24HoursValue(flow, c_count);
                 // console.log("lastNonNull24HoursFlowValue:", lastNonNull24HoursFlowValue);
-
 
                 // Check if a non-null value was found
                 if (lastNonNull24HoursFlowValue !== null) {
@@ -382,7 +378,6 @@ function fetchAndUpdateFlow(flowCell, tsidFlow, label, currentDateTimeMinus2Hour
                     // console.log("No non-null valueLast found.");
                 }
 
-
                 // Calculate the 24 hours change between first and last value
                 const delta24Flow = (valueFlowLast - valueFlow24HoursLast).toFixed(0);
                 // console.log("delta24Flow:", delta24Flow);
@@ -397,7 +392,6 @@ function fetchAndUpdateFlow(flowCell, tsidFlow, label, currentDateTimeMinus2Hour
                     roundedDelta24Flow = (parseFloat(delta24Flow)).toLocaleString();
                 }
                 // console.log("roundedDelta24Flow = ", roundedDelta24Flow); // Log the rounded and formatted value to the console
-
 
                 // Check if the value is greater than or equal to 1000
                 if (parseFloat(valueFlowLast) >= 1000) {
@@ -439,7 +433,7 @@ function fetchAndUpdateFlow(flowCell, tsidFlow, label, currentDateTimeMinus2Hour
                         + "</span>";
                 } else {
                     innerHTMLFlow = "<span class='last_max_value' title='" + flow.name + ", Value = " + roundedValueFlowLast + ", Date Time = " + timestampFlowLast + "'>"
-                        + "<a href='../../../district_templates/chart/index.html?office=MVS&cwms_ts_id=" + flow.name + "&lookback=96&cda=public' target='_blank'>"
+                        + "<a href='../chart/index.html?office=" + office + "&cwms_ts_id=" + flow.name + "&lookback=96&cda=public' target='_blank'>"
                         + roundedValueFlowLast
                         + "</a>"
                         + "</span>"
@@ -469,9 +463,9 @@ function fetchAndUpdatePrecip(precipCell, tsid, currentDateTimeMinus2Hours, curr
         // Fetch the time series data from the API using the determined query string
         let urlPrecip = null;
         if (cda === "public") {
-            urlPrecip = `https://cwms-data.usace.army.mil/cwms-data/timeseries?name=${tsid}&begin=${currentDateTimeMinus30Hours.toISOString()}&end=${currentDateTime.toISOString()}&office=MVS`;
+            urlPrecip = `https://cwms-data.usace.army.mil/cwms-data/timeseries?name=${tsid}&begin=${currentDateTimeMinus30Hours.toISOString()}&end=${currentDateTime.toISOString()}&office=${office}`;
         } else if (cda === "internal") {
-            urlPrecip = `https://coe-mvsuwa04mvs.mvs.usace.army.mil:8243/mvs-data/timeseries?name=${tsid}&begin=${currentDateTimeMinus30Hours.toISOString()}&end=${currentDateTime.toISOString()}&office=MVS`;
+            urlPrecip = `https://coe-${office.toLocaleLowerCase()}uwa04${office.toLocaleLowerCase()}.${office.toLocaleLowerCase()}.usace.army.mil:8243/${office.toLocaleLowerCase()}-data/timeseries?name=${tsid}&begin=${currentDateTimeMinus30Hours.toISOString()}&end=${currentDateTime.toISOString()}&office=${office}`;
         }
         // console.log("urlPrecip = ", urlPrecip);
         fetch(urlPrecip, {
@@ -696,7 +690,7 @@ function fetchAndUpdatePrecip(precipCell, tsid, currentDateTimeMinus2Hours, curr
                         + "</tr>"
                         + "</table>"
                         + "<span class='last_max_value' title='" + precip.name + ", Value = " + valuePrecipLast + ", Date Time = " + timestampPrecipLast + "'>"
-                        + "<a href='../../../district_templates/chart/index.html?office=MVS&cwms_ts_id=" + precip.name + "&lookback=96&cda=public' target='_blank'>"
+                        + "<a href='../chart/index.html?office=" + office + "&cwms_ts_id=" + precip.name + "&lookback=96&cda=public' target='_blank'>"
                         + valuePrecipLast
                         + "</a>"
                         + "</span>"
@@ -723,11 +717,12 @@ function fetchAndUpdateWaterQuality(waterQualityCell, tsid, label, currentDateTi
         // Fetch the time series data from the API using the determined query string
         let urlWaterQuality = null;
         if (cda === "public") {
-            urlWaterQuality = `https://cwms-data.usace.army.mil/cwms-data/timeseries?name=${tsid}&begin=${currentDateTimeMinus30Hours.toISOString()}&end=${currentDateTime.toISOString()}&office=MVS`;
+            urlWaterQuality = `https://cwms-data.usace.army.mil/cwms-data/timeseries?name=${tsid}&begin=${currentDateTimeMinus30Hours.toISOString()}&end=${currentDateTime.toISOString()}&office=${office}`;
         } else if (cda === "internal") {
-            urlWaterQuality = `https://coe-mvsuwa04mvs.mvs.usace.army.mil:8243/mvs-data/timeseries?name=${tsid}&begin=${currentDateTimeMinus30Hours.toISOString()}&end=${currentDateTime.toISOString()}&office=MVS`;
+            urlWaterQuality = `https://coe-${office.toLocaleLowerCase()}uwa04${office.toLocaleLowerCase()}.${office.toLocaleLowerCase()}.usace.army.mil:8243/${office.toLocaleLowerCase()}-data/timeseries?name=${tsid}&begin=${currentDateTimeMinus30Hours.toISOString()}&end=${currentDateTime.toISOString()}&office=${office}`;
         }
-        console.log("urlWaterQuality = ", urlWaterQuality);
+        // console.log("urlWaterQuality = ", urlWaterQuality);
+        
         fetch(urlWaterQuality, {
             method: 'GET',
             headers: {
@@ -862,7 +857,7 @@ function fetchAndUpdateWaterQuality(waterQualityCell, tsid, label, currentDateTi
                         + "</span>";
                 } else {
                     innerHTMLWaterQuality = "<span class='last_max_value' title='" + waterQuality.name + ", Value = " + valueWaterQualityLast + ", Date Time = " + timestampWaterQualityLast + "'>"
-                        + "<a href='../../../district_templates/chart/index.html?office=MVS&cwms_ts_id=" + waterQuality.name + "&lookback=96&cda=public' target='_blank'>"
+                        + "<a href='../chart/index.html?office=" + office + "&cwms_ts_id=" + waterQuality.name + "&lookback=96&cda=public' target='_blank'>"
                         + valueWaterQualityLast
                         + "</a>"
                         + "</span>"
@@ -1126,9 +1121,9 @@ function generateDateTimeMidNightStringsISO(currentDateTime, currentDateTimePlus
 async function fetchDataFromNwsForecastsOutput() {
     let urlNwsForecast = null;
     if (cda === "public") {
-        urlNwsForecast = 'https://www.mvs-wc.usace.army.mil/php_data_api/public/json/exportNwsForecasts2Json.json';
+        urlNwsForecast = `https://www.${office.toLocaleLowerCase()}-wc.usace.army.mil/php_data_api/public/json/exportNwsForecasts2Json.json`;
     } else if (cda === "internal") {
-        urlNwsForecast = 'https://wm.mvs.ds.usace.army.mil/php_data_api/public/json/exportNwsForecasts2Json.json';
+        urlNwsForecast = `https://wm.${office.toLocaleLowerCase()}.ds.usace.army.mil/php_data_api/public/json/exportNwsForecasts2Json.json`;
     }
     // console.log("urlNwsForecast: ", urlNwsForecast);
 

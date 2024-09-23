@@ -8,7 +8,7 @@ function createGageDataTable(allData) {
     const headerRow = document.createElement('tr');
 
     // Create table headers for the desired columns
-    const columns = ["Gage", "Stage (24hr)", "Flow (24hr)", "Precip (6hr - 24hr)", "Water Quality", "Gage Zero", "Flood Level"];
+    const columns = ["Gage", "Stage (24hr)", "Flow (24hr)", "Precip [6hr] [24hr]", "Water Quality", "Gage Zero", "Flood Level"];
 
     columns.forEach((columnName) => {
         const th = document.createElement('th');
@@ -48,8 +48,8 @@ function createGageDataTable(allData) {
     // Sort assigned-locations by the attribute in assigned-time-series
     // allData.forEach(item => {
     //     item[`assigned-locations`].sort((a, b) => {
-    //         const aAttribute = a.tsid_stage['assigned-time-series'][0].attribute;
-    //         const bAttribute = b.tsid_stage['assigned-time-series'][0].attribute;
+    //         const aAttribute = a.tsid-stage['assigned-time-series'][0].attribute;
+    //         const bAttribute = b.tsid-stage['assigned-time-series'][0].attribute;
     //         return aAttribute - bAttribute;
     //     });
     // });
@@ -89,44 +89,61 @@ function createGageDataTable(allData) {
                 const locationCell = row.insertCell();
                 locationCell.style.textAlign = 'left';
                 locationCell.style.fontWeight = 'bold';
-                locationCell.innerHTML = locData.attribute + " " + locData[`location-id`];
-                // locationCell.innerHTML = locData.attribute + " " + locData.metadata[`public-name`];
+                if (locData[`alias-id`] === office) {
+                    // If the owner's ID is "MVS", set the text color to dark blue
+                    locationCell.style.color = 'darkblue';
+
+                    locationCell.innerHTML = locData.attribute + " " + locData[`location-id`];
+                    // locationCell.innerHTML = locData.attribute + " " + locData.metadata[`public-name`];
+                } else {
+                    locationCell.innerHTML = locData.attribute + " " + locData[`location-id`];
+                }
             }
 
             // STAGE
             if (2 === 2) {
                 // Create a new table cell for displaying stage data
                 const stageCell = row.insertCell();
-                if (locData.tsid_stage) {
-                    const tsidStage = locData.tsid_stage[`assigned-time-series`][0][`timeseries-id`];
+                let tsidStage = null;
+                let tsidForecastNws = null;
+                if (locData['tsid-stage']) {
+                    tsidStage = locData['tsid-stage'][`assigned-time-series`][0][`timeseries-id`];
                     fetchAndUpdateStage(stageCell, tsidStage, flood_level, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                }
+                if (office === "MVS") {
+                    if (locData['tsid-forecast-nws'] && cda === "internal") {
+                        tsidForecastNws = locData['tsid-forecast-nws'][`assigned-time-series`][0][`timeseries-id`];
+                        fetchAndUpdateNWS(stageCell, tsidStage, tsidForecastNws, flood_level, currentDateTime, currentDateTimePlus4Days);
+                        // fetchAndUpdateNWSForecastDate(stageCell, tsidForecastNws);
+                    }
                 }
             }
 
             // FLOW
             if (3 === 3) {
                 const flowCell = row.insertCell();
-                if (locData.tsid_flow) {
-                    // Sort the assigned-time-series by attribute
-                    locData.tsid_flow["assigned-time-series"].sort((a, b) => a.attribute - b.attribute);
+                if (locData['tsid-flow']) {
+                    const series = locData['tsid-flow']['assigned-time-series'];
+                    if (series.length > 0) {
+                        series.sort((a, b) => a.attribute - b.attribute);
 
-                    if (locData.tsid_flow[`assigned-time-series`][0]) {
-                        const tsidFlow = locData.tsid_flow[`assigned-time-series`][0][`timeseries-id`];
-                        fetchAndUpdateFlow(flowCell, tsidFlow, tsidFlow.split('.').pop(), currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                        // Determine how many series to show based on the value of cda
+                        const limit = (cda === 'public') ? 1 : Math.min(3, series.length);
+
+                        for (let i = 0; i < limit; i++) {
+                            const { 'timeseries-id': tsidFlow, 'alias-id': tsidFlowLabel } = series[i];
+                            fetchAndUpdateFlow(flowCell, tsidFlow, tsidFlowLabel, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                        }
                     }
-                    // if (locData.tsid_flow[`assigned-time-series`][1]) {
-                    //     const tsidFlow = locData.tsid_flow[`assigned-time-series`][1][`timeseries-id`];
-                    //     fetchAndUpdateFlow(flowCell, tsidFlow, tsidFlow.split('.').pop(), currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                    // }
                 }
             }
 
             // PRECIP
             if (4 === 4) {
                 const precipCell = row.insertCell();
-                if (locData.tsid_precip) {
-                    if (locData.tsid_precip[`assigned-time-series`][0]) {
-                        const tsidPrecip = locData.tsid_precip[`assigned-time-series`][0][`timeseries-id`];
+                if (locData['tsid-precip']) {
+                    if (locData['tsid-precip'][`assigned-time-series`][0]) {
+                        const tsidPrecip = locData['tsid-precip'][`assigned-time-series`][0][`timeseries-id`];
                         fetchAndUpdatePrecip(precipCell, tsidPrecip, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
                     }
                 }
@@ -136,10 +153,46 @@ function createGageDataTable(allData) {
             // WATER QUALITY
             if (5 === 5) {
                 const waterQualityCell = row.insertCell();
-                if (locData.tsid_temp_air) {
-                    if (locData.tsid_temp_air[`assigned-time-series`][0]) {
-                        const tsidTempAir = locData.tsid_temp_air[`assigned-time-series`][0][`timeseries-id`];
-                        fetchAndUpdateWaterQuality(waterQualityCell, tsidTempAir, tsidTempAir.split('.').pop(), currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                if (locData['tsid-temp-air']) {
+                    const series = locData['tsid-temp-air']['assigned-time-series'];
+                    if (series.length > 0) {
+                        series.sort((a, b) => a.attribute - b.attribute);
+
+                        // Determine how many series to show based on the value of cda
+                        const limit = (cda === 'public') ? 1 : Math.min(3, series.length);
+
+                        for (let i = 0; i < limit; i++) {
+                            const { 'timeseries-id': tsidTempAir, 'alias-id': tsidTempAirLabel } = series[i];
+                            fetchAndUpdateWaterQuality(waterQualityCell, tsidTempAir, tsidTempAirLabel, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                        }
+                    }
+                }
+                if (locData['tsid-temp-water']) {
+                    const series = locData['tsid-temp-water']['assigned-time-series'];
+                    if (series.length > 0) {
+                        series.sort((a, b) => a.attribute - b.attribute);
+
+                        // Determine how many series to show based on the value of cda
+                        const limit = (cda === 'public') ? 1 : Math.min(2, series.length);
+
+                        for (let i = 0; i < limit; i++) {
+                            const { 'timeseries-id': tsidTempWater, 'alias-id': tsidTempWaterLabel } = series[i];
+                            fetchAndUpdateWaterQuality(waterQualityCell, tsidTempWater, tsidTempWaterLabel, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                        }
+                    }
+                }
+                if (locData['tsid-speed-wind']) {
+                    const series = locData['tsid-speed-wind']['assigned-time-series'];
+                    if (series.length > 0) {
+                        series.sort((a, b) => a.attribute - b.attribute);
+
+                        // Determine how many series to show based on the value of cda
+                        const limit = (cda === 'public') ? 1 : Math.min(2, series.length);
+
+                        for (let i = 0; i < limit; i++) {
+                            const { 'timeseries-id': tsidSpeedWind, 'alias-id': tsidSpeedWindLabel } = series[i];
+                            fetchAndUpdateWaterQuality(waterQualityCell, tsidSpeedWind, tsidSpeedWindLabel, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                        }
                     }
                 }
             }

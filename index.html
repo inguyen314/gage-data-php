@@ -68,7 +68,7 @@
                     // Determine the default value of cda based on documentRoot
                     const typeDefault = (documentRoot === `https://wm.${office.toLocaleLowerCase()}.ds.usace.army.mil/`) ? "internal" : "public";
                     console.log("typeDefault: ", typeDefault);
-                    
+
                     // Get the value of a specific parameter
                     const param2Value = urlParams.get('cda');
                     var cda = urlParams.get('cda') || cdaDefault;
@@ -148,10 +148,23 @@
                                     return;
                                 }
 
-                                console.log(basins);
+                                console.log("basins: ", basins);
 
-                                // Create th elements with links
-                                var basinsOrder = ['Mississippi', 'Ohio', 'Salt', 'Cuivre', 'Illinois', 'Missouri', 'Meramec', 'Kaskaskia', 'Big Muddy', 'Castor', 'St Francis'];
+                                let basinsOrder = null;
+                                if (office === "MVS") {
+                                    basinsOrder = ['Mississippi', 'Ohio', 'Salt', 'Cuivre', 'Illinois', 'Missouri', 'Meramec', 'Kaskaskia', 'Big Muddy', 'Castor', 'St Francis'];
+                                }
+
+                                // Create a lookup object
+                                const orderMap = Object.fromEntries(basinsOrder.map((basin, index) => [basin, index]));
+
+                                // Sort basins based on the order in basinsOrder
+                                const sortedBasins = basins.sort((a, b) => orderMap[a] - orderMap[b]);
+
+                                console.log("sortedBasins: ", sortedBasins);
+
+                                basins = sortedBasins;
+
                                 if (cda === "public") {
                                     for (var i = 0; i < basins.length; i++) {
                                         var th = document.createElement('th');
@@ -175,16 +188,7 @@
                                         tr.appendChild(th);
                                     }
                                 } else {
-                                    for (var i = 0; i < basins.length; i++) {
-                                        var th = document.createElement('th');
-                                        var link = document.createElement('a');
-                                        link.href = 'gage_data_cda.php?basin=' + basins[i];
-                                        link.innerHTML = '<strong>' + basins[i] + '</strong>';
-                                        var p = document.createElement('p');
-                                        p.appendChild(link);
-                                        th.appendChild(p);
-                                        tr.appendChild(th);
-                                    }
+                                    
                                 }
 
 
@@ -237,9 +241,9 @@
         const urlParams = new URLSearchParams(window.location.search);
 
         // Get the value of a specific parameter
-        const param1Value = urlParams.get('basin'); // Output: "value1"
-        const param3Value = urlParams.get('cda'); // Output: "value3"
-        const param4Value = urlParams.get('type'); // Output: "value4"
+        const param1Value = urlParams.get('basin');
+        const param3Value = urlParams.get('cda');
+        const param4Value = urlParams.get('type');
 
         urlParams.forEach(function (value, key) {
             console.log(key, value);
@@ -250,8 +254,6 @@
         // title = "Gage Data" + " - " + urlParams.get('basin') + " - " + urlParams.get('cda');
         title = "Realtime Gage Data - " + " " + basin;
 
-
-
         if (title) {
             document.title = title;
             const titleSpan = document.querySelector('.titleLabel.title');
@@ -259,7 +261,6 @@
                 titleSpan.textContent = title + "";
             }
         }
-
 
         // Add the current date and time to the span with class 'last-modified'
         const lastModifiedSpan = document.querySelector('.last-modified');
