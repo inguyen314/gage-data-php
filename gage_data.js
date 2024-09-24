@@ -128,7 +128,7 @@ function createGageDataTable(allData) {
                         series.sort((a, b) => a.attribute - b.attribute);
 
                         // Determine how many series to show based on the value of cda
-                        const limit = (cda === 'public') ? 1 : Math.min(3, series.length);
+                        const limit = (cda === 'public') ? 1 : series.length;
 
                         for (let i = 0; i < limit; i++) {
                             const { 'timeseries-id': tsidFlow, 'alias-id': tsidFlowLabel } = series[i];
@@ -159,7 +159,7 @@ function createGageDataTable(allData) {
                         series.sort((a, b) => a.attribute - b.attribute);
 
                         // Determine how many series to show based on the value of cda
-                        const limit = (cda === 'public') ? 1 : Math.min(3, series.length);
+                        const limit = (cda === 'public') ? 1 : series.length;
 
                         for (let i = 0; i < limit; i++) {
                             const { 'timeseries-id': tsidTempAir, 'alias-id': tsidTempAirLabel } = series[i];
@@ -192,6 +192,20 @@ function createGageDataTable(allData) {
                         for (let i = 0; i < limit; i++) {
                             const { 'timeseries-id': tsidSpeedWind, 'alias-id': tsidSpeedWindLabel } = series[i];
                             fetchAndUpdateWaterQuality(waterQualityCell, tsidSpeedWind, tsidSpeedWindLabel, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                        }
+                    }
+                }
+                if (locData['tsid-dir-wind']) {
+                    const series = locData['tsid-dir-wind']['assigned-time-series'];
+                    if (series.length > 0) {
+                        series.sort((a, b) => a.attribute - b.attribute);
+
+                        // Determine how many series to show based on the value of cda
+                        const limit = (cda === 'public') ? 1 : Math.min(2, series.length);
+
+                        for (let i = 0; i < limit; i++) {
+                            const { 'timeseries-id': tsidDirWind, 'alias-id': tsidDirWindLabel } = series[i];
+                            fetchAndUpdateWaterQuality(waterQualityCell, tsidDirWind, tsidDirWindLabel, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
                         }
                     }
                 }

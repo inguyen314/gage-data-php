@@ -8,23 +8,26 @@ document.addEventListener('DOMContentLoaded', async function () {
     const metadataMap = new Map();
     const floodMap = new Map();
     const stageTsidMap = new Map();
+    const forecastNwsTsidMap = new Map();
     const flowTsidMap = new Map();
     const precipTsidMap = new Map();
     const tempAirTsidMap = new Map();
     const tempWaterTsidMap = new Map();
-    const forecastNwsTsidMap = new Map();
     const speedWindTsidMap = new Map();
+    const dirWindTsidMap = new Map();
 
     // Arrays to track promises for metadata and flood data fetches
     const metadataPromises = [];
     const floodPromises = [];
     const stageTsidPromises = [];
+    const forecastNwsTsidPromises = [];
     const flowTsidPromises = [];
     const precipTsidPromises = [];
     const tempAirTsidPromises = [];
     const tempWaterTsidPromises = [];
     const speedWindTsidPromises = [];
-    const forecastNwsTsidPromises = [];
+    const dirWindTsidPromises = [];
+
 
     // Fetch the initial data
     fetch(apiUrl)
@@ -355,6 +358,33 @@ document.addEventListener('DOMContentLoaded', async function () {
                                     }
                                 }
 
+                                if ("tsid-dir-wind" === "tsid-dir-wind") {
+                                    let dirWindTsidApiUrl = `https://coe-${office.toLocaleLowerCase()}uwa04${office.toLocaleLowerCase()}.${office.toLocaleLowerCase()}.usace.army.mil:8243/${office.toLocaleLowerCase()}-data/timeseries/group/Dir-Wind?office=${office}&category-id=${loc['location-id']}`;
+                                    if (dirWindTsidApiUrl) {
+                                        tempWaterTsidPromises.push(
+                                            fetch(dirWindTsidApiUrl)
+                                                .then(response => {
+                                                    if (response.status === 404) {
+                                                        console.warn(`Temp-Water TSID data not found for location: ${loc['location-id']}`);
+                                                        return null;
+                                                    }
+                                                    if (!response.ok) {
+                                                        throw new Error(`Network response was not ok: ${response.statusText}`);
+                                                    }
+                                                    return response.json();
+                                                })
+                                                .then(dirWindTsidData => {
+                                                    if (dirWindTsidData) {
+                                                        dirWindTsidMap.set(loc['location-id'], dirWindTsidData);
+                                                    }
+                                                })
+                                                .catch(error => {
+                                                    console.error(`Problem with the fetch operation for stage TSID data at ${dirWindTsidApiUrl}:`, error);
+                                                })
+                                        );
+                                    }
+                                }
+
                             });
                         }
                     })
@@ -368,12 +398,13 @@ document.addEventListener('DOMContentLoaded', async function () {
                 .then(() => Promise.all(metadataPromises))
                 .then(() => Promise.all(floodPromises))
                 .then(() => Promise.all(stageTsidPromises))
+                .then(() => Promise.all(forecastNwsTsidPromises))
                 .then(() => Promise.all(flowTsidPromises))
                 .then(() => Promise.all(precipTsidPromises))
                 .then(() => Promise.all(tempAirTsidPromises))
                 .then(() => Promise.all(tempWaterTsidPromises))
                 .then(() => Promise.all(speedWindTsidPromises))
-                .then(() => Promise.all(forecastNwsTsidPromises))
+                .then(() => Promise.all(dirWindTsidPromises))
                 .then(() => {
                     // Update combinedData with location metadata and flood data
                     combinedData.forEach(basinData => {
@@ -391,7 +422,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
                                 const stageTsidMapData = stageTsidMap.get(loc['location-id']);
                                 if (stageTsidMapData) {
-                                    loc['tsid-stage'] = stageTsidMapData; 
+                                    loc['tsid-stage'] = stageTsidMapData;
                                 }
 
                                 const flowTsidMapData = flowTsidMap.get(loc['location-id']);
@@ -401,27 +432,32 @@ document.addEventListener('DOMContentLoaded', async function () {
 
                                 const precipTsidMapData = precipTsidMap.get(loc['location-id']);
                                 if (precipTsidMapData) {
-                                    loc['tsid-precip'] = precipTsidMapData; 
+                                    loc['tsid-precip'] = precipTsidMapData;
                                 }
 
                                 const tempAirTsidMapData = tempAirTsidMap.get(loc['location-id']);
                                 if (tempAirTsidMapData) {
-                                    loc['tsid-temp-air'] = tempAirTsidMapData; 
+                                    loc['tsid-temp-air'] = tempAirTsidMapData;
                                 }
 
                                 const tempWaterTsidMapData = tempWaterTsidMap.get(loc['location-id']);
                                 if (tempWaterTsidMapData) {
-                                    loc['tsid-temp-water'] = tempWaterTsidMapData; 
+                                    loc['tsid-temp-water'] = tempWaterTsidMapData;
                                 }
 
                                 const forecastNwsTsidMapData = forecastNwsTsidMap.get(loc['location-id']);
                                 if (forecastNwsTsidMapData) {
-                                    loc['tsid-forecast-nws'] = forecastNwsTsidMapData; 
+                                    loc['tsid-forecast-nws'] = forecastNwsTsidMapData;
                                 }
 
                                 const speedWindTsidMapData = speedWindTsidMap.get(loc['location-id']);
                                 if (speedWindTsidMapData) {
-                                    loc['tsid-speed-wind'] = speedWindTsidMapData; 
+                                    loc['tsid-speed-wind'] = speedWindTsidMapData;
+                                }
+
+                                const dirWindTsidMapData = dirWindTsidMap.get(loc['location-id']);
+                                if (dirWindTsidMapData) {
+                                    loc['tsid-dir-wind'] = dirWindTsidMapData;
                                 }
                             });
                         }

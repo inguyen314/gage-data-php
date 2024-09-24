@@ -752,6 +752,9 @@ function fetchAndUpdateWaterQuality(waterQualityCell, tsid, label, currentDateTi
 
                 // console.log("lastNonNullWaterQualityValue = ", waterQuality);
 
+                // console.log("tsid = ", tsid);
+                // console.log("label = ", label);
+
                 // WATER QUALITY CLASS
                 if (label.startsWith("TEMP AIR")) {
                     var myWaterQualityClass = "water_quality_temp_air";
@@ -779,6 +782,8 @@ function fetchAndUpdateWaterQuality(waterQualityCell, tsid, label, currentDateTi
                     var myWaterQualityClass = "water_quality_dir_wind";
                 } else if (label.startsWith("PHYCOCYANIN")) {
                     var myWaterQualityClass = "water_quality_dir_wind";
+                } else if (label === undefined) {
+                    var myWaterQualityClass = "water_quality_do";
                 } else {
                     var myWaterQualityClass = "";
                 }
