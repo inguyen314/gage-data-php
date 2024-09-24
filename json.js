@@ -5,15 +5,15 @@ document.addEventListener('DOMContentLoaded', async function () {
     const cda = "public"; // or "internal", set based on your needs
 
     // Store location metadata and flood data
-    const locationMetadataMap = new Map();
-    const locationFloodMap = new Map();
-    const locationStageTsidMap = new Map();
-    const locationFlowTsidMap = new Map();
-    const locationPrecipTsidMap = new Map();
-    const locationTempAirTsidMap = new Map();
-    const locationTempWaterTsidMap = new Map();
-    const locationForecastNwsTsidMap = new Map();
-    const locationSpeedWindTsidMap = new Map();
+    const metadataMap = new Map();
+    const floodMap = new Map();
+    const stageTsidMap = new Map();
+    const flowTsidMap = new Map();
+    const precipTsidMap = new Map();
+    const tempAirTsidMap = new Map();
+    const tempWaterTsidMap = new Map();
+    const forecastNwsTsidMap = new Map();
+    const speedWindTsidMap = new Map();
 
     // Arrays to track promises for metadata and flood data fetches
     const metadataPromises = [];
@@ -120,7 +120,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                                                 })
                                                 .then(locData => {
                                                     if (locData) {
-                                                        locationMetadataMap.set(loc['location-id'], locData);
+                                                        metadataMap.set(loc['location-id'], locData);
                                                     }
                                                 })
                                                 .catch(error => {
@@ -149,7 +149,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                                                 })
                                                 .then(floodData => {
                                                     if (floodData) {
-                                                        locationFloodMap.set(loc['location-id'], floodData);
+                                                        floodMap.set(loc['location-id'], floodData);
                                                     }
                                                 })
                                                 .catch(error => {
@@ -177,7 +177,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                                                 })
                                                 .then(stageTsidData => {
                                                     if (stageTsidData) {
-                                                        locationStageTsidMap.set(loc['location-id'], stageTsidData);
+                                                        stageTsidMap.set(loc['location-id'], stageTsidData);
                                                     }
                                                 })
                                                 .catch(error => {
@@ -205,7 +205,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                                                 })
                                                 .then(flowTsidData => {
                                                     if (flowTsidData) {
-                                                        locationFlowTsidMap.set(loc['location-id'], flowTsidData);
+                                                        flowTsidMap.set(loc['location-id'], flowTsidData);
                                                     }
                                                 })
                                                 .catch(error => {
@@ -233,7 +233,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                                                 })
                                                 .then(precipTsidData => {
                                                     if (precipTsidData) {
-                                                        locationPrecipTsidMap.set(loc['location-id'], precipTsidData);
+                                                        precipTsidMap.set(loc['location-id'], precipTsidData);
                                                     }
                                                 })
                                                 .catch(error => {
@@ -261,7 +261,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                                                 })
                                                 .then(tempAirTsidData => {
                                                     if (tempAirTsidData) {
-                                                        locationTempAirTsidMap.set(loc['location-id'], tempAirTsidData);
+                                                        tempAirTsidMap.set(loc['location-id'], tempAirTsidData);
                                                     }
                                                 })
                                                 .catch(error => {
@@ -289,7 +289,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                                                 })
                                                 .then(tempWaterTsidData => {
                                                     if (tempWaterTsidData) {
-                                                        locationTempWaterTsidMap.set(loc['location-id'], tempWaterTsidData);
+                                                        tempWaterTsidMap.set(loc['location-id'], tempWaterTsidData);
                                                     }
                                                 })
                                                 .catch(error => {
@@ -317,7 +317,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                                                 })
                                                 .then(forecastNwsTsidData => {
                                                     if (forecastNwsTsidData) {
-                                                        locationForecastNwsTsidMap.set(loc['location-id'], forecastNwsTsidData);
+                                                        forecastNwsTsidMap.set(loc['location-id'], forecastNwsTsidData);
                                                     }
                                                 })
                                                 .catch(error => {
@@ -345,7 +345,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                                                 })
                                                 .then(speedWindTsidData => {
                                                     if (speedWindTsidData) {
-                                                        locationSpeedWindTsidMap.set(loc['location-id'], speedWindTsidData);
+                                                        speedWindTsidMap.set(loc['location-id'], speedWindTsidData);
                                                     }
                                                 })
                                                 .catch(error => {
@@ -379,50 +379,49 @@ document.addEventListener('DOMContentLoaded', async function () {
                     combinedData.forEach(basinData => {
                         if (basinData['assigned-locations']) {
                             basinData['assigned-locations'].forEach(loc => {
-                                const locData = locationMetadataMap.get(loc['location-id']);
-
-                                if (locData) {
-                                    loc['metadata'] = locData; // Append locData to the location object
+                                const metadataMapData = metadataMap.get(loc['location-id']);
+                                if (metadataMapData) {
+                                    loc['metadata'] = metadataMapData;
                                 }
 
-                                const locDataFlood = locationFloodMap.get(loc['location-id']);
-                                if (locDataFlood) {
-                                    loc['flood'] = locDataFlood; // Append locDataFlood to the location object
+                                const floodMapData = floodMap.get(loc['location-id']);
+                                if (floodMapData) {
+                                    loc['flood'] = floodMapData;
                                 }
 
-                                const tsidStageData = locationStageTsidMap.get(loc['location-id']);
-                                if (tsidStageData) {
-                                    loc['tsid-stage'] = tsidStageData; // Append tsidStageData to the location object
+                                const stageTsidMapData = stageTsidMap.get(loc['location-id']);
+                                if (stageTsidMapData) {
+                                    loc['tsid-stage'] = stageTsidMapData; 
                                 }
 
-                                const tsidFlowData = locationFlowTsidMap.get(loc['location-id']);
-                                if (tsidFlowData) {
-                                    loc['tsid-flow'] = tsidFlowData; // Append tsidStageData to the location object
+                                const flowTsidMapData = flowTsidMap.get(loc['location-id']);
+                                if (flowTsidMapData) {
+                                    loc['tsid-flow'] = flowTsidMapData;
                                 }
 
-                                const tsidPrecipData = locationPrecipTsidMap.get(loc['location-id']);
-                                if (tsidPrecipData) {
-                                    loc['tsid-precip'] = tsidPrecipData; // Append tsidStageData to the location object
+                                const precipTsidMapData = precipTsidMap.get(loc['location-id']);
+                                if (precipTsidMapData) {
+                                    loc['tsid-precip'] = precipTsidMapData; 
                                 }
 
-                                const tsidTempAirData = locationTempAirTsidMap.get(loc['location-id']);
-                                if (tsidTempAirData) {
-                                    loc['tsid-temp-air'] = tsidTempAirData; // Append tsidStageData to the location object
+                                const tempAirTsidMapData = tempAirTsidMap.get(loc['location-id']);
+                                if (tempAirTsidMapData) {
+                                    loc['tsid-temp-air'] = tempAirTsidMapData; 
                                 }
 
-                                const tsidTempWaterData = locationTempWaterTsidMap.get(loc['location-id']);
-                                if (tsidTempWaterData) {
-                                    loc['tsid-temp-water'] = tsidTempWaterData; // Append tsidStageData to the location object
+                                const tempWaterTsidMapData = tempWaterTsidMap.get(loc['location-id']);
+                                if (tempWaterTsidMapData) {
+                                    loc['tsid-temp-water'] = tempWaterTsidMapData; 
                                 }
 
-                                const tsidForecastNwsData = locationForecastNwsTsidMap.get(loc['location-id']);
-                                if (tsidForecastNwsData) {
-                                    loc['tsid-forecast-nws'] = tsidForecastNwsData; // Append tsidStageData to the location object
+                                const forecastNwsTsidMapData = forecastNwsTsidMap.get(loc['location-id']);
+                                if (forecastNwsTsidMapData) {
+                                    loc['tsid-forecast-nws'] = forecastNwsTsidMapData; 
                                 }
 
-                                const tsidSpeedWindData = locationSpeedWindTsidMap.get(loc['location-id']);
-                                if (tsidSpeedWindData) {
-                                    loc['tsid-speed-wind'] = tsidSpeedWindData; // Append tsidStageData to the location object
+                                const speedWindTsidMapData = speedWindTsidMap.get(loc['location-id']);
+                                if (speedWindTsidMapData) {
+                                    loc['tsid-speed-wind'] = speedWindTsidMapData; 
                                 }
                             });
                         }
