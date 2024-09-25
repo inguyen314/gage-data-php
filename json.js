@@ -15,6 +15,11 @@ document.addEventListener('DOMContentLoaded', async function () {
     const tempWaterTsidMap = new Map();
     const speedWindTsidMap = new Map();
     const dirWindTsidMap = new Map();
+    const doTsidMap = new Map();
+    const depthTsidMap = new Map();
+    const condTsidMap = new Map();
+    const phTsidMap = new Map();
+    const turbfTsidMap = new Map();
 
     // Arrays to track promises for metadata and flood data fetches
     const metadataPromises = [];
@@ -27,6 +32,11 @@ document.addEventListener('DOMContentLoaded', async function () {
     const tempWaterTsidPromises = [];
     const speedWindTsidPromises = [];
     const dirWindTsidPromises = [];
+    const doTsidPromises = [];
+    const depthTsidPromises = [];
+    const condTsidPromises = [];
+    const phTsidPromises = [];
+    const turbfTsidPromises = [];
 
 
     // Fetch the initial data
@@ -385,6 +395,140 @@ document.addEventListener('DOMContentLoaded', async function () {
                                     }
                                 }
 
+                                if ("tsid-do" === "tsid-do") {
+                                    let doTsidApiUrl = `https://coe-${office.toLocaleLowerCase()}uwa04${office.toLocaleLowerCase()}.${office.toLocaleLowerCase()}.usace.army.mil:8243/${office.toLocaleLowerCase()}-data/timeseries/group/Conc-DO?office=${office}&category-id=${loc['location-id']}`;
+                                    if (doTsidApiUrl) {
+                                        doTsidPromises.push(
+                                            fetch(doTsidApiUrl)
+                                                .then(response => {
+                                                    if (response.status === 404) {
+                                                        console.warn(`Temp-Water TSID data not found for location: ${loc['location-id']}`);
+                                                        return null;
+                                                    }
+                                                    if (!response.ok) {
+                                                        throw new Error(`Network response was not ok: ${response.statusText}`);
+                                                    }
+                                                    return response.json();
+                                                })
+                                                .then(doTsidData => {
+                                                    if (doTsidData) {
+                                                        doTsidMap.set(loc['location-id'], doTsidData);
+                                                    }
+                                                })
+                                                .catch(error => {
+                                                    console.error(`Problem with the fetch operation for stage TSID data at ${doTsidApiUrl}:`, error);
+                                                })
+                                        );
+                                    }
+                                }
+
+                                if ("tsid-depth" === "tsid-depth") {
+                                    let depthTsidApiUrl = `https://coe-${office.toLocaleLowerCase()}uwa04${office.toLocaleLowerCase()}.${office.toLocaleLowerCase()}.usace.army.mil:8243/${office.toLocaleLowerCase()}-data/timeseries/group/Depth?office=${office}&category-id=${loc['location-id']}`;
+                                    if (depthTsidApiUrl) {
+                                        depthTsidPromises.push(
+                                            fetch(depthTsidApiUrl)
+                                                .then(response => {
+                                                    if (response.status === 404) {
+                                                        console.warn(`Temp-Water TSID data not found for location: ${loc['location-id']}`);
+                                                        return null;
+                                                    }
+                                                    if (!response.ok) {
+                                                        throw new Error(`Network response was not ok: ${response.statusText}`);
+                                                    }
+                                                    return response.json();
+                                                })
+                                                .then(depthTsidData => {
+                                                    if (depthTsidData) {
+                                                        depthTsidMap.set(loc['location-id'], depthTsidData);
+                                                    }
+                                                })
+                                                .catch(error => {
+                                                    console.error(`Problem with the fetch operation for stage TSID data at ${depthTsidApiUrl}:`, error);
+                                                })
+                                        );
+                                    }
+                                }
+
+                                if ("tsid-cond" === "tsid-cond") {
+                                    let condTsidApiUrl = `https://coe-${office.toLocaleLowerCase()}uwa04${office.toLocaleLowerCase()}.${office.toLocaleLowerCase()}.usace.army.mil:8243/${office.toLocaleLowerCase()}-data/timeseries/group/Cond?office=${office}&category-id=${loc['location-id']}`;
+                                    if (condTsidApiUrl) {
+                                        condTsidPromises.push(
+                                            fetch(condTsidApiUrl)
+                                                .then(response => {
+                                                    if (response.status === 404) {
+                                                        console.warn(`Temp-Water TSID data not found for location: ${loc['location-id']}`);
+                                                        return null;
+                                                    }
+                                                    if (!response.ok) {
+                                                        throw new Error(`Network response was not ok: ${response.statusText}`);
+                                                    }
+                                                    return response.json();
+                                                })
+                                                .then(condTsidData => {
+                                                    if (condTsidData) {
+                                                        condTsidMap.set(loc['location-id'], condTsidData);
+                                                    }
+                                                })
+                                                .catch(error => {
+                                                    console.error(`Problem with the fetch operation for stage TSID data at ${condTsidApiUrl}:`, error);
+                                                })
+                                        );
+                                    }
+                                }
+
+                                if ("tsid-ph" === "tsid-ph") {
+                                    let phTsidApiUrl = `https://coe-${office.toLocaleLowerCase()}uwa04${office.toLocaleLowerCase()}.${office.toLocaleLowerCase()}.usace.army.mil:8243/${office.toLocaleLowerCase()}-data/timeseries/group/pH?office=${office}&category-id=${loc['location-id']}`;
+                                    if (phTsidApiUrl) {
+                                        phTsidPromises.push(
+                                            fetch(phTsidApiUrl)
+                                                .then(response => {
+                                                    if (response.status === 404) {
+                                                        console.warn(`Temp-Water TSID data not found for location: ${loc['location-id']}`);
+                                                        return null;
+                                                    }
+                                                    if (!response.ok) {
+                                                        throw new Error(`Network response was not ok: ${response.statusText}`);
+                                                    }
+                                                    return response.json();
+                                                })
+                                                .then(phTsidData => {
+                                                    if (phTsidData) {
+                                                        phTsidMap.set(loc['location-id'], phTsidData);
+                                                    }
+                                                })
+                                                .catch(error => {
+                                                    console.error(`Problem with the fetch operation for stage TSID data at ${phTsidApiUrl}:`, error);
+                                                })
+                                        );
+                                    }
+                                }
+
+                                if ("tsid-turbf" === "tsid-turbf") {
+                                    let turbfTsidApiUrl = `https://coe-${office.toLocaleLowerCase()}uwa04${office.toLocaleLowerCase()}.${office.toLocaleLowerCase()}.usace.army.mil:8243/${office.toLocaleLowerCase()}-data/timeseries/group/TurbF?office=${office}&category-id=${loc['location-id']}`;
+                                    if (turbfTsidApiUrl) {
+                                        turbfTsidPromises.push(
+                                            fetch(turbfTsidApiUrl)
+                                                .then(response => {
+                                                    if (response.status === 404) {
+                                                        console.warn(`Temp-Water TSID data not found for location: ${loc['location-id']}`);
+                                                        return null;
+                                                    }
+                                                    if (!response.ok) {
+                                                        throw new Error(`Network response was not ok: ${response.statusText}`);
+                                                    }
+                                                    return response.json();
+                                                })
+                                                .then(turbfTsidData => {
+                                                    if (turbfTsidData) {
+                                                        turbfTsidMap.set(loc['location-id'], turbfTsidData);
+                                                    }
+                                                })
+                                                .catch(error => {
+                                                    console.error(`Problem with the fetch operation for stage TSID data at ${turbfTsidApiUrl}:`, error);
+                                                })
+                                        );
+                                    }
+                                }
                             });
                         }
                     })
@@ -405,6 +549,11 @@ document.addEventListener('DOMContentLoaded', async function () {
                 .then(() => Promise.all(tempWaterTsidPromises))
                 .then(() => Promise.all(speedWindTsidPromises))
                 .then(() => Promise.all(dirWindTsidPromises))
+                .then(() => Promise.all(doTsidPromises))
+                .then(() => Promise.all(depthTsidPromises))
+                .then(() => Promise.all(condTsidPromises))
+                .then(() => Promise.all(phTsidPromises))
+                .then(() => Promise.all(turbfTsidPromises))
                 .then(() => {
                     // Update combinedData with location metadata and flood data
                     combinedData.forEach(basinData => {
@@ -458,6 +607,31 @@ document.addEventListener('DOMContentLoaded', async function () {
                                 const dirWindTsidMapData = dirWindTsidMap.get(loc['location-id']);
                                 if (dirWindTsidMapData) {
                                     loc['tsid-dir-wind'] = dirWindTsidMapData;
+                                }
+
+                                const doTsidMapData = doTsidMap.get(loc['location-id']);
+                                if (doTsidMapData) {
+                                    loc['tsid-do'] = doTsidMapData;
+                                }
+
+                                const depthTsidMapData = depthTsidMap.get(loc['location-id']);
+                                if (depthTsidMapData) {
+                                    loc['tsid-depth'] = depthTsidMapData;
+                                }
+
+                                const condTsidMapData = condTsidMap.get(loc['location-id']);
+                                if (condTsidMapData) {
+                                    loc['tsid-cond'] = condTsidMapData;
+                                }
+
+                                const phTsidMapData = phTsidMap.get(loc['location-id']);
+                                if (phTsidMapData) {
+                                    loc['tsid-ph'] = phTsidMapData;
+                                }
+
+                                const turbfTsidMapData = turbfTsidMap.get(loc['location-id']);
+                                if (turbfTsidMapData) {
+                                    loc['tsid-turbf'] = turbfTsidMapData;
                                 }
                             });
                         }
