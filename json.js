@@ -20,6 +20,11 @@ document.addEventListener('DOMContentLoaded', async function () {
     const condTsidMap = new Map();
     const phTsidMap = new Map();
     const turbfTsidMap = new Map();
+    const pressureTsidMap = new Map();
+    const nitrateTsidMap = new Map();
+    const chlorophyllTsidMap = new Map();
+    const phycocyaninTsidMap = new Map();
+    const speedTsidMap = new Map();
 
     // Arrays to track promises for metadata and flood data fetches
     const metadataPromises = [];
@@ -37,6 +42,11 @@ document.addEventListener('DOMContentLoaded', async function () {
     const condTsidPromises = [];
     const phTsidPromises = [];
     const turbfTsidPromises = [];
+    const pressureTsidPromises = [];
+    const nitrateTsidPromises = [];
+    const chlorophyllTsidPromises = [];
+    const phycocyaninTsidPromises = [];
+    const speedTsidPromises = [];
 
 
     // Fetch the initial data
@@ -529,6 +539,141 @@ document.addEventListener('DOMContentLoaded', async function () {
                                         );
                                     }
                                 }
+
+                                if ("tsid-pressure" === "tsid-pressure") {
+                                    let pressureTsidApiUrl = `https://coe-${office.toLocaleLowerCase()}uwa04${office.toLocaleLowerCase()}.${office.toLocaleLowerCase()}.usace.army.mil:8243/${office.toLocaleLowerCase()}-data/timeseries/group/Pres?office=${office}&category-id=${loc['location-id']}`;
+                                    if (pressureTsidApiUrl) {
+                                        pressureTsidPromises.push(
+                                            fetch(pressureTsidApiUrl)
+                                                .then(response => {
+                                                    if (response.status === 404) {
+                                                        console.warn(`Temp-Water TSID data not found for location: ${loc['location-id']}`);
+                                                        return null;
+                                                    }
+                                                    if (!response.ok) {
+                                                        throw new Error(`Network response was not ok: ${response.statusText}`);
+                                                    }
+                                                    return response.json();
+                                                })
+                                                .then(pressureTsidData => {
+                                                    if (pressureTsidData) {
+                                                        pressureTsidMap.set(loc['location-id'], pressureTsidData);
+                                                    }
+                                                })
+                                                .catch(error => {
+                                                    console.error(`Problem with the fetch operation for stage TSID data at ${pressureTsidApiUrl}:`, error);
+                                                })
+                                        );
+                                    }
+                                }
+
+                                if ("tsid-nitrate" === "tsid-nitrate") {
+                                    let nitrateTsidApiUrl = `https://coe-${office.toLocaleLowerCase()}uwa04${office.toLocaleLowerCase()}.${office.toLocaleLowerCase()}.usace.army.mil:8243/${office.toLocaleLowerCase()}-data/timeseries/group/Conc-Nitrate?office=${office}&category-id=${loc['location-id']}`;
+                                    if (nitrateTsidApiUrl) {
+                                        nitrateTsidPromises.push(
+                                            fetch(nitrateTsidApiUrl)
+                                                .then(response => {
+                                                    if (response.status === 404) {
+                                                        console.warn(`Temp-Water TSID data not found for location: ${loc['location-id']}`);
+                                                        return null;
+                                                    }
+                                                    if (!response.ok) {
+                                                        throw new Error(`Network response was not ok: ${response.statusText}`);
+                                                    }
+                                                    return response.json();
+                                                })
+                                                .then(nitrateTsidData => {
+                                                    if (nitrateTsidData) {
+                                                        nitrateTsidMap.set(loc['location-id'], nitrateTsidData);
+                                                    }
+                                                })
+                                                .catch(error => {
+                                                    console.error(`Problem with the fetch operation for stage TSID data at ${nitrateTsidApiUrl}:`, error);
+                                                })
+                                        );
+                                    }
+                                }
+
+                                if ("tsid-chlorophyll" === "tsid-chlorophyll") {
+                                    let chlorophyllTsidApiUrl = `https://coe-${office.toLocaleLowerCase()}uwa04${office.toLocaleLowerCase()}.${office.toLocaleLowerCase()}.usace.army.mil:8243/${office.toLocaleLowerCase()}-data/timeseries/group/Conc-Chlorophyll?office=${office}&category-id=${loc['location-id']}`;
+                                    if (chlorophyllTsidApiUrl) {
+                                        chlorophyllTsidPromises.push(
+                                            fetch(chlorophyllTsidApiUrl)
+                                                .then(response => {
+                                                    if (response.status === 404) {
+                                                        console.warn(`Temp-Water TSID data not found for location: ${loc['location-id']}`);
+                                                        return null;
+                                                    }
+                                                    if (!response.ok) {
+                                                        throw new Error(`Network response was not ok: ${response.statusText}`);
+                                                    }
+                                                    return response.json();
+                                                })
+                                                .then(chlorophyllTsidData => {
+                                                    if (chlorophyllTsidData) {
+                                                        chlorophyllTsidMap.set(loc['location-id'], chlorophyllTsidData);
+                                                    }
+                                                })
+                                                .catch(error => {
+                                                    console.error(`Problem with the fetch operation for stage TSID data at ${chlorophyllTsidApiUrl}:`, error);
+                                                })
+                                        );
+                                    }
+                                }
+
+                                if ("tsid-phycocyanin" === "tsid-phycocyanin") {
+                                    let phycocyaninTsidApiUrl = `https://coe-${office.toLocaleLowerCase()}uwa04${office.toLocaleLowerCase()}.${office.toLocaleLowerCase()}.usace.army.mil:8243/${office.toLocaleLowerCase()}-data/timeseries/group/Conc-Phycocyanin?office=${office}&category-id=${loc['location-id']}`;
+                                    if (phycocyaninTsidApiUrl) {
+                                        phycocyaninTsidPromises.push(
+                                            fetch(phycocyaninTsidApiUrl)
+                                                .then(response => {
+                                                    if (response.status === 404) {
+                                                        console.warn(`Temp-Water TSID data not found for location: ${loc['location-id']}`);
+                                                        return null;
+                                                    }
+                                                    if (!response.ok) {
+                                                        throw new Error(`Network response was not ok: ${response.statusText}`);
+                                                    }
+                                                    return response.json();
+                                                })
+                                                .then(phycocyaninTsidData => {
+                                                    if (phycocyaninTsidData) {
+                                                        phycocyaninTsidMap.set(loc['location-id'], phycocyaninTsidData);
+                                                    }
+                                                })
+                                                .catch(error => {
+                                                    console.error(`Problem with the fetch operation for stage TSID data at ${phycocyaninTsidApiUrl}:`, error);
+                                                })
+                                        );
+                                    }
+                                }
+
+                                if ("tsid-speed" === "tsid-speed") {
+                                    let speedTsidApiUrl = `https://coe-${office.toLocaleLowerCase()}uwa04${office.toLocaleLowerCase()}.${office.toLocaleLowerCase()}.usace.army.mil:8243/${office.toLocaleLowerCase()}-data/timeseries/group/Speed?office=${office}&category-id=${loc['location-id']}`;
+                                    if (speedTsidApiUrl) {
+                                        speedTsidPromises.push(
+                                            fetch(speedTsidApiUrl)
+                                                .then(response => {
+                                                    if (response.status === 404) {
+                                                        console.warn(`Temp-Water TSID data not found for location: ${loc['location-id']}`);
+                                                        return null;
+                                                    }
+                                                    if (!response.ok) {
+                                                        throw new Error(`Network response was not ok: ${response.statusText}`);
+                                                    }
+                                                    return response.json();
+                                                })
+                                                .then(speedTsidData => {
+                                                    if (speedTsidData) {
+                                                        speedTsidMap.set(loc['location-id'], speedTsidData);
+                                                    }
+                                                })
+                                                .catch(error => {
+                                                    console.error(`Problem with the fetch operation for stage TSID data at ${speedTsidApiUrl}:`, error);
+                                                })
+                                        );
+                                    }
+                                }
                             });
                         }
                     })
@@ -554,6 +699,11 @@ document.addEventListener('DOMContentLoaded', async function () {
                 .then(() => Promise.all(condTsidPromises))
                 .then(() => Promise.all(phTsidPromises))
                 .then(() => Promise.all(turbfTsidPromises))
+                .then(() => Promise.all(pressureTsidPromises))
+                .then(() => Promise.all(nitrateTsidPromises))
+                .then(() => Promise.all(chlorophyllTsidPromises))
+                .then(() => Promise.all(phycocyaninTsidPromises))
+                .then(() => Promise.all(speedTsidPromises))
                 .then(() => {
                     // Update combinedData with location metadata and flood data
                     combinedData.forEach(basinData => {
@@ -632,6 +782,31 @@ document.addEventListener('DOMContentLoaded', async function () {
                                 const turbfTsidMapData = turbfTsidMap.get(loc['location-id']);
                                 if (turbfTsidMapData) {
                                     loc['tsid-turbf'] = turbfTsidMapData;
+                                }
+
+                                const pressureTsidMapData = pressureTsidMap.get(loc['location-id']);
+                                if (pressureTsidMapData) {
+                                    loc['tsid-pressure'] = pressureTsidMapData;
+                                }
+
+                                const nitrateTsidMapData = nitrateTsidMap.get(loc['location-id']);
+                                if (nitrateTsidMapData) {
+                                    loc['tsid-nitrate'] = nitrateTsidMapData;
+                                }
+
+                                const chlorophyllTsidMapData = chlorophyllTsidMap.get(loc['location-id']);
+                                if (chlorophyllTsidMapData) {
+                                    loc['tsid-chlorophyll'] = chlorophyllTsidMapData;
+                                }
+
+                                const phycocyaninTsidMapData = phycocyaninTsidMap.get(loc['location-id']);
+                                if (phycocyaninTsidMapData) {
+                                    loc['tsid-phycocyanin'] = phycocyaninTsidMapData;
+                                }
+
+                                const speedTsidMapData = speedTsidMap.get(loc['location-id']);
+                                if (speedTsidMapData) {
+                                    loc['tsid-speed'] = speedTsidMapData;
                                 }
                             });
                         }

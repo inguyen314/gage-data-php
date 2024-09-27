@@ -114,7 +114,7 @@ function createGageDataTable(allData) {
                     if (locData['tsid-forecast-nws'] && cda === "internal") {
                         tsidForecastNws = locData['tsid-forecast-nws'][`assigned-time-series`][0][`timeseries-id`];
                         fetchAndUpdateNWS(stageCell, tsidStage, tsidForecastNws, flood_level, currentDateTime, currentDateTimePlus4Days);
-                        // fetchAndUpdateNWSForecastDate(stageCell, tsidForecastNws);
+                        fetchAndUpdateNWSForecastDate(stageCell, tsidForecastNws);
                     }
                 }
             }
@@ -173,7 +173,7 @@ function createGageDataTable(allData) {
                         series.sort((a, b) => a.attribute - b.attribute);
 
                         // Determine how many series to show based on the value of cda
-                        const limit = (cda === 'public') ? 1 : series.length;
+                        const limit = (cda === 'public') ? 1 : Math.min(4, series.length);
 
                         for (let i = 0; i < limit; i++) {
                             const { 'timeseries-id': tsidTempWater, 'alias-id': tsidTempWaterLabel } = series[i];
@@ -187,7 +187,7 @@ function createGageDataTable(allData) {
                         series.sort((a, b) => a.attribute - b.attribute);
 
                         // Determine how many series to show based on the value of cda
-                        const limit = (cda === 'public') ? 1 : Math.min(2, series.length);
+                        const limit = (cda === 'public') ? 1 : Math.min(4, series.length);
 
                         for (let i = 0; i < limit; i++) {
                             const { 'timeseries-id': tsidSpeedWind, 'alias-id': tsidSpeedWindLabel } = series[i];
@@ -201,7 +201,7 @@ function createGageDataTable(allData) {
                         series.sort((a, b) => a.attribute - b.attribute);
 
                         // Determine how many series to show based on the value of cda
-                        const limit = (cda === 'public') ? 1 : Math.min(2, series.length);
+                        const limit = (cda === 'public') ? 1 : Math.min(4, series.length);
 
                         for (let i = 0; i < limit; i++) {
                             const { 'timeseries-id': tsidDirWind, 'alias-id': tsidDirWindLabel } = series[i];
@@ -215,7 +215,7 @@ function createGageDataTable(allData) {
                         series.sort((a, b) => a.attribute - b.attribute);
 
                         // Determine how many series to show based on the value of cda
-                        const limit = (cda === 'public') ? 1 : series.length;
+                        const limit = (cda === 'public') ? 1 : Math.min(4, series.length);
 
                         for (let i = 0; i < limit; i++) {
                             const { 'timeseries-id': tsidDo, 'alias-id': tsidDoLabel } = series[i];
@@ -229,7 +229,7 @@ function createGageDataTable(allData) {
                         series.sort((a, b) => a.attribute - b.attribute);
 
                         // Determine how many series to show based on the value of cda
-                        const limit = (cda === 'public') ? 1 : series.length;
+                        const limit = (cda === 'public') ? 1 : Math.min(4, series.length);
 
                         for (let i = 0; i < limit; i++) {
                             const { 'timeseries-id': tsidDepth, 'alias-id': tsidDepthLabel } = series[i];
@@ -243,7 +243,7 @@ function createGageDataTable(allData) {
                         series.sort((a, b) => a.attribute - b.attribute);
 
                         // Determine how many series to show based on the value of cda
-                        const limit = (cda === 'public') ? 1 : Math.min(2, series.length);
+                        const limit = (cda === 'public') ? 1 : Math.min(4, series.length);
 
                         for (let i = 0; i < limit; i++) {
                             const { 'timeseries-id': tsidCond, 'alias-id': tsidCondLabel } = series[i];
@@ -257,7 +257,7 @@ function createGageDataTable(allData) {
                         series.sort((a, b) => a.attribute - b.attribute);
 
                         // Determine how many series to show based on the value of cda
-                        const limit = (cda === 'public') ? 1 : Math.min(2, series.length);
+                        const limit = (cda === 'public') ? 1 : Math.min(4, series.length);
 
                         for (let i = 0; i < limit; i++) {
                             const { 'timeseries-id': tsidPh, 'alias-id': tsidPhLabel } = series[i];
@@ -276,6 +276,76 @@ function createGageDataTable(allData) {
                         for (let i = 0; i < limit; i++) {
                             const { 'timeseries-id': tsidturbf, 'alias-id': tsidturbfLabel } = series[i];
                             fetchAndUpdateWaterQuality(waterQualityCell, tsidturbf, tsidturbfLabel, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                        }
+                    }
+                }
+                if (locData['tsid-pressure']) {
+                    const series = locData['tsid-pressure']['assigned-time-series'];
+                    if (series.length > 0) {
+                        series.sort((a, b) => a.attribute - b.attribute);
+
+                        // Determine how many series to show based on the value of cda
+                        const limit = (cda === 'public') ? 1 : series.length;
+
+                        for (let i = 0; i < limit; i++) {
+                            const { 'timeseries-id': tsidpressure, 'alias-id': tsidpressureLabel } = series[i];
+                            fetchAndUpdateWaterQuality(waterQualityCell, tsidpressure, tsidpressureLabel, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                        }
+                    }
+                }
+                if (locData['tsid-nitrate']) {
+                    const series = locData['tsid-nitrate']['assigned-time-series'];
+                    if (series.length > 0) {
+                        series.sort((a, b) => a.attribute - b.attribute);
+
+                        // Determine how many series to show based on the value of cda
+                        const limit = (cda === 'public') ? 1 : series.length;
+
+                        for (let i = 0; i < limit; i++) {
+                            const { 'timeseries-id': tsidnitrate, 'alias-id': tsidnitrateLabel } = series[i];
+                            fetchAndUpdateWaterQuality(waterQualityCell, tsidnitrate, tsidnitrateLabel, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                        }
+                    }
+                }
+                if (locData['tsid-chlorophyll']) {
+                    const series = locData['tsid-chlorophyll']['assigned-time-series'];
+                    if (series.length > 0) {
+                        series.sort((a, b) => a.attribute - b.attribute);
+
+                        // Determine how many series to show based on the value of cda
+                        const limit = (cda === 'public') ? 1 : series.length;
+
+                        for (let i = 0; i < limit; i++) {
+                            const { 'timeseries-id': tsidchlorophyll, 'alias-id': tsidchlorophyllLabel } = series[i];
+                            fetchAndUpdateWaterQuality(waterQualityCell, tsidchlorophyll, tsidchlorophyllLabel, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                        }
+                    }
+                }
+                if (locData['tsid-phycocyanin']) {
+                    const series = locData['tsid-phycocyanin']['assigned-time-series'];
+                    if (series.length > 0) {
+                        series.sort((a, b) => a.attribute - b.attribute);
+
+                        // Determine how many series to show based on the value of cda
+                        const limit = (cda === 'public') ? 1 : series.length;
+
+                        for (let i = 0; i < limit; i++) {
+                            const { 'timeseries-id': tsidphycocyanin, 'alias-id': tsidphycocyaninLabel } = series[i];
+                            fetchAndUpdateWaterQuality(waterQualityCell, tsidphycocyanin, tsidphycocyaninLabel, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                        }
+                    }
+                }
+                if (locData['tsid-speed']) {
+                    const series = locData['tsid-speed']['assigned-time-series'];
+                    if (series.length > 0) {
+                        series.sort((a, b) => a.attribute - b.attribute);
+
+                        // Determine how many series to show based on the value of cda
+                        const limit = (cda === 'public') ? 1 : series.length;
+
+                        for (let i = 0; i < limit; i++) {
+                            const { 'timeseries-id': tsidspeed, 'alias-id': tsidspeedLabel } = series[i];
+                            fetchAndUpdateWaterQuality(waterQualityCell, tsidspeed, tsidspeedLabel, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
                         }
                     }
                 }
