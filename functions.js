@@ -985,13 +985,10 @@ function determineDateTimeClass(formattedDate, currentDateTimeMinus2Hours) {
     var myDateTimeClass;
     if (formattedDate >= currentDateTimeMinus2Hours) {
         myDateTimeClass = "date_time_current";
-        // console.log("formattedDate = ", formattedDate);
     } else {
-        myDateTimeClass = "date_time_late";
-        // console.log("formattedDate = ", formattedDate);
-        // console.log("currentDateTimeMinus2Hours = ", currentDateTimeMinus2Hours);
+        // myDateTimeClass = "date_time_late";
+        myDateTimeClass = "blinking-text";
     }
-    // console.log("myDateTimeClass = ", myDateTimeClass);
     return myDateTimeClass;
 }
 
