@@ -33,6 +33,10 @@ function createGageDataTable(allData) {
     const currentDateTimeMinus2Hours = subtractHoursFromDate(currentDateTime, 2);
     // console.log('currentDateTimeMinus2Hours :', currentDateTimeMinus2Hours);
 
+    // Subtract two hours from current date and time
+    const currentDateTimeMinus8Hours = subtractHoursFromDate(currentDateTime, 8);
+    // console.log('currentDateTimeMinus8Hours :', currentDateTimeMinus8Hours);
+
     // Subtract thirty hours from current date and time
     const currentDateTimeMinus30Hours = subtractHoursFromDate(currentDateTime, 64);
     // console.log('currentDateTimeMinus30Hours :', currentDateTimeMinus30Hours);
@@ -163,7 +167,7 @@ function createGageDataTable(allData) {
 
                         for (let i = 0; i < limit; i++) {
                             const { 'timeseries-id': tsidTempAir, 'alias-id': tsidTempAirLabel } = series[i];
-                            fetchAndUpdateWaterQuality(waterQualityCell, tsidTempAir, tsidTempAirLabel, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                            fetchAndUpdateWaterQuality(waterQualityCell, tsidTempAir, tsidTempAirLabel, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours, currentDateTimeMinus8Hours);
                         }
                     }
                 }
@@ -177,7 +181,7 @@ function createGageDataTable(allData) {
 
                         for (let i = 0; i < limit; i++) {
                             const { 'timeseries-id': tsidTempWater, 'alias-id': tsidTempWaterLabel } = series[i];
-                            fetchAndUpdateWaterQuality(waterQualityCell, tsidTempWater, tsidTempWaterLabel, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                            fetchAndUpdateWaterQuality(waterQualityCell, tsidTempWater, tsidTempWaterLabel, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours, currentDateTimeMinus8Hours);
                         }
                     }
                 }
@@ -191,7 +195,7 @@ function createGageDataTable(allData) {
 
                         for (let i = 0; i < limit; i++) {
                             const { 'timeseries-id': tsidSpeedWind, 'alias-id': tsidSpeedWindLabel } = series[i];
-                            fetchAndUpdateWaterQuality(waterQualityCell, tsidSpeedWind, tsidSpeedWindLabel, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                            fetchAndUpdateWaterQuality(waterQualityCell, tsidSpeedWind, tsidSpeedWindLabel, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours, currentDateTimeMinus8Hours);
                         }
                     }
                 }
@@ -205,7 +209,7 @@ function createGageDataTable(allData) {
 
                         for (let i = 0; i < limit; i++) {
                             const { 'timeseries-id': tsidDirWind, 'alias-id': tsidDirWindLabel } = series[i];
-                            fetchAndUpdateWaterQuality(waterQualityCell, tsidDirWind, tsidDirWindLabel, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                            fetchAndUpdateWaterQuality(waterQualityCell, tsidDirWind, tsidDirWindLabel, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours, currentDateTimeMinus8Hours);
                         }
                     }
                 }
@@ -219,7 +223,7 @@ function createGageDataTable(allData) {
 
                         for (let i = 0; i < limit; i++) {
                             const { 'timeseries-id': tsidDo, 'alias-id': tsidDoLabel } = series[i];
-                            fetchAndUpdateWaterQuality(waterQualityCell, tsidDo, tsidDoLabel, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                            fetchAndUpdateWaterQuality(waterQualityCell, tsidDo, tsidDoLabel, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours, currentDateTimeMinus8Hours);
                         }
                     }
                 }
@@ -233,7 +237,7 @@ function createGageDataTable(allData) {
 
                         for (let i = 0; i < limit; i++) {
                             const { 'timeseries-id': tsidDepth, 'alias-id': tsidDepthLabel } = series[i];
-                            fetchAndUpdateWaterQuality(waterQualityCell, tsidDepth, tsidDepthLabel, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                            fetchAndUpdateWaterQuality(waterQualityCell, tsidDepth, tsidDepthLabel, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours, currentDateTimeMinus8Hours);
                         }
                     }
                 }
@@ -247,7 +251,7 @@ function createGageDataTable(allData) {
 
                         for (let i = 0; i < limit; i++) {
                             const { 'timeseries-id': tsidCond, 'alias-id': tsidCondLabel } = series[i];
-                            fetchAndUpdateWaterQuality(waterQualityCell, tsidCond, tsidCondLabel, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                            fetchAndUpdateWaterQuality(waterQualityCell, tsidCond, tsidCondLabel, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours, currentDateTimeMinus8Hours);
                         }
                     }
                 }
@@ -261,7 +265,7 @@ function createGageDataTable(allData) {
 
                         for (let i = 0; i < limit; i++) {
                             const { 'timeseries-id': tsidPh, 'alias-id': tsidPhLabel } = series[i];
-                            fetchAndUpdateWaterQuality(waterQualityCell, tsidPh, tsidPhLabel, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                            fetchAndUpdateWaterQuality(waterQualityCell, tsidPh, tsidPhLabel, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours, currentDateTimeMinus8Hours);
                         }
                     }
                 }
@@ -275,7 +279,7 @@ function createGageDataTable(allData) {
 
                         for (let i = 0; i < limit; i++) {
                             const { 'timeseries-id': tsidturbf, 'alias-id': tsidturbfLabel } = series[i];
-                            fetchAndUpdateWaterQuality(waterQualityCell, tsidturbf, tsidturbfLabel, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                            fetchAndUpdateWaterQuality(waterQualityCell, tsidturbf, tsidturbfLabel, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours, currentDateTimeMinus8Hours);
                         }
                     }
                 }
@@ -289,7 +293,7 @@ function createGageDataTable(allData) {
 
                         for (let i = 0; i < limit; i++) {
                             const { 'timeseries-id': tsidpressure, 'alias-id': tsidpressureLabel } = series[i];
-                            fetchAndUpdateWaterQuality(waterQualityCell, tsidpressure, tsidpressureLabel, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                            fetchAndUpdateWaterQuality(waterQualityCell, tsidpressure, tsidpressureLabel, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours, currentDateTimeMinus8Hours);
                         }
                     }
                 }
@@ -303,7 +307,7 @@ function createGageDataTable(allData) {
 
                         for (let i = 0; i < limit; i++) {
                             const { 'timeseries-id': tsidnitrate, 'alias-id': tsidnitrateLabel } = series[i];
-                            fetchAndUpdateWaterQuality(waterQualityCell, tsidnitrate, tsidnitrateLabel, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                            fetchAndUpdateWaterQuality(waterQualityCell, tsidnitrate, tsidnitrateLabel, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours, currentDateTimeMinus8Hours);
                         }
                     }
                 }
@@ -317,7 +321,7 @@ function createGageDataTable(allData) {
 
                         for (let i = 0; i < limit; i++) {
                             const { 'timeseries-id': tsidchlorophyll, 'alias-id': tsidchlorophyllLabel } = series[i];
-                            fetchAndUpdateWaterQuality(waterQualityCell, tsidchlorophyll, tsidchlorophyllLabel, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                            fetchAndUpdateWaterQuality(waterQualityCell, tsidchlorophyll, tsidchlorophyllLabel, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours, currentDateTimeMinus8Hours);
                         }
                     }
                 }
@@ -331,7 +335,7 @@ function createGageDataTable(allData) {
 
                         for (let i = 0; i < limit; i++) {
                             const { 'timeseries-id': tsidphycocyanin, 'alias-id': tsidphycocyaninLabel } = series[i];
-                            fetchAndUpdateWaterQuality(waterQualityCell, tsidphycocyanin, tsidphycocyaninLabel, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                            fetchAndUpdateWaterQuality(waterQualityCell, tsidphycocyanin, tsidphycocyaninLabel, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours, currentDateTimeMinus8Hours);
                         }
                     }
                 }
@@ -345,7 +349,7 @@ function createGageDataTable(allData) {
 
                         for (let i = 0; i < limit; i++) {
                             const { 'timeseries-id': tsidspeed, 'alias-id': tsidspeedLabel } = series[i];
-                            fetchAndUpdateWaterQuality(waterQualityCell, tsidspeed, tsidspeedLabel, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                            fetchAndUpdateWaterQuality(waterQualityCell, tsidspeed, tsidspeedLabel, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours, currentDateTimeMinus8Hours);
                         }
                     }
                 }
@@ -377,3 +381,5 @@ function createGageDataTable(allData) {
         tableContainer.appendChild(table);
     }
 }
+
+// TODO: Nav TW-Kaskaskia Flood level and display parameter

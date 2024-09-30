@@ -712,7 +712,7 @@ function fetchAndUpdatePrecip(precipCell, tsid, currentDateTimeMinus2Hours, curr
 }
 
 // Function to get flows data
-function fetchAndUpdateWaterQuality(waterQualityCell, tsid, label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours) {
+function fetchAndUpdateWaterQuality(waterQualityCell, tsid, label, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours, currentDateTimeMinus8Hours) {
     if (tsid !== null) {
         // Fetch the time series data from the API using the determined query string
         let urlWaterQuality = null;
@@ -722,7 +722,7 @@ function fetchAndUpdateWaterQuality(waterQualityCell, tsid, label, currentDateTi
             urlWaterQuality = `https://coe-${office.toLocaleLowerCase()}uwa04${office.toLocaleLowerCase()}.${office.toLocaleLowerCase()}.usace.army.mil:8243/${office.toLocaleLowerCase()}-data/timeseries?name=${tsid}&begin=${currentDateTimeMinus30Hours.toISOString()}&end=${currentDateTime.toISOString()}&office=${office}`;
         }
         // console.log("urlWaterQuality = ", urlWaterQuality);
-        
+
         fetch(urlWaterQuality, {
             method: 'GET',
             headers: {
@@ -756,31 +756,31 @@ function fetchAndUpdateWaterQuality(waterQualityCell, tsid, label, currentDateTi
                 // console.log("label = ", label);
 
                 // WATER QUALITY CLASS
-                if (label.startsWith("TEMP AIR")) {
+                if (label.includes("AIR")) {
                     var myWaterQualityClass = "water_quality_temp_air";
-                } else if (label.startsWith("TEMP WATER")) {
+                } else if (label.includes("WATER")) {
                     var myWaterQualityClass = "water_quality_temp_water";
-                } else if (label.startsWith("DO")) {
+                } else if (label.includes("DO")) {
                     var myWaterQualityClass = "water_quality_do";
-                } else if (label.startsWith("DEPTH")) {
+                } else if (label.includes("DEPTH")) {
                     var myWaterQualityClass = "water_quality_depth";
-                } else if (label.startsWith("COND")) {
+                } else if (label.includes("COND")) {
                     var myWaterQualityClass = "water_quality_cond";
-                } else if (label.startsWith("PH")) {
+                } else if (label.includes("PH")) {
                     var myWaterQualityClass = "water_quality_ph";
-                } else if (label.startsWith("TURB")) {
+                } else if (label.includes("TURB")) {
                     var myWaterQualityClass = "water_quality_turb";
-                } else if (label.startsWith("SPEED")) {
+                } else if (label.includes("SPEED")) {
                     var myWaterQualityClass = "water_quality_speed_wind";
-                } else if (label.startsWith("PRESSURE")) {
+                } else if (label.includes("PRESSURE")) {
                     var myWaterQualityClass = "water_quality_pressure";
-                } else if (label.startsWith("DIR")) {
+                } else if (label.includes("DIR")) {
                     var myWaterQualityClass = "water_quality_dir_wind";
-                } else if (label.startsWith("NITRATE")) {
+                } else if (label.includes("NITRATE")) {
                     var myWaterQualityClass = "water_quality_dir_wind";
-                } else if (label.startsWith("CHLOROPHYLL")) {
+                } else if (label.includes("CHLOROPHYLL")) {
                     var myWaterQualityClass = "water_quality_dir_wind";
-                } else if (label.startsWith("PHYCOCYANIN")) {
+                } else if (label.includes("PHYCOCYANIN")) {
                     var myWaterQualityClass = "water_quality_dir_wind";
                 } else if (label === undefined) {
                     var myWaterQualityClass = "water_quality_do";
@@ -850,7 +850,7 @@ function fetchAndUpdateWaterQuality(waterQualityCell, tsid, label, currentDateTi
                 // console.log("timeStampDateObjectMinus24Hours = ", timeStampDateObjectMinus24Hours);
 
                 // DATATIME CLASS
-                var dateTimeClass = determineDateTimeClass(timeStampDateObject, currentDateTimeMinus2Hours);
+                var dateTimeClass = determineDateTimeClassWaterQuality(timeStampDateObject, currentDateTimeMinus2Hours, currentDateTimeMinus8Hours, label);
                 // console.log("dateTimeClass:", dateTimeClass);
 
                 if (lastNonNullWaterQualityValue === null) {
@@ -990,6 +990,32 @@ function determineDateTimeClass(formattedDate, currentDateTimeMinus2Hours) {
         myDateTimeClass = "date_time_late";
         // console.log("formattedDate = ", formattedDate);
         // console.log("currentDateTimeMinus2Hours = ", currentDateTimeMinus2Hours);
+    }
+    // console.log("myDateTimeClass = ", myDateTimeClass);
+    return myDateTimeClass;
+}
+
+// Function determine date time class
+function determineDateTimeClassWaterQuality(formattedDate, currentDateTimeMinus2Hours, currentDateTimeMinus8Hours, label) {
+    let myDateTimeClass;
+    if (label.includes("LPMS")) {
+        if (formattedDate >= currentDateTimeMinus8Hours) {
+            myDateTimeClass = "date_time_current";
+            // console.log("formattedDate = ", formattedDate);
+        } else {
+            myDateTimeClass = "date_time_late";
+            // console.log("formattedDate = ", formattedDate);
+            // console.log("currentDateTimeMinus8Hours = ", currentDateTimeMinus8Hours);
+        }
+    } else {
+        if (formattedDate >= currentDateTimeMinus2Hours) {
+            myDateTimeClass = "date_time_current";
+            // console.log("formattedDate = ", formattedDate);
+        } else {
+            myDateTimeClass = "date_time_late";
+            // console.log("formattedDate = ", formattedDate);
+            // console.log("currentDateTimeMinus2Hours = ", currentDateTimeMinus2Hours);
+        }
     }
     // console.log("myDateTimeClass = ", myDateTimeClass);
     return myDateTimeClass;

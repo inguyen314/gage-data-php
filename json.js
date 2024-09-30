@@ -1,4 +1,8 @@
 document.addEventListener('DOMContentLoaded', async function () {
+    // Display the loading_alarm_mvs indicator
+    const loadingIndicator = document.getElementById('loading_json');
+    loadingIndicator.style.display = 'block';
+
     const apiUrl = `https://coe-${office.toLocaleLowerCase()}uwa04${office.toLocaleLowerCase()}.${office.toLocaleLowerCase()}.usace.army.mil:8243/${office.toLocaleLowerCase()}-data/location/group?office=${office}&include-assigned=false&location-category-like=Basins`;
 
     // Example configuration; adjust as needed
@@ -817,6 +821,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
                     // Call the function to create and populate the table
                     createGageDataTable(combinedData);
+                    loadingIndicator.style.display = 'none';
                 })
                 .catch(error => {
                     console.error('There was a problem with one or more fetch operations:', error);
