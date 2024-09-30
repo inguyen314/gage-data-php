@@ -443,3 +443,8 @@ hr {
 	color: red;
 	animation: blink 1s infinite;
 }
+
+.blinking-text a {
+	color: red;
+	animation: blink 1s infinite;
+}

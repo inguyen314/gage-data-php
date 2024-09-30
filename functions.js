@@ -224,36 +224,37 @@ function fetchAndUpdateNWS(stageCell, tsidStage, tsid_stage_nws_3_day_forecast, 
 
 
                     if (nws3Days !== null) {
-                        innerHTMLStage = "<table id='nws'>"
-                            + "<tr>"
-                            + "<td colspan='3' class='day_nws_forecast'>"
-                            + "3 Day NWS Forecast"
-                            + "</td>"
-                            + "</tr>"
-                            + "<tr>"
-                            + "<td class='" + floodClassDay1 + "'>"
-                            + "<a href='../chart/index.html?office=" + office + "&cwms_ts_id=" + nws3Days.name + "&lookback=6&lookforward=96&cda=public' target='_blank' title='" + nws3Days.name + " " + firstFirstValue + "'>"
-                            + firstMiddleValue
-                            + "</a>"
-                            + "</td>"
-                            + "<td class='" + floodClassDay2 + "'>"
-                            + "<a href='../chart/index.html?office=" + office + "&cwms_ts_id=" + nws3Days.name + "&lookback=6&lookforward=96&cda=public' target='_blank' title='" + nws3Days.name + " " + secondFirstValue + "'>"
-                            + secondMiddleValue
-                            + "</a>"
-                            + "</td>"
-                            + "<td class='" + floodClassDay3 + "'>"
-                            + "<a href='../chart/index.html?office=" + office + "&cwms_ts_id=" + nws3Days.name + "&lookback=6&lookforward=96&cda=public' target='_blank' title='" + nws3Days.name + " " + thirdFirstValue + "'>"
-                            + thirdMiddleValue
-                            + "</a>"
-                            + "</td>"
-                            + "</tr>"
-                            // + "<tr>"
-                            // + "<td colspan='3' id='stageCell' class='day_nws_ded'></td>" // Placeholder for forecast time
-                            // + "</tr>"
-                            + "<table>";
-                        // document.getElementById('someElementId').innerHTML = innerHTMLStage; // Insert the table into the DOM
-                        // const stageCell = document.getElementById('stageCell'); // Get the placeholder element
-                        // fetchAndLogNwsData2(tsid_stage_nws_3_day_forecast, stageCell); // Fetch and update the data
+                        if (firstMiddleValue !== "-M-" && secondMiddleValue !== "-M-" && thirdMiddleValue !== "-M-") {
+                            innerHTMLStage = "<table id='nws'>"
+                                + "<tr>"
+                                + "<td colspan='3' class='day_nws_forecast'>"
+                                + "3 Day NWS Forecast"
+                                + "</td>"
+                                + "</tr>"
+                                + "<tr>"
+                                + "<td class='" + floodClassDay1 + "'>"
+                                + "<a href='../chart/index.html?office=" + office + "&cwms_ts_id=" + nws3Days.name + "&lookback=6&lookforward=96&cda=public' target='_blank' title='" + nws3Days.name + " " + firstFirstValue + "'>"
+                                + firstMiddleValue
+                                + "</a>"
+                                + "</td>"
+                                + "<td class='" + floodClassDay2 + "'>"
+                                + "<a href='../chart/index.html?office=" + office + "&cwms_ts_id=" + nws3Days.name + "&lookback=6&lookforward=96&cda=public' target='_blank' title='" + nws3Days.name + " " + secondFirstValue + "'>"
+                                + secondMiddleValue
+                                + "</a>"
+                                + "</td>"
+                                + "<td class='" + floodClassDay3 + "'>"
+                                + "<a href='../chart/index.html?office=" + office + "&cwms_ts_id=" + nws3Days.name + "&lookback=6&lookforward=96&cda=public' target='_blank' title='" + nws3Days.name + " " + thirdFirstValue + "'>"
+                                + thirdMiddleValue
+                                + "</a>"
+                                + "</td>"
+                                + "</tr>"
+                                // + "<tr>"
+                                // + "<td colspan='3' id='stageCell' class='day_nws_ded'></td>" // Placeholder for forecast time
+                                // + "</tr>"
+                                + "<table>";
+                        } else {
+                            innerHTMLStage = "";
+                        }
                     } else {
                         innerHTMLStage = "<span class='missing'>"
                             + "-M-"
@@ -792,6 +793,8 @@ function fetchAndUpdateWaterQuality(waterQualityCell, tsid, label, currentDateTi
 
                 // Get the last non-null value from the stage data
                 const lastNonNullWaterQualityValue = getLastNonNullValue(waterQuality);
+                // console.log("lastNonNullWaterQualityValue = ", lastNonNullWaterQualityValue);
+                // console.log("lastNonNullWaterQualityValue = ", typeof(lastNonNullWaterQualityValue));
 
                 // Check if a non-null value was found
                 if (lastNonNullWaterQualityValue !== null) {
@@ -856,6 +859,22 @@ function fetchAndUpdateWaterQuality(waterQualityCell, tsid, label, currentDateTi
                 if (lastNonNullWaterQualityValue === null) {
                     innerHTMLWaterQuality = "<span class='missing' title='" + waterQuality.name + "'>"
                         + "-M-"
+                        + "</span>"
+                        + "<span class='" + myWaterQualityClass + "'>"
+                        + label
+                        + "</span>";
+                } else if (valueWaterQualityLast > 1000) {
+                    innerHTMLWaterQuality = "<span class='blinking-text' title='" + waterQuality.name + ", Value = " + valueWaterQualityLast + ", Date Time = " + timestampWaterQualityLast + "'>"
+                        + "<a href='../chart/index.html?office=" + office + "&cwms_ts_id=" + waterQuality.name + "&lookback=96&cda=public' target='_blank'>"
+                        + valueWaterQualityLast
+                        + "</a>"
+                        + "</span>"
+                        + " "
+                        + waterQuality.units
+                        + " (" + "<span title='" + waterQuality.name + ", Value = " + valueWaterQuality24HoursLast + ", Date Time = " + timestampWaterQuality24HoursLast + ", Delta = (" + valueWaterQualityLast + " - " + valueWaterQuality24HoursLast + ") = " + delta_24_water_quality + "'>" + delta_24_water_quality + "</span>" + ")"
+                        + "<br>"
+                        + "<span class='" + dateTimeClass + "'>"
+                        + formattedLastValueTimeStamp
                         + "</span>"
                         + "<span class='" + myWaterQualityClass + "'>"
                         + label
