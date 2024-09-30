@@ -59,7 +59,8 @@ hr {
 }
 .hard_coded_php {
 	color: black; /* Base text color */
-	text-shadow: 0 0 2px purple;
+	text-shadow: 0 0 1px purple;
+	font-size: 0.8em
 }
 
 
@@ -409,4 +410,23 @@ hr {
 	border: solid; 
 	color: red; 
 	border-color: #000000
+}
+/*** ===================================================================================== ***/
+/*** STAGE GAGE DATA WITH NWS FORECAST ***/
+/*** ===================================================================================== ***/
+.container {
+	display: grid;
+	grid-template-rows: auto 1fr auto; /* Top, middle (flexible), bottom */
+}
+.box {
+	text-align: center;
+}
+.top {
+	text-align: center;
+}
+.middle {
+	text-align: center;
+}
+.bottom {
+	text-align: center;
 }

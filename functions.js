@@ -1232,5 +1232,5 @@ function updateNwsForecastTimeHTML(filteredData, stageCell) {
     const formattedDateTime = `${month}-${day}-${year} ${hours}:${minutes} ${period}`;
 
     // Update the HTML content
-    stageCell.innerHTML += `<span class="hard_coded_php" title="Uses PHP Json Output, No Cloud Option Yet">Forecast Date: ${formattedDateTime}<span><br>`;
+    stageCell.innerHTML += `<span class="hard_coded_php" title="Uses PHP Json Output, No Cloud Option Yet">Forecast Date: ${formattedDateTime}<span>`;
 }

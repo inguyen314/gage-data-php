@@ -108,20 +108,46 @@ function createGageDataTable(allData) {
             if (2 === 2) {
                 // Create a new table cell for displaying stage data
                 const stageCell = row.insertCell();
+                const containerDiv = document.createElement('div');
+                containerDiv.className = 'container'; // Create and set the container div class
+
+                // Create three divs for top, middle, and bottom
+                const topDiv = document.createElement('div');
+                const middleDiv = document.createElement('div');
+                const bottomDiv = document.createElement('div');
+
+                topDiv.className = 'box top';
+                middleDiv.className = 'box middle';
+                bottomDiv.className = 'box bottom';
+
                 let tsidStage = null;
                 let tsidForecastNws = null;
+
+                // Check if 'tsid-stage' exists in locData
                 if (locData['tsid-stage']) {
-                    tsidStage = locData['tsid-stage'][`assigned-time-series`][0][`timeseries-id`];
-                    fetchAndUpdateStage(stageCell, tsidStage, flood_level, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    tsidStage = locData['tsid-stage']['assigned-time-series'][0]['timeseries-id'];
+                    // fetchAndUpdateStage(stageCell, tsidStage, flood_level, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    fetchAndUpdateStage(topDiv, tsidStage, flood_level, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
                 }
+
+                // Check if the office is "MVS" and other conditions
                 if (office === "MVS") {
                     if (locData['tsid-forecast-nws'] && cda === "internal") {
-                        tsidForecastNws = locData['tsid-forecast-nws'][`assigned-time-series`][0][`timeseries-id`];
-                        fetchAndUpdateNWS(stageCell, tsidStage, tsidForecastNws, flood_level, currentDateTime, currentDateTimePlus4Days);
-                        fetchAndUpdateNWSForecastDate(stageCell, tsidForecastNws);
+                        tsidForecastNws = locData['tsid-forecast-nws']['assigned-time-series'][0]['timeseries-id'];
+                        fetchAndUpdateNWS(middleDiv, tsidStage, tsidForecastNws, flood_level, currentDateTime, currentDateTimePlus4Days);
+                        fetchAndUpdateNWSForecastDate(bottomDiv, tsidForecastNws);
                     }
                 }
+
+                // Append the divs to the container
+                containerDiv.appendChild(topDiv);
+                containerDiv.appendChild(middleDiv);
+                containerDiv.appendChild(bottomDiv);
+
+                // Append the container to the stageCell
+                stageCell.appendChild(containerDiv);
             }
+
 
             // FLOW
             if (3 === 3) {
