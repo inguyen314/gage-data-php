@@ -93,7 +93,12 @@ function createGageDataTable(allData) {
                 const locationCell = row.insertCell();
                 locationCell.style.textAlign = 'left';
                 locationCell.style.fontWeight = 'bold';
-                if (locData[`alias-id`] === office) {
+
+                // Assuming locData is defined and populated as you provided
+                const assignedLocations = locData.owner['assigned-locations'].map(location => location['location-id']);
+
+                // Check if the location-id exists in the assigned locations
+                if (assignedLocations.includes(locData['location-id'])) {
                     // If the owner's ID is "MVS", set the text color to dark blue
                     locationCell.style.color = 'darkblue';
 
