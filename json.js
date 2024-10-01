@@ -683,7 +683,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                                 }
 
                                 if ("owner" === "owner") {
-                                    let ownerApiUrl = `https://coe-mvsuwa04${office.toLocaleLowerCase()}.${office.toLocaleLowerCase()}.usace.army.mil:8243/${office.toLocaleLowerCase()}-data/location/group/${office}?office=${office}&category-id=RDL_MVS`;
+                                    let ownerApiUrl = `https://coe-mvsuwa04${office.toLocaleLowerCase()}.${office.toLocaleLowerCase()}.usace.army.mil:8243/${office.toLocaleLowerCase()}-data/location/group/${office}?office=${office}&category-id=${office}`;
                                     if (ownerApiUrl) {
                                         ownerPromises.push(
                                             fetch(ownerApiUrl)
