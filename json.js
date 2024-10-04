@@ -96,7 +96,8 @@ document.addEventListener('DOMContentLoaded', async function () {
 
             // Construct the URL for the API request - basin
             const basinApiUrl = `https://coe-${office.toLocaleLowerCase()}uwa04${office.toLocaleLowerCase()}.${office.toLocaleLowerCase()}.usace.army.mil:8243/${office.toLocaleLowerCase()}-data/location/group/${basin}?office=${office}&category-id=Basins`;
-            
+            console.log("basinApiUrl: ", basinApiUrl);
+
             // Push the fetch promise to the apiPromises array
             apiPromises.push(
                 fetch(basinApiUrl)
@@ -106,29 +107,45 @@ document.addEventListener('DOMContentLoaded', async function () {
                         }
                         return response.json();
                     })
-                    .then(firstData => {
-                        if (!firstData) {
+                    .then(data => {
+                        if (!data) {
                             console.log(`No data for basin: ${basin}`);
                             return;
                         }
-                        console.log('firstData:', firstData);
+                        console.log('data:', data);
 
-                        // Remove locations where the attribute is greater than 900
-                        firstData[`assigned-locations`] = firstData[`assigned-locations`].filter(location => location.attribute <= 900);
+                        // Ensure 'assigned-locations' is defined and is an array
+                        if (Array.isArray(data['assigned-locations'])) {
+                            // Create a new array for filtered assigned-locations
+                            const filteredLocations = data['assigned-locations'].filter(location => location.attribute <= 900);
 
-                        console.log('firstData after remove gages with attribute greater than 900:', firstData);
+                            // Reorder filtered locations based on the "attribute" value
+                            filteredLocations.sort((a, b) => a.attribute - b.attribute);
+                            console.log('Filtered and sorted locations:', filteredLocations);
 
-                        // Reorder assigned-locations based on the "attribute" value
-                        firstData[`assigned-locations`].sort((a, b) => a.attribute - b.attribute);
+                            // If a specific gage is defined, filter further
+                            if (gage) {
+                                // Filter for the specified gage
+                                const gageFilteredLocations = filteredLocations.filter(location => location["location-id"] === gage);
+                                console.log('Filtered data for gage:', gageFilteredLocations);
 
-                        console.log('firstData after reorder based on attribute:', firstData);
+                                // Update the assigned-locations in the original data object
+                                data['assigned-locations'] = gageFilteredLocations;
+                            } else {
+                                // Update the assigned-locations in the original data object
+                                data['assigned-locations'] = filteredLocations;
+                            }
+                        } else {
+                            console.log(`No assigned-locations found.`);
+                        }
+
 
                         // Process and append the fetched data to combinedData
-                        combinedData.push(firstData);
+                        combinedData.push(data);
 
                         // Process each location within the basin data
-                        if (firstData['assigned-locations']) {
-                            firstData['assigned-locations'].forEach(loc => {
+                        if (data['assigned-locations']) {
+                            data['assigned-locations'].forEach(loc => {
                                 // console.log('Processing location:', loc['location-id']);
 
                                 if ("metadata" === "metadata") {

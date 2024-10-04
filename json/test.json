@@ -1,0 +1,164 @@
+{
+    "office-id": "MVS",
+    "id": "Missouri",
+    "location-category": {
+        "office-id": "MVS",
+        "id": "Basins"
+    },
+    "description": "Missouri",
+    "assigned-locations": [
+        {
+            "location-id": "Boonville-Missouri",
+            "office-id": "MVS",
+            "attribute": 1,
+            "metadata": {
+                "office-id": "MVS",
+                "name": "Boonville-Missouri",
+                "latitude": 38.9783333,
+                "longitude": -92.7536111,
+                "active": true,
+                "public-name": "Boonville",
+                "long-name": "Boonville-Missouri",
+                "description": "Missouri River at Boonville",
+                "timezone-name": "US/Central",
+                "location-kind": "STREAM_LOCATION",
+                "nation": "US",
+                "state-initial": "MO",
+                "county-name": "Cooper",
+                "nearest-city": "Columbia",
+                "horizontal-datum": "WGS84",
+                "published-longitude": -92.7536111,
+                "published-latitude": 38.9783333,
+                "vertical-datum": "NGVD29",
+                "elevation": 565.42,
+                "bounding-office-id": "NWK"
+            },
+            "flood": {
+                "office-id": "MVS",
+                "location-level-id": "Boonville-Missouri.Stage.Inst.0.Flood",
+                "seasonal-values": [],
+                "constant-value": 21,
+                "level-units-id": "ft",
+                "level-date": "2024-01-01T08:00:00Z",
+                "interval-months": 0,
+                "interval-minutes": 0,
+                "attribute-units-id": "ft"
+            },
+            "tsid-stage": {
+                "office-id": "MVS",
+                "id": "Stage",
+                "time-series-category": {
+                    "office-id": "MVS",
+                    "id": "Boonville-Missouri"
+                },
+                "assigned-time-series": [
+                    {
+                        "office-id": "MVS",
+                        "timeseries-id": "Boonville-Missouri.Stage.Inst.15Minutes.0.lrgsShef-rev",
+                        "ts-code": 4031018
+                    }
+                ]
+            },
+            "tsid-flow": {
+                "office-id": "MVS",
+                "id": "Flow",
+                "time-series-category": {
+                    "office-id": "MVS",
+                    "id": "Boonville-Missouri"
+                },
+                "assigned-time-series": [
+                    {
+                        "office-id": "MVS",
+                        "timeseries-id": "Boonville-Missouri.Flow.Inst.15Minutes.0.RatingUSGS",
+                        "ts-code": 14660018,
+                        "alias-id": "USGS",
+                        "attribute": 0
+                    }
+                ]
+            },
+            "tsid-precip": {
+                "office-id": "MVS",
+                "id": "Precip",
+                "time-series-category": {
+                    "office-id": "MVS",
+                    "id": "Boonville-Missouri"
+                },
+                "assigned-time-series": [
+                    {
+                        "office-id": "MVS",
+                        "timeseries-id": "Boonville-Missouri.Precip.Inst.15Minutes.0.lrgsShef-rev",
+                        "ts-code": 4029018
+                    }
+                ]
+            }
+        },
+        {
+            "location-id": "Jefferson City-Missouri",
+            "office-id": "MVS",
+            "attribute": 2,
+            "metadata": {
+                "office-id": "MVS",
+                "name": "Jefferson City-Missouri",
+                "latitude": 38.587,
+                "longitude": -92.18,
+                "active": true,
+                "public-name": "Jefferson City",
+                "long-name": "Jefferson City-Missouri",
+                "description": "ON RIGHT BANK AT MILE 168.7 ABOVE THE MOUTH OF THE OHIO RIVER. NOTE: PRIOR TO MAR. 2, 1960, GAGE WAS LOCATED AT MILE 169.3 ABOVE THE MOUTH OF THE OHIO RIVER. NO CHANGE IN DATUM.",
+                "timezone-name": "US/Central",
+                "location-kind": "STREAM_LOCATION",
+                "nation": "US",
+                "state-initial": "MO",
+                "county-name": "Unknown County or County N/A",
+                "nearest-city": "Jefferson City",
+                "horizontal-datum": "WGS84",
+                "vertical-datum": "NGVD29",
+                "elevation": 520.13,
+                "bounding-office-id": "NWK"
+            },
+            "flood": {
+                "office-id": "MVS",
+                "location-level-id": "Jefferson City-Missouri.Stage.Inst.0.Flood",
+                "seasonal-values": [],
+                "constant-value": 23,
+                "level-units-id": "ft",
+                "level-date": "2024-01-01T08:00:00Z",
+                "interval-months": 0,
+                "interval-minutes": 0,
+                "attribute-units-id": "ft"
+            },
+            "tsid-stage": {
+                "office-id": "MVS",
+                "id": "Stage",
+                "time-series-category": {
+                    "office-id": "MVS",
+                    "id": "Jefferson City-Missouri"
+                },
+                "assigned-time-series": [
+                    {
+                        "office-id": "MVS",
+                        "timeseries-id": "Jefferson City-Missouri.Stage.Inst.15Minutes.0.lrgsShef-rev",
+                        "ts-code": 4443018
+                    }
+                ]
+            },
+            "tsid-flow": {
+                "office-id": "MVS",
+                "id": "Flow",
+                "time-series-category": {
+                    "office-id": "MVS",
+                    "id": "Jefferson City-Missouri"
+                },
+                "assigned-time-series": [
+                    {
+                        "office-id": "MVS",
+                        "timeseries-id": "Jefferson City-Missouri.Flow.Inst.15Minutes.0.RatingUSGS",
+                        "ts-code": 14724018,
+                        "alias-id": "USGS",
+                        "attribute": 0
+                    }
+                ]
+            }
+        }
+    ]
+}
