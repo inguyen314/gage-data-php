@@ -31,6 +31,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     const phycocyaninTsidMap = new Map();
     const speedTsidMap = new Map();
     const ownerMap = new Map();
+    const riverMileMap = new Map();
 
     // Arrays to track promises for metadata and flood data fetches
     const metadataPromises = [];
@@ -54,6 +55,7 @@ document.addEventListener('DOMContentLoaded', async function () {
     const phycocyaninTsidPromises = [];
     const speedTsidPromises = [];
     const ownerPromises = [];
+    const riverMilePromises = [];
 
 
     // Fetch the initial data
@@ -726,6 +728,43 @@ document.addEventListener('DOMContentLoaded', async function () {
                                         );
                                     }
                                 }
+
+                                if ("river-mile" === "river-mile") {
+                                    // Fetch the JSON file
+                                    fetch('json/gage_control_official.json')
+                                        .then(response => {
+                                            if (!response.ok) {
+                                                throw new Error(`Network response was not ok: ${response.statusText}`);
+                                            }
+                                            return response.json();
+                                        })
+                                        .then(riverMilesJson => {
+                                            // Loop through each basin in the JSON
+                                            for (const basin in riverMilesJson) {
+                                                const locations = riverMilesJson[basin];
+
+                                                for (const loc in locations) {
+                                                    const ownerData = locations[loc];
+
+                                                    // Retrieve river mile and other data
+                                                    const riverMile = ownerData.river_mile_hard_coded;
+
+                                                    // Create an output object using the location name as ID
+                                                    const outputData = {
+                                                        locationId: loc, // Using location name as ID
+                                                        basin: basin,
+                                                        riverMile: riverMile
+                                                    };
+
+                                                    console.log("Output Data:", outputData);
+                                                    riverMileMap.set(loc, ownerData); // Store the data in the map
+                                                }
+                                            }
+                                        })
+                                        .catch(error => {
+                                            console.error('Problem with the fetch operation:', error);
+                                        });
+                                }
                             });
                         }
                     })
@@ -757,6 +796,7 @@ document.addEventListener('DOMContentLoaded', async function () {
                 .then(() => Promise.all(phycocyaninTsidPromises))
                 .then(() => Promise.all(speedTsidPromises))
                 .then(() => Promise.all(ownerPromises))
+                .then(() => Promise.all(riverMilePromises))
                 .then(() => {
                     // Update combinedData with location metadata and flood data
                     combinedData.forEach(basinData => {
@@ -865,6 +905,11 @@ document.addEventListener('DOMContentLoaded', async function () {
                                 const ownerMapData = ownerMap.get(loc['location-id']);
                                 if (ownerMapData) {
                                     loc['owner'] = ownerMapData;
+                                }
+
+                                const riverMileMapData = riverMileMap.get(loc['location-id']);
+                                if (riverMileMapData) {
+                                    loc['river-mile'] = riverMileMapData;
                                 }
                             });
                         }

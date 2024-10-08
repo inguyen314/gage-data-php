@@ -8,7 +8,12 @@ function createGageDataTable(allData) {
     const headerRow = document.createElement('tr');
 
     // Create table headers for the desired columns
-    const columns = ["Gage", "Stage (24hr)", "Flow (24hr)", "Precip [6hr] [24hr]", "Water Quality", "Gage Zero", "Flood Level"];
+    let columns = null;
+    if (office === "MVS") {
+        columns = ["Gage", "Stage (24hr)", "Flow (24hr)", "Precip [6hr] [24hr]", "Water Quality", "River Mile", "Flood Level"];
+    } else {
+        columns = ["Gage", "Stage (24hr)", "Flow (24hr)", "Precip [6hr] [24hr]", "Water Quality", "Gage Zero", "Flood Level"];
+    }
 
     columns.forEach((columnName) => {
         const th = document.createElement('th');
@@ -102,10 +107,10 @@ function createGageDataTable(allData) {
                     // If the owner's ID is "MVS", set the text color to dark blue
                     locationCell.style.color = 'darkblue';
 
-                    locationCell.innerHTML = locData.attribute + " " + locData[`location-id`];
+                    locationCell.innerHTML = Math.round(locData.attribute) + " " + locData[`location-id`];
                     // locationCell.innerHTML = locData.attribute + " " + locData.metadata[`public-name`];
                 } else {
-                    locationCell.innerHTML = locData.attribute + " " + locData[`location-id`];
+                    locationCell.innerHTML = Math.round(locData.attribute) + " " + locData[`location-id`];
                 }
             }
 
@@ -128,19 +133,23 @@ function createGageDataTable(allData) {
                 let tsidStage = null;
                 let tsidForecastNws = null;
 
-                // Check if 'tsid-stage' exists in locData
-                if (locData['tsid-stage']) {
-                    tsidStage = locData['tsid-stage']['assigned-time-series'][0]['timeseries-id'];
-                    // fetchAndUpdateStage(stageCell, tsidStage, flood_level, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                    fetchAndUpdateStage(topDiv, tsidStage, flood_level, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
-                }
+                if (locData.attribute % 1 === 0.1) {
+                    topDiv.innerHTML = "Temporally Removed<br>Loss of Funding";
+                } else {
+                    // Check if 'tsid-stage' exists in locData
+                    if (locData['tsid-stage']) {
+                        tsidStage = locData['tsid-stage']['assigned-time-series'][0]['timeseries-id'];
+                        // fetchAndUpdateStage(stageCell, tsidStage, flood_level, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                        fetchAndUpdateStage(topDiv, tsidStage, flood_level, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                    }
 
-                // Check if the office is "MVS" and other conditions
-                if (office === "MVS") {
-                    if (locData['tsid-forecast-nws'] && cda === "internal") {
-                        tsidForecastNws = locData['tsid-forecast-nws']['assigned-time-series'][0]['timeseries-id'];
-                        fetchAndUpdateNWS(middleDiv, tsidStage, tsidForecastNws, flood_level, currentDateTime, currentDateTimePlus4Days);
-                        fetchAndUpdateNWSForecastDate(bottomDiv, tsidForecastNws);
+                    // Check if the office is "MVS" and other conditions
+                    if (office === "MVS") {
+                        if (locData['tsid-forecast-nws'] && cda === "internal") {
+                            tsidForecastNws = locData['tsid-forecast-nws']['assigned-time-series'][0]['timeseries-id'];
+                            fetchAndUpdateNWS(middleDiv, tsidStage, tsidForecastNws, flood_level, currentDateTime, currentDateTimePlus4Days);
+                            fetchAndUpdateNWSForecastDate(bottomDiv, tsidForecastNws);
+                        }
                     }
                 }
 
@@ -166,8 +175,12 @@ function createGageDataTable(allData) {
                         const limit = (cda === 'public') ? 1 : series.length;
 
                         for (let i = 0; i < limit; i++) {
-                            const { 'timeseries-id': tsidFlow, 'alias-id': tsidFlowLabel } = series[i];
-                            fetchAndUpdateFlow(flowCell, tsidFlow, tsidFlowLabel, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                            if (locData.attribute % 1 === 0.1) {
+                                flowCell.innerHTML = "Temporally Removed<br>Loss of Funding";
+                            } else {
+                                const { 'timeseries-id': tsidFlow, 'alias-id': tsidFlowLabel } = series[i];
+                                fetchAndUpdateFlow(flowCell, tsidFlow, tsidFlowLabel, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                            }
                         }
                     }
                 }
@@ -178,8 +191,12 @@ function createGageDataTable(allData) {
                 const precipCell = row.insertCell();
                 if (locData['tsid-precip']) {
                     if (locData['tsid-precip'][`assigned-time-series`][0]) {
-                        const tsidPrecip = locData['tsid-precip'][`assigned-time-series`][0][`timeseries-id`];
-                        fetchAndUpdatePrecip(precipCell, tsidPrecip, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                        if (locData.attribute % 1 === 0.1) {
+                            precipCell.innerHTML = "Temporally Removed<br>Loss of Funding";
+                        } else {
+                            const tsidPrecip = locData['tsid-precip'][`assigned-time-series`][0][`timeseries-id`];
+                            fetchAndUpdatePrecip(precipCell, tsidPrecip, currentDateTimeMinus2Hours, currentDateTime, currentDateTimeMinus30Hours);
+                        }
                     }
                 }
             }
@@ -387,13 +404,21 @@ function createGageDataTable(allData) {
             }
 
 
-            // GAGE ZERO
+            // GAGE-ZERO/RIVER-MILE
             if (6 === 6) {
                 const riverMileCell = row.insertCell();
-                if (locData.metadata[`vertical-datum`] !== null && locData.metadata.elevation !== undefined && locData.metadata.elevation < 900) {
-                    riverMileCell.innerHTML = (locData.metadata.elevation).toFixed(2) + " (" + locData.metadata[`vertical-datum`] + ")";
+                if (office === "MVS") {
+                    if (locData[`river-mile`].river_mile_hard_coded !== null) {
+                        riverMileCell.innerHTML = "<span class='hard_coded'>" + locData[`river-mile`].river_mile_hard_coded + "</span>"
+                    } else {
+                        riverMileCell.innerHTML = "--";
+                    }
                 } else {
-                    riverMileCell.innerHTML = "--";
+                    if (locData.metadata[`vertical-datum`] !== null && locData.metadata.elevation !== undefined && locData.metadata.elevation < 900) {
+                        riverMileCell.innerHTML = (locData.metadata.elevation).toFixed(2) + " (" + locData.metadata[`vertical-datum`] + ")";
+                    } else {
+                        riverMileCell.innerHTML = "--";
+                    }
                 }
             }
 

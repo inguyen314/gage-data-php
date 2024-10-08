@@ -448,3 +448,23 @@ hr {
 	color: red;
 	animation: blink 1s infinite;
 }
+
+/*** ===================================================================================== ***/
+/*** ===== MISC ===== ***/
+/*** ===================================================================================== ***/
+.alert {
+	padding: 15px;
+	background-color: #f44336;
+	color: white;
+	text-align: center;
+	margin-top: 20px;
+	margin-bottom: 20px;
+}
+.hard_coded {
+	color: black; /* Base text color */
+	text-shadow: 0 0 1px orange;
+}
+.hard_coded_php {
+	color: black; /* Base text color */
+	text-shadow: 0 0 1px purple;
+}
