@@ -121,7 +121,7 @@ function fetchAndUpdateStage(stageCell, tsidStage, flood_level, currentDateTimeM
                 } else {
                     // innerHTMLStage = lastValue.toFixed(2)
                     innerHTMLStage = "<span class='" + floodClass + "' title='" + stage.name + ", Value = " + valueLast + ", Date Time = " + timestampLast + "'>"
-                        + "<a href='../chart/index.html?office=" + office + "&cwms_ts_id=" + stage.name + "&lookback=96&cda=public' target='_blank'>"
+                        + "<a href='../chart/index.html?office=" + office + "&cwms_ts_id=" + stage.name + "&lookback=4&cda=public' target='_blank'>"
                         + valueLast
                         + "</a>"
                         + "</span>"
@@ -233,17 +233,17 @@ function fetchAndUpdateNWS(stageCell, tsidStage, tsid_stage_nws_3_day_forecast, 
                                 + "</tr>"
                                 + "<tr>"
                                 + "<td class='" + floodClassDay1 + "'>"
-                                + "<a href='../chart/index.html?office=" + office + "&cwms_ts_id=" + nws3Days.name + "&lookback=6&lookforward=96&cda=public' target='_blank' title='" + nws3Days.name + " " + firstFirstValue + "'>"
+                                + "<a href='../chart/index.html?office=" + office + "&cwms_ts_id=" + nws3Days.name + "&lookback=6&lookforward=4&cda=public' target='_blank' title='" + nws3Days.name + " " + firstFirstValue + "'>"
                                 + firstMiddleValue
                                 + "</a>"
                                 + "</td>"
                                 + "<td class='" + floodClassDay2 + "'>"
-                                + "<a href='../chart/index.html?office=" + office + "&cwms_ts_id=" + nws3Days.name + "&lookback=6&lookforward=96&cda=public' target='_blank' title='" + nws3Days.name + " " + secondFirstValue + "'>"
+                                + "<a href='../chart/index.html?office=" + office + "&cwms_ts_id=" + nws3Days.name + "&lookback=6&lookforward=4&cda=public' target='_blank' title='" + nws3Days.name + " " + secondFirstValue + "'>"
                                 + secondMiddleValue
                                 + "</a>"
                                 + "</td>"
                                 + "<td class='" + floodClassDay3 + "'>"
-                                + "<a href='../chart/index.html?office=" + office + "&cwms_ts_id=" + nws3Days.name + "&lookback=6&lookforward=96&cda=public' target='_blank' title='" + nws3Days.name + " " + thirdFirstValue + "'>"
+                                + "<a href='../chart/index.html?office=" + office + "&cwms_ts_id=" + nws3Days.name + "&lookback=6&lookforward=4&cda=public' target='_blank' title='" + nws3Days.name + " " + thirdFirstValue + "'>"
                                 + thirdMiddleValue
                                 + "</a>"
                                 + "</td>"
@@ -434,7 +434,7 @@ function fetchAndUpdateFlow(flowCell, tsidFlow, label, currentDateTimeMinus2Hour
                         + "</span>";
                 } else {
                     innerHTMLFlow = "<span class='last_max_value' title='" + flow.name + ", Value = " + roundedValueFlowLast + ", Date Time = " + timestampFlowLast + "'>"
-                        + "<a href='../chart/index.html?office=" + office + "&cwms_ts_id=" + flow.name + "&lookback=96&cda=public' target='_blank'>"
+                        + "<a href='../chart/index.html?office=" + office + "&cwms_ts_id=" + flow.name + "&lookback=4&cda=public' target='_blank'>"
                         + roundedValueFlowLast
                         + "</a>"
                         + "</span>"
@@ -691,7 +691,7 @@ function fetchAndUpdatePrecip(precipCell, tsid, currentDateTimeMinus2Hours, curr
                         + "</tr>"
                         + "</table>"
                         + "<span class='last_max_value' title='" + precip.name + ", Value = " + valuePrecipLast + ", Date Time = " + timestampPrecipLast + "'>"
-                        + "<a href='../chart/index.html?office=" + office + "&cwms_ts_id=" + precip.name + "&lookback=96&cda=public' target='_blank'>"
+                        + "<a href='../chart/index.html?office=" + office + "&cwms_ts_id=" + precip.name + "&lookback=4&cda=public' target='_blank'>"
                         + valuePrecipLast
                         + "</a>"
                         + "</span>"
@@ -865,7 +865,7 @@ function fetchAndUpdateWaterQuality(waterQualityCell, tsid, label, currentDateTi
                         + "</span>";
                 } else if (valueWaterQualityLast > 1000) {
                     innerHTMLWaterQuality = "<span class='blinking-text' title='" + waterQuality.name + ", Value = " + valueWaterQualityLast + ", Date Time = " + timestampWaterQualityLast + "'>"
-                        + "<a href='../chart/index.html?office=" + office + "&cwms_ts_id=" + waterQuality.name + "&lookback=96&cda=public' target='_blank'>"
+                        + "<a href='../chart/index.html?office=" + office + "&cwms_ts_id=" + waterQuality.name + "&lookback=4&cda=public' target='_blank'>"
                         + valueWaterQualityLast
                         + "</a>"
                         + "</span>"
@@ -881,7 +881,7 @@ function fetchAndUpdateWaterQuality(waterQualityCell, tsid, label, currentDateTi
                         + "</span>";
                 } else {
                     innerHTMLWaterQuality = "<span class='last_max_value' title='" + waterQuality.name + ", Value = " + valueWaterQualityLast + ", Date Time = " + timestampWaterQualityLast + "'>"
-                        + "<a href='../chart/index.html?office=" + office + "&cwms_ts_id=" + waterQuality.name + "&lookback=96&cda=public' target='_blank'>"
+                        + "<a href='../chart/index.html?office=" + office + "&cwms_ts_id=" + waterQuality.name + "&lookback=4&cda=public' target='_blank'>"
                         + valueWaterQualityLast
                         + "</a>"
                         + "</span>"
