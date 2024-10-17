@@ -3,11 +3,13 @@ document.addEventListener('DOMContentLoaded', async function () {
     const loadingIndicator = document.getElementById('loading_json');
     loadingIndicator.style.display = 'block';
 
-    const apiUrl = `https://coe-${office.toLocaleLowerCase()}uwa04${office.toLocaleLowerCase()}.${office.toLocaleLowerCase()}.usace.army.mil:8243/${office.toLocaleLowerCase()}-data/location/group?office=${office}&include-assigned=false&location-category-like=Basins`;
-    console.log("apiUrl: ", apiUrl);
+    if (cda === "internal") {
+        apiUrl = `https://coe-${office.toLocaleLowerCase()}uwa04${office.toLocaleLowerCase()}.${office.toLocaleLowerCase()}.usace.army.mil:8243/${office.toLocaleLowerCase()}-data/location/group?office=${office}&include-assigned=false&location-category-like=Basins`;
+    } else if (cda === "public") {
+        apiUrl = `https://cwms-data.usace.army.mil/cwms-data/location/group?office=${office}&include-assigned=false&location-category-like=Basins`;
+    }
 
-    // Example configuration; adjust as needed
-    const cda = "public"; // or "internal", set based on your needs
+    console.log("apiUrl: ", apiUrl);
 
     // Store location metadata and flood data
     const metadataMap = new Map();
@@ -97,7 +99,13 @@ document.addEventListener('DOMContentLoaded', async function () {
             const combinedData = []; // Array to store combined data
 
             // Construct the URL for the API request - basin
-            const basinApiUrl = `https://coe-${office.toLocaleLowerCase()}uwa04${office.toLocaleLowerCase()}.${office.toLocaleLowerCase()}.usace.army.mil:8243/${office.toLocaleLowerCase()}-data/location/group/${basin}?office=${office}&category-id=Basins`;
+            let basinApiUrl = null;
+            if (cda === "internal") {
+                basinApiUrl = `https://coe-${office.toLocaleLowerCase()}uwa04${office.toLocaleLowerCase()}.${office.toLocaleLowerCase()}.usace.army.mil:8243/${office.toLocaleLowerCase()}-data/location/group/${basin}?office=${office}&category-id=Basins`;
+            } else if (cda === "public") {
+                basinApiUrl = `https://cwms-data.usace.army.mil/cwms-data/location/group/${basin}?office=${office}&category-id=Basins`;
+            }
+
             console.log("basinApiUrl: ", basinApiUrl);
 
             // Push the fetch promise to the apiPromises array
