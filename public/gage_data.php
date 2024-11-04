@@ -66,9 +66,9 @@ $basin = $_GET['basin'] ?? null;
                                     <!-- <span>
                                         <h3><a href='gage_data.php?basin=Mississippi'>Switch to PHP</a></h3>
                                     </span> -->
-                                    <span>
+                                    <!-- <span>
                                         <h3><a href='gage_data.html?basin=Mississippi&cda=internal'>Switch to Cloud</a></h3>
-                                    </span>
+                                    </span> -->
                                     <!-- <span><h3><a href='gage_data.html?basin=Mississippi&cda=public'>Switch to Cloud Public</a></h3></span> -->
                                 </div>
                             </div>
